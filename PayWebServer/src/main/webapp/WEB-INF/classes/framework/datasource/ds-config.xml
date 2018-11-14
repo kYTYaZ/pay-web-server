@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds-config>
+	<ds dsName="db2">
+		<name>DB2_1</name>
+	</ds>
+	<ds dsName="oracle">
+		<name>ORACLE_1</name>
+	</ds>
+</ds-config>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	<bean name="baseAction" class="com.huateng.pay.action.BaseAction" scope="prototype">
+	</bean>
+
+	<bean name="wxPayAction" class="com.huateng.pay.action.WxPayAction"
+	    scope="prototype" parent="baseAction">
+		<property name="wxPayService" ref="wxPayService"></property>
+	</bean>
+	
+	<bean name="alipayAction" class="com.huateng.pay.action.AlipayAction"
+	    scope="prototype" parent="baseAction">
+		<property name="aliPayPayService" ref="alipayPayService"></property>
+		<property name="orderService" ref="orderService"/>
+		<property name="merchantChannelService" ref="merChantChannelService" />
+	</bean>
+	<bean name="threeCodeAction" class="com.huateng.pay.action.ThreeCodeAction"
+	    scope="prototype" parent="baseAction">
+		<property name="orderService" ref="orderService"></property>
+		<property name="threeCodeStaticQRCodeDataService" ref="threeCodeStaticQRCodeDataService"></property>
+	</bean>
+	
+	<bean name="cupsPayAction" class="com.huateng.pay.action.CupsPayAction"
+	    scope="prototype" parent="baseAction">
+		<property name="cupsPayService" ref="cupsPayService"></property>
+	</bean>
+</beans>

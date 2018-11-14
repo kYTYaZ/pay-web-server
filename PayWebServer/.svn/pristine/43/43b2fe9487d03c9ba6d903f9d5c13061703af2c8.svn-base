@@ -1,0 +1,631 @@
+package com.huateng.pay.services.scheduler.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.common.date.DateUtil;
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.huateng.pay.common.constants.StringConstans;
+import com.huateng.pay.dao.inter.ISequenceDao;
+import com.huateng.pay.services.alipay.AliPayPayService;
+import com.huateng.pay.services.db.IOrderService;
+import com.huateng.pay.services.db.ITakeTimingTaskResultService;
+import com.huateng.pay.services.db.ITimingTaskService;
+import com.huateng.pay.services.scheduler.ISchedulerService;
+import com.huateng.pay.services.threecode.IThreeCodeService;
+import com.huateng.pay.services.weixin.WxPayService;
+import com.wldk.framework.utils.DateUtils;
+
+public class SchedulerServiceImpl implements ISchedulerService {
+	private Logger logger = LoggerFactory.getLogger(SchedulerServiceImpl.class);
+    private WxPayService wxPayService;
+    private IOrderService orderService;
+    private ITimingTaskService timingTaskService;
+    private ITakeTimingTaskResultService takeTimingTaskResultService;
+    private AliPayPayService aliPayPayService;
+    private IThreeCodeService threeCodeService;
+	private ISequenceDao sequenceDao;
+  
+    
+    /**
+     * 发送请求到微信下载对账单
+     */
+    public void downloadWxBill(){
+    	logger.debug("开始执行定时下载微信对账单...");
+    	try {
+    		InputParam input = new InputParam();
+    		input.putParams("billDate", DateUtil.format(DateUtil.addDay(new Date(), -1),DateUtil.YYYYMMDD));
+    		input.putParams("billType", "ALL");
+    		OutputParam out = wxPayService.downloadWxBill(input);
+    		if(!StringConstans.returnCode.SUCCESS.equals(out.getReturnCode())){
+				logger.debug("下载微信对账单失败:"+out.getReturnMsg());
+			}
+		} catch (Exception e) {
+			logger.error("定时下载微信对账单异常："+e.getMessage(),e);
+		}
+    	
+    }
+    
+    /**
+	 * 定时从二维码信息将数据拷贝到历史表
+	 */
+    @Override
+	public void timingCopyTblEwmInfoToHis() {
+    	
+    	String  exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+    	String  failureReason = "";
+    	boolean exceFlag = false;
+    	
+    	try {
+    		
+    		logger.debug("********[定时从二维码信息将数据拷贝到历史表]:任务开始,时间:[" + DateUtil.getCurrentDateTime() + "]**********");
+    		
+    		logger.debug("[定时从二维码信息将数据拷贝到历史表]：开始检查是否有其他程序在执行备份");
+    		
+    		List<Map<String, Object>> queryList = this.queryTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_EWM);
+			if(queryList != null && !queryList.isEmpty() && queryList.size() >= 1 ){
+				logger.debug("[定时从二维码信息将数据拷贝到历史表],已有定时任务处理此任务,执行定时任务退出");
+				exceFlag = true;
+				return;
+			}
+			
+			logger.debug("[定时从二维码信息将数据拷贝到历史表]：检查完成未有他程序在执行备份，开始插入定时任务执行标识");
+
+			this.insertTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_EWM);
+			
+			logger.debug("[定时从二维码信息将数据拷贝到历史表]：检查完成未有他程序在执行备份，插入定时任务执行标识完成");
+			
+			
+			logger.debug("[定时从二维码信息将数据拷贝到历史表]:开始执行二维码表的数据拷贝任务");
+			
+			timingTaskService.timingCopyTblEwmInfoToHis();
+			
+			logger.debug("[定时从二维码信息将数据拷贝到历史表]:执行二维码表的数据拷贝任务完成");
+			
+    		logger.debug("**********[定时从二维码信息将数据拷贝到历史表]：任务结束,时间:[" + DateUtil.getCurrentDateTime()+ "]***********");
+		
+    	} catch (FrameException e) {
+    		logger.error("[定时从二维码信息将数据拷贝到历史表]:任务出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+		}finally{
+			if(!exceFlag){
+				this.updateTimingTaskResult(exceResult, StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_EWM,failureReason);
+			}
+		}
+	}
+    
+    /**
+	 * 
+	 * 定时从订单表信息将数据拷贝到历史表
+	 */
+	@Override
+	public void timingCopyTblOrderInfoToHis() {
+		
+		String  exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+		String  failureReason = "";
+		boolean exceFlag = false;
+		
+		try {
+			
+    		logger.debug("********[定时从订单表信息将数据拷贝到历史表]:任务开始,时间:[" + DateUtil.getCurrentDateTime()+ "]**********");
+    		
+    		logger.debug("[定时从订单表信息将数据拷贝到历史表]：开始检查是否有其他程序在执行备份");
+    		
+    		List<Map<String, Object>> queryList = this.queryTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_ORDER_TXN);
+			if(queryList != null && !queryList.isEmpty() && queryList.size() >= 1 ){
+				logger.debug("[定时从订单表信息将数据拷贝到历史表],已有定时任务处理此任务,执行定时任务退出");
+				exceFlag = true;
+				return;
+			}
+			
+			logger.debug("[定时从订单表信息将数据拷贝到历史表]：检查完成未有他程序在执行备份，开始插入定时任务执行标识");
+
+			this.insertTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_ORDER_TXN);
+			
+			logger.debug("[定时从订单表信息将数据拷贝到历史表]：检查完成未有他程序在执行备份，插入定时任务执行标识完成");
+			
+			
+			logger.debug("[定时从订单表信息将数据拷贝到历史表]:开始执行订单表的数据拷贝任务");
+			
+    		timingTaskService.timingCopyTblOrderInfoToHis();
+    		
+    		logger.debug("[定时从订单表信息将数据拷贝到历史表]:开始执行订单表的数据拷贝任务");
+    		
+    		logger.debug("*********[定时从订单表信息将数据拷贝到历史表]:任务结束,时间:[" + DateUtil.getCurrentDateTime()+ "]*********");
+		
+    	} catch (FrameException e) {
+    		logger.error("定时从订单表信息将数据拷贝到历史表任务结束出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+		}finally{
+			if(!exceFlag){
+				this.updateTimingTaskResult(exceResult, StringConstans.TakeTimingTaskName.TIMING_TASK_COPY_TBL_ORDER_TXN,failureReason);
+			}
+		}
+	}
+	/**
+	 *  定时删除二维码历史表中的数据
+	 */
+	@Override
+	public void timingDelteTblEwmInfo() {
+		
+		String  exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+		String failureReason = "";
+		boolean exceFlag = false;
+		
+		try {
+			
+    		logger.debug("[定时删除二维码表中的数据任务开始]:时间:[" + DateUtil.getCurrentDateTime()+ "]");
+    		
+    		logger.debug("[定时删除二维码表中的数据任务开始]：开始检查是否有其他程序在执行备份");
+    		
+    		List<Map<String, Object>> queryList = this.queryTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_EWM);
+			if(queryList != null && !queryList.isEmpty() && queryList.size() >= 1 ){
+				logger.debug("[定时删除二维码表中的数据任务开始],已有定时任务处理此任务,执行定时任务退出");
+				exceFlag = true;
+				return;
+			}
+    		
+			logger.debug("[定时删除二维码表中的数据任务开始]：检查完成未有他程序在执行备份，开始插入定时任务执行标识");
+
+			this.insertTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_EWM);
+			
+			logger.debug("[定时删除二维码表中的数据任务开始]：检查完成未有他程序在执行备份，插入定时任务执行标识完成");
+			
+			logger.debug("[定时删除二维码表中的数据任务开始]:开始执行二维码数据删除任务");
+			
+    		timingTaskService.timingDelteTblEwmInfo();
+    		
+    		logger.debug("[定时删除二维码表中的数据任务开始]:二维码删除数据任务完成");
+    		
+    		logger.debug("定时删除二维码表中的数据任务结束,时间:[" + DateUtil.getCurrentDateTime()+ "]");
+		
+    	} catch (FrameException e) {
+    		logger.error("定时删除二维码表中的数据任务出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+		}finally{
+			if(!exceFlag){
+				this.updateTimingTaskResult(exceResult, StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_EWM,failureReason);
+			}
+		}
+	}
+	/**
+	 * 定时删除订单表中的历史数据
+	 */
+	@Override
+	public void timingDelteTblOrderInfo() {
+		
+		String  exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+		String failureReason = "";	
+		boolean exceFlag = false;
+		
+		try {
+			
+    		logger.debug("[定时删除订单表中的历史数据任务开始],时间:[" + DateUtil.getCurrentDateTime()+ "]");
+    		
+    		logger.debug("[定时删除订单表中的历史数据任务开始]：开始检查是否有其他程序在执行备份");
+    		
+    		List<Map<String, Object>> queryList = this.queryTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_ORDER_TXN);
+			if(queryList != null && !queryList.isEmpty() && queryList.size() >= 1 ){
+				logger.debug("[定时删除订单表中的历史数据任务开始],已有定时任务处理此任务,执行定时任务退出");
+				exceFlag = true;
+				return;
+			}
+			
+			logger.debug("[定时删除订单表中的历史数据任务开始]：检查完成未有他程序在执行备份，开始插入定时任务执行标识");
+
+			this.insertTimingTaskResulHandler(StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_ORDER_TXN);
+			
+			logger.debug("[定时删除订单表中的历史数据任务开始]：检查完成未有他程序在执行备份，插入定时任务执行标识完成");
+			
+			logger.debug("[定时删除订单表中的历史数据任务开始]:开始执行订单数据删除任务");
+    		
+    		timingTaskService.timingDelteTblOrderInfo();
+    		
+    		logger.debug("[定时删除订单表中的历史数据任务开始]:执行订单数据删除任务完成");
+    		
+    		logger.debug("定时删除订单表中的历史数据任务结束,时间:[" + DateUtil.getCurrentDateTime()+ "]");
+		
+    	} catch (FrameException e) {
+    		logger.error("定时删除订单表中的历史数据出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+		}finally{
+			if(!exceFlag){
+				this.updateTimingTaskResult(exceResult, StringConstans.TakeTimingTaskName.TIMING_TASK_DELETE_TBL_ORDER_TXN,failureReason);
+			}
+		}
+	}
+
+    
+	/**
+	 * 更新定时任务执行结果
+	 * @param exceResult
+	 * @param taskName
+	 * @param execOverDate
+	 */
+	public void updateTimingTaskResult(String exceResult,String taskName,String failureReason){
+		
+		try {
+			
+			logger.debug("[更新定时任务执行结果] 定时任务名称:[" + taskName + "],定时任务执行结果:[" + exceResult + "] 开始执行"  );
+
+			Pattern  p = Pattern.compile("SQLCODE=-?\\d*");
+			Matcher m = p.matcher(failureReason);	
+			String sqlCode = m.find() ? String.format("%s", m.group()) : "未找到错误码";
+			
+			logger.debug("[更新定时任务执行结果] 错误码:[" + sqlCode + "]");
+			
+			String seq = sequenceDao.getTimingTask();
+			String execOverDate = seq + DateUtil.getDateHHMMSS();
+			
+			Map<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("exceDate", DateUtil.getDateYYYYMMDD());
+			paramMap.put("execOverDate", execOverDate);
+			paramMap.put("taskName", taskName);
+			paramMap.put("failureReason", sqlCode);
+			paramMap.put("exceResult", exceResult);
+
+			takeTimingTaskResultService.takeTimingTaskResult(paramMap);
+			
+			logger.debug("[更新定时任务执行结果] 定时任务名称:[" + taskName + "],执行结束");
+			
+		} catch (FrameException e) {
+			logger.error("[更新定时任务执行结果] 定时任务名称:[" + taskName + "],执行出现异常:" + e.getMessage(),e);
+		}
+	}
+    
+	
+	/**
+	 * 插入定时任务处理标志
+	 */
+	public void  insertTimingTaskResulHandler(String taskName){
+		
+		try{
+			
+			logger.debug("[插入定时任务处理标志] 定时任务名称:[" + taskName+"]   开始执行"  );
+			
+			Map<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("handlerDate", DateUtil.getDateYYYYMMDD());
+			paramMap.put("handlerTaskName", taskName);				
+			paramMap.put("handlerFlag", StringConstans.TimingTaskHandler.HANDLER_STATE_01);		
+			
+			logger.debug("[插入定时任务处理标志]:开始执行插入操作");
+			
+			timingTaskService.insertTimingTaskHandler(paramMap);
+			
+			logger.debug("[插入定时任务处理标志] 定时任务名称:[" + taskName + "]   执行完成"  );
+			
+		}catch (FrameException e) {
+			logger.error("[查询定时任务处理标志] 定时任务名称:[" + taskName + "],执行出现异常:" + e.getMessage(),e);
+			throw new FrameException(e);
+		}
+	}
+	
+	/**
+	 * 查询定时任务处理标志
+	 * @param taskName
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String, Object>>  queryTimingTaskResulHandler(String taskName) throws FrameException{
+		
+		try{
+			
+			logger.debug("[查询定时任务处理标志] 定时任务名称:[" + taskName + "] 开始执行");
+			
+			Map<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("handlerDate", DateUtil.getDateYYYYMMDD());
+			paramMap.put("handlerTaskName", taskName);
+		
+			logger.debug("[查询定时任务处理标志]:执行查询操作开始");
+			List<Map<String, Object>> queryList  = timingTaskService.queryTimingTaskHandler(paramMap);
+			logger.debug("[查询定时任务处理标志]:执行查询操作完成");
+			
+			return queryList;
+			
+		}catch (FrameException e) {
+			logger.error("[查询定时任务处理标志] 定时任务名称:[" + taskName + "],执行出现异常:" + e.getMessage(),e);
+			throw new FrameException(e);
+		}
+	}
+	/**
+     * 发送请求到支付宝下载对账单
+     */
+	@Override
+	public void downloadAliPayBill() {
+    
+		logger.debug("开始执行定时下载支付宝对账单...  START");
+    
+		try {
+			
+    		InputParam input = new InputParam();
+			input.putParams("transType", StringConstans.TransType.TRANS_DOWN_FILE);
+    		input.putParams("alipayBillDate", DateUtil.format(DateUtil.addDay(new Date(), -1),DateUtil.YYYYMMDD));
+    		input.putParams("billType", StringConstans.BillType.BILLTYPE_ALIPAY);
+    		
+    		logger.debug("[定时任务支付宝对账单下载] 支付宝对账单下载    开始");
+    		
+    		OutputParam out = aliPayPayService.downloadALiPayBill(input);
+    		
+    		logger.debug("[定时任务支付宝对账单下载] 支付宝对账单下载    结束");
+    		
+    		if(!StringConstans.returnCode.SUCCESS.equals(out.getReturnCode())){
+				logger.error("下载支付宝对账单失败:"+out.getReturnMsg());
+				logger.info("下载支付宝对账单失败:"+out.getReturnMsg());
+			}
+    		
+    		logger.debug("开始执行定时下载支付宝对账单...  END");
+    		
+		} catch (Exception e) {
+			logger.error("定时下载支付宝对账单异常："+ e.getMessage(),e);
+		}
+    }
+	
+	/**
+	 * 定时查询状态不明确的微信和支付宝订单
+	 * 
+	 */
+	@Override
+	public void queryIndefiniteOrder(InputParam input) {
+		
+		String payAccessType = input.getValueString("payAccessType");
+		String orderDate = input.getValueString("orderDate");
+		String txnTmStart = input.getValueString("txnTmStart");
+		String txnTmEnd = input.getValueString("txnTmEnd");
+		
+		logger.debug("-----------------------定时查询状态为(01,06)的"+payAccessType+"(02:微信,03:支付宝)订单状态流程   START-------------------------------");
+		logger.debug("[查询三码合一未知订单信息]查询日期:"+orderDate+"时间段:"+txnTmStart+"~"+txnTmEnd);
+		
+		String exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+		String failureReason = "";
+		
+		try {
+
+			logger.debug("[定时查询状态为(01,06)的订单状态] 任务开始时间:" + DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater));
+
+			InputParam inputQry = new InputParam();
+			inputQry.putParams("payAccessType", payAccessType);
+			inputQry.putParams("orderDate", orderDate);
+			inputQry.putParams("txnTmStart", txnTmStart);
+			inputQry.putParams("txnTmEnd", txnTmEnd);
+			
+			OutputParam queryOut = threeCodeService.queryWxAndAlipayUnknowOrder(inputQry);
+			logger.debug("[查询三码合一微信和支付宝订单信息]返回报文:"+queryOut.toString());
+			
+			String respCode = ObjectUtils.toString(queryOut.getValue("respCode"));
+			String respDesc = ObjectUtils.toString(queryOut.getValue("respDesc"));
+			
+			if (!StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+				logger.debug("[定时查询状态为(01,06)订单任务失败" + respDesc);
+			}
+
+		} catch (FrameException e) {
+			logger.error("[定时查询状态为(01,06)订单]:任务出现异常：" + e.getMessage(),e);
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+//			logger.info("-----------------------定时查询状态为(01,06)的订单状态流程出现异常   END-------------------------------");
+		} finally {
+			String taskName = "";
+			if(StringConstans.PAYACCESSTYPE.ACCESS_ALIPAY.equals(payAccessType)){
+				taskName = StringConstans.TakeTimingTaskName.TIMING_TASK_QUERY_INDEFINITE_ORDER_ALI;
+			} else if(StringConstans.PAYACCESSTYPE.ACCESS_WX.equals(payAccessType)){
+				taskName = StringConstans.TakeTimingTaskName.TIMING_TASK_QUERY_INDEFINITE_ORDER_WX;
+			}
+			this.updateTimingTaskResult(exceResult, taskName, failureReason);
+
+			logger.debug("[定时查询状态为(01,06)的订单] 任务结束时间" + DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater));
+		}
+
+		logger.debug("-----------------------定时查询状态为(01,06)的订单状态流程   END-------------------------------");
+	}
+	
+	/**
+	 *定时生成三码合一对账单
+	 */
+	@Override
+	public void creatThreeCodeWxAndAipayBills() {
+
+		logger.debug("---------------  定时生成三码合一微信和支付宝对账单	START---------------");
+		
+		try {
+			
+			logger.debug("[定时生三码合一微信和支付宝对账单] 任务开始时间:" + DateUtil.getCurrentDateTime());
+			
+			String orderDt = DateUtils.getDateString(DateUtil.addDay(-1));
+			InputParam input = new InputParam();
+			input.putParams("orderDate", orderDt);
+
+			logger.debug("[定时生三码合一微信和支付宝对账单] 调用创建微信支付宝对账单的接口   开始");
+			
+			OutputParam queryOut = threeCodeService.creatWxAndAlipayBill0(input);
+			
+			logger.debug("[定时生三码合一微信和支付宝对账单] 调用创建微信支付宝对账单的接口   结束");
+			
+			String respCode = ObjectUtils.toString(queryOut.getValue("respCode"));
+			String respDesc = ObjectUtils.toString(queryOut.getValue("respDesc"));
+			
+			if (!StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+//				logger.error("[定时生三码合一微信和支付宝对账单]	任务失败");
+				logger.debug("[定时生三码合一微信和支付宝对账单] 创建微信支付宝订单失败:" + respDesc);
+			}
+
+		} catch (Exception e) {
+
+			logger.error("[定时生三码合一微信和支付宝对账单]	任务出现异常：" + e.getMessage(),e);
+
+		}
+		
+		logger.debug("[定时生三码合一微信和支付宝对账单] 任务结束时间:" + DateUtil.getCurrentDateTime());
+		
+//		logger.info("---------------  定时生成三码合一微信和支付宝对账单	END---------------");
+	}
+	
+	/**
+	 * 下载三码合一订单信息
+	 */
+	@Override
+	public void downLodaThreeCodeOrder() {
+
+//		logger.info("---------------定时生成三码合一订单流水流程      START-----------------------------");
+		
+		try {
+			
+			logger.debug("[定时生成三码合一订单流水] 任务开始时间:" + DateUtil.getCurrentDateTime());
+
+			String orderDt = DateUtils.getDateString(DateUtil.addDay(-1));
+			InputParam input = new InputParam();
+			input.putParams("orderDate", orderDt);
+			
+			logger.debug("[定时生成三码合一订单流水]  调用三码合一创建微信支付宝交易流水接口    开始");
+			
+			OutputParam queryOut = threeCodeService.downloadThreeCodeBill(input);
+			
+			logger.debug("[定时生成三码合一订单流水]  调用三码合一创建微信支付宝交易流水接口    结束");
+			
+			String respCode = ObjectUtils.toString(queryOut.getValue("respCode"));
+			String respDesc = ObjectUtils.toString(queryOut.getValue("respDesc"));
+			
+			if (!StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+				logger.debug("[定时生成三码合一订单流水] 任务失败:" + respDesc);
+//				logger.info("[定时生成三码合一订单流水] 定时生成三码合一订单流水失败:" + respDesc);
+			}
+
+		} catch (Exception e) {
+			logger.error("[定时生成三码合一订单流水账单]	任务出现异常：" + e.getMessage(),e);
+		}
+		
+		logger.debug("[定时生成三码合一订单流水] 任务结束时间:" + DateUtil.getCurrentDateTime());
+
+//		logger.info("---------------生成三码合一订单流水账单流程      END-----------------------------");
+	}
+	
+	@Override
+	public void packLogByZip() {
+		String failureReason = "";
+		
+		try {
+			
+			logger.debug("[定时备份日志文件任务开始]:开始执行备份日志文件任务");
+    		
+    		timingTaskService.timingPackLogByZip();
+    		
+    		logger.debug("[定时备份日志文件任务开始]:执行备份日志文件任务完成");
+    		
+    		logger.debug("定时备份日志文件任务结束,时间:[" + DateUtil.getCurrentDateTime()+ "]");
+		
+    	} catch (FrameException e) {
+    		logger.error("定时备份日志文件任务出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+		}
+	}
+	
+	@Override
+	public void queryUnknowStautsAndSettle(InputParam input) {
+		String  exceResult = StringConstans.TimingExceResult.TIMING_EXCE_SUCESS;
+		String  failureReason = "";
+		
+		try {
+			String orderDate = input.getValueString("orderDate");
+			String txnTmStart = input.getValueString("txnTmStart");
+			String txnTmEnd = input.getValueString("txnTmEnd");
+			
+    		logger.debug("********[定时从订单表查询前一天入账状态未知的交易，并重新发起入账]:任务开始,时间:[" + DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater)+ "]**********");
+    		
+			InputParam inputQry = new InputParam();
+			inputQry.putParams("orderDate", orderDate);
+			inputQry.putParams("txnTmStart", txnTmStart);
+			inputQry.putParams("txnTmEnd", txnTmEnd);
+    		
+			OutputParam output = threeCodeService.accountedTxnToCore(inputQry);
+    		logger.debug("向核心发送T+0入账交易,返回参数:"+output.toString());
+    		
+    		logger.debug("*********[定时从订单表查询前一天入账状态未知的交易，并重新发起入账]:任务结束,时间:[" + DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater)+ "]*********");
+		
+    	} catch (FrameException e) {
+    		logger.error("定时从订单表查询前一天入账状态未知的交易，并重新发起入账任务结束出现异常：" + e.getMessage(),e);
+			failureReason = e.getMessage();
+			exceResult = StringConstans.TimingExceResult.TIMING_EXCE_FAILURE;
+		}finally{
+			this.updateTimingTaskResult(exceResult, StringConstans.TakeTimingTaskName.TIMING_TASK_QUERY_SETTLE_UNKNOW_STATUS,failureReason);
+		}
+		
+	}
+	
+	public WxPayService getWxPayService() {
+		return wxPayService;
+	}
+
+	public void setWxPayService(WxPayService wxPayService) {
+		this.wxPayService = wxPayService;
+	}
+
+	public IOrderService getOrderService() {
+		return orderService;
+	}
+
+	public void setOrderService(IOrderService orderService) {
+		this.orderService = orderService;
+	}
+
+	public ITimingTaskService getTimingTaskService() {
+		return timingTaskService;
+	}
+
+	public void setTimingTaskService(ITimingTaskService timingTaskService) {
+		this.timingTaskService = timingTaskService;
+	}
+
+
+	public ITakeTimingTaskResultService getTakeTimingTaskResultService() {
+		return takeTimingTaskResultService;
+	}
+
+
+	public void setTakeTimingTaskResultService(
+			ITakeTimingTaskResultService takeTimingTaskResultService) {
+		this.takeTimingTaskResultService = takeTimingTaskResultService;
+	}
+
+
+	public AliPayPayService getAliPayPayService() {
+		return aliPayPayService;
+	}
+
+
+	public void setAliPayPayService(AliPayPayService aliPayPayService) {
+		this.aliPayPayService = aliPayPayService;
+	}
+
+	public IThreeCodeService getThreeCodeService() {
+		return threeCodeService;
+	}
+
+	public void setThreeCodeService(IThreeCodeService threeCodeService) {
+		this.threeCodeService = threeCodeService;
+	}
+
+	public ISequenceDao getSequenceDao() {
+		return sequenceDao;
+	}
+
+	public void setSequenceDao(ISequenceDao sequenceDao) {
+		this.sequenceDao = sequenceDao;
+	}
+
+	
+
+	
+
+}

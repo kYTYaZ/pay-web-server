@@ -1,0 +1,167 @@
+#if($sqlName=='saveThreeCodeStaticQRCodeInfo')
+INSERT INTO TBL_STATIC_EWM_THREE_CODE_INFO (
+		    EWM_SEQ,
+			EWM_DATA,
+			EWM_CIPHERTEXT,
+			#if ($merId)MER_ID,#end
+			#if ($merName)MER_NAME,#end
+			#if ($subAlipayMerId)SUB_ALIPAY_MER_ID,#end
+			#if ($subWxMerId)SUB_WX_MER_ID,#end
+			#if ($storeId)STORE_ID,#end
+			#if ($customerNo)CUSTOMER_NO,#end
+			#if ($customName)CUSTOMER_NAME,#end
+			#if ($orgId)ORG_ID,#end
+			#if ($orgCode)ORG_CODE,#end
+			#if ($channel)CHANNEL,#end
+			#if ($currencyType)CURRENCY_TYPE,#end
+			#if ($acctNo)ACCT_NO,#end
+			#if ($bankFeeRate)BANK_FEE_RATE,#end
+			#if ($bankFeeUpperLimit)BANK_FEE_UPPER_LIMIT,#end
+			#if ($bankFeeLowerLimit)BANK_FEE_LOWER_LIMIT,#end
+			#if ($wxFeeRate)WX_FEE_RATE,#end
+			#if ($alipayFeeRate)ALIPAY_FEE_RATE,#end
+			#if ($goodsDiscount)GOODS_DISCOUNT,#end
+			#if ($discountBeginDate)DISCOUNT_BEGIN_DATE,#end
+			#if ($discountEndDate)DISCOUNT_END_DATE,#end
+			#if ($createDt)CREATE_DT,#end
+			#if ($ewmType)EWM_TYPE,#end
+			#if ($validateDay)VALIDATE_DAY,#end
+			#if ($updateDt)UPDATE_DT,#end
+			#if ($remark)REMARK,#end
+			#if ($settleMethod)SETTLE_METHOD,#end
+			#if ($reserve2)RESERVE2,#end
+			#if ($reserve3)RESERVE3,#end
+			#if ($ewmStatue)EWM_STATUE#end
+	) VALUES(
+			'${ewmSeq}',
+			'${ewmData}',
+			'${ewmCipherText}',
+			#if ($merId)'${merId}',#end
+			#if ($merName)'${merName}',#end
+			#if ($subAlipayMerId)'${subAlipayMerId}',#end
+			#if ($subWxMerId)'${subWxMerId}',#end
+			#if ($storeId)'${storeId}',#end
+			#if ($customerNo)'${customerNo}',#end
+			#if ($customName)'${customName}',#end
+			#if ($orgId)'${orgId}',#end
+			#if ($orgCode)'${orgCode}',#end
+			#if ($channel)'${channel}',#end
+			#if ($currencyType)'${currencyType}',#end
+			#if ($acctNo)'${acctNo}',#end
+			#if ($bankFeeRate)'${bankFeeRate}',#end
+			#if ($bankFeeUpperLimit)'${bankFeeUpperLimit}',#end
+			#if ($bankFeeLowerLimit)'${bankFeeLowerLimit}',#end
+			#if ($wxFeeRate)'${wxFeeRate}',#end
+			#if ($alipayFeeRate)'${alipayFeeRate}',#end
+			#if ($goodsDiscount)'${goodsDiscount}',#end
+			#if ($discountBeginDate)'${discountBeginDate}',#end
+			#if ($discountEndDate)'${discountEndDate}',#end
+			#if ($createDt)'${createDt}',#end
+			#if ($ewmType)'${ewmType}',#end
+			#if ($validateDay)'${validateDay}',#end
+			#if ($updateDt)'${updateDt}',#end
+			#if ($remark)'${remark}',#end
+			#if ($settleMethod)'${settleMethod}',#end
+			#if ($reserve2)'${reserve2}',#end
+			#if ($reserve3)'${reserve3}',#end
+			#if ($ewmStatue)'${ewmStatue}'#end
+	)
+#end
+
+#if($sqlName=='queryThreeCodeStaticQRCodeInfo')
+			SELECT 
+				EWM_SEQ,
+				EWM_DATA,
+				EWM_CIPHERTEXT,
+				MER_ID,
+				MER_NAME,
+				SUB_ALIPAY_MER_ID,
+				SUB_WX_MER_ID,
+				STORE_ID,
+				CUSTOMER_NO,
+				CUSTOMER_NAME,
+				ORG_ID,
+				ORG_CODE,
+				CHANNEL,
+				CURRENCY_TYPE,
+				ACCT_NO,
+				BANK_FEE_RATE,
+				BANK_FEE_UPPER_LIMIT,
+				BANK_FEE_LOWER_LIMIT,
+				WX_FEE_RATE,
+				ALIPAY_FEE_RATE,
+				GOODS_DISCOUNT,
+				DISCOUNT_BEGIN_DATE,
+				DISCOUNT_END_DATE,
+				CREATE_DT,
+				EWM_TYPE,
+				EWM_STATUE,
+				VALIDATE_DAY,
+				UPDATE_DT,
+				REMARK,
+				SETTLE_METHOD,
+				RESERVE2,
+				RESERVE3
+	    FROM  TBL_STATIC_EWM_THREE_CODE_INFO 
+	   WHERE 1=1 	
+	   #if ($ewmCipherText)
+			AND EWM_CIPHERTEXT ='${ewmCipherText}'
+	   #end
+	   #if ($acctNo)
+			AND ACCT_NO ='${acctNo}'
+	   #end
+	   #if ($ewmType)
+			AND EWM_TYPE ='${ewmType}'
+	   #end
+	   #if ($channel)
+			AND CHANNEL ='${channel}'
+	   #end	
+	   #if ($merId)
+			AND MER_ID ='${merId}'
+	   #end
+	   #if ($ewmStatue)
+			AND EWM_STATUE ='${ewmStatue}'
+	   #end
+	   #if ($ewmData)
+			AND EWM_DATA ='${ewmData}'
+	   #end
+	   #if ($ewmSeq)
+			AND EWM_SEQ ='${ewmSeq}'
+	   #end
+	   
+	   ORDER BY CREATE_DT DESC
+	   
+#end
+
+#if($sqlName=='updateThreeCodeStaticQRCodeInfo')
+	 UPDATE TBL_STATIC_EWM_THREE_CODE_INFO   SET
+		#if ($ewmStatue)EWM_STATUE='${ewmStatue}',#end
+		#if ($updateDt)UPDATE_DT='${updateDt}'#end
+	WHERE 1=1
+	   #if ($ewmSeq)
+			AND EWM_SEQ ='${ewmSeq}'
+	   #end
+#end
+
+#if($sqlName=='updateBatchThreeCodeStaticQRCodeInfo')
+	 UPDATE TBL_STATIC_EWM_THREE_CODE_INFO   SET
+		#if ($bankFeeRate)BANK_FEE_RATE='${bankFeeRate}',#end
+		#if ($bankFeeUpperLimit)BANK_FEE_UPPER_LIMIT='${bankFeeUpperLimit}',#end
+		#if ($bankFeeLowerLimit)BANK_FEE_LOWER_LIMIT='${bankFeeLowerLimit}',#end
+		#if ($settleMethod)SETTLE_METHOD='${settleMethod}',#end
+		#if ($updateDt)UPDATE_DT='${updateDt}'#end
+	WHERE 1=1
+	   #if ($ewmStatue)
+			AND EWM_STATUE ='${ewmStatue}'
+	   #end
+	   #if ($acctNo)
+			AND ACCT_NO ='${acctNo}'
+	   #end
+	   #if ($channel)
+			AND CHANNEL ='${channel}'
+	   #end
+	   #if ($orgCode)
+			AND ORG_CODE like '${orgCode}%'
+	   #end
+#end
+

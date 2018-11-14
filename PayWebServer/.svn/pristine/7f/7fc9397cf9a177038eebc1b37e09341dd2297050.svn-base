@@ -1,0 +1,258 @@
+package com.huateng.utils;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.cert.Base64;
+import com.huateng.pay.common.constants.SDKConstants;
+import com.unionpay.acp.sdk.HttpClient;
+
+
+public class CupsBase {
+
+	private static Logger logger = LoggerFactory.getLogger(CupsBase.class);
+	//默认配置的是UTF-8
+	public static String encoding = "UTF-8";
+	/**
+     * 组装付款方信息
+     * @param encoding 编码方式
+     * @return 用{}连接并base64后的付款方信息
+     */
+	public static String getPayerInfo(Map<String, String> payarInfoMap) {
+		return formInfoBase64(payarInfoMap); 
+    }
+
+	/**
+	 * 用{}连接并base64
+	 * @param map
+	 * @param encoding
+	 * @return
+	 */
+	public static String formInfoBase64(Map<String, String> map){
+		StringBuffer sf = new StringBuffer();
+        String info = sf.append("{").append(SDKUtil.coverMap2String(map)).append("}").toString();
+        try {
+        	info = new String(Base64.encode(info));
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
+        return info;
+	}
+	
+	// 商户发送交易时间 格式:YYYYMMDDhhmmss
+		public static String getCurrentTime() {
+			return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		}
+
+		// AN8..40 商户订单号，不能含"-"或"_"
+		public static String getOrderId() {
+			return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		}
+		/**
+		 * 功能：后台交易提交请求报文并接收同步应答报文<br>
+		 * @param reqData 请求报文<br>
+		 * @param rspData 应答报文<br>
+		 * @param reqUrl  请求地址<br>
+		 * @param encoding<br>
+		 * @return 应答http 200返回true ,其他false<br>
+		 * @throws Exception 
+		 */
+		public static Map<String,String> post(
+				Map<String, String> reqData,String reqUrl,String encoding) throws Exception {
+			Map<String, String> rspData = new HashMap<String,String>();
+			logger.info("请求银联地址:" + reqUrl);
+			//发送后台请求数据
+			HttpClient hc = new HttpClient(reqUrl, 30000, 30000);
+			try {
+				int status = hc.send(reqData, encoding);
+				if (200 == status) {
+					String resultString = hc.getResult();
+					if (null != resultString && !"".equals(resultString)) {
+						// 将返回结果转换为map
+						Map<String,String> tmpRspData  = SDKUtil.convertResultStringToMap(resultString);
+						rspData.putAll(tmpRspData);
+					}
+				}else{
+					logger.info("返回http状态码["+status+"]，请检查请求报文或者请求地址是否正确");
+				}
+			} catch (Exception e) {
+				throw new Exception(e.getMessage(), e); 
+			}
+			return rspData;
+		}
+		
+		/**
+		 * 对字符串做base64<br>
+		 * @param rawStr<br>
+		 * @param encoding<br>
+		 * @return<br>
+		 * @throws IOException
+		 */
+		public static String base64Encode(String rawStr,String encoding) throws IOException{
+			byte [] rawByte = rawStr.getBytes(encoding);
+			return new String(SecureUtil.base64Encode(rawByte),encoding);
+		}
+		
+		/**
+		 * 组装收款方信息
+		 * @param encoding 编码方式
+		 * @return 用{}连接并base64后的收款方信息
+		 */
+		public static String getPayeeInfo(Map<String, String> payeeInfoMap,String encoding) {
+			return formInfoBase64(payeeInfoMap,encoding);
+	    }
+		
+		/**
+		 * 组装收款方信息(接入机构配置了敏感信息加密)
+		 * @param encoding 编码方式
+		 * @return 用{}连接并base64后的收款方信息
+		 */
+		public static String getPayeeInfoWithEncrpyt(Map<String, String> payeeInfoMap,String encoding) {
+			return formInfoBase64WithEncrpyt(payeeInfoMap,encoding);
+	    }
+		
+		/**
+	     * 组装付款方信息
+	     * @param encoding 编码方式
+	     * @return 用{}连接并base64后的付款方信息
+	     */
+		public static String getPayerInfo(Map<String, String> payarInfoMap, String encoding) {
+			return formInfoBase64(payarInfoMap,encoding);
+	    }
+		
+		/**
+	     * 组装付款方信息(接入机构配置了敏感信息加密)
+	     * @param encoding 编码方式
+	     * @return 用{}连接并base64后的付款方信息
+	     */
+		public static String getPayerInfoWithEncrpyt(Map<String, String> payarInfoMap, String encoding) {
+			return formInfoBase64WithEncrpyt(payarInfoMap,encoding);
+	    }
+
+		
+		/**
+	     * 组装附加处理条件
+	     * @param encoding 编码方式
+	     * @return 用{}连接并base64后的附加处理条件
+	     */
+		public static String getAddnCond(Map<String, String> addnCondMap,String encoding) {
+			return formInfoBase64(addnCondMap,encoding);
+	    }
+		
+		/**
+		 * 用{}连接并base64
+		 * @param map
+		 * @param encoding
+		 * @return
+		 */
+		public static String formInfoBase64(Map<String, String> map,String encoding){
+			StringBuffer sf = new StringBuffer();
+	        String info = sf.append(SDKConstants.LEFT_BRACE).append(SDKUtil.coverMap2String(map)).append(SDKConstants.RIGHT_BRACE).toString();
+	        try {
+	        	info = new String(base64Encode(info, encoding));
+			} catch (UnsupportedEncodingException e) {
+				logger.error(e.getMessage(),e);
+			} catch (IOException e) {
+				logger.error(e.getMessage(),e);
+			}
+	        return info;
+		}
+		
+		/**
+		 * 用{}连接并base64(接入机构配置了敏感信息加密)
+		 * @param map
+		 * @param encoding
+		 * @return
+		 */
+		public static String formInfoBase64WithEncrpyt(Map<String, String> map,String encoding){
+			StringBuffer sf = new StringBuffer();
+	        String info = sf.append(SDKConstants.LEFT_BRACE).append(SDKUtil.coverMap2String(map)).append(SDKConstants.RIGHT_BRACE).toString();
+	        info = SecureUtil.EncryptData(info, encoding, CertUtil.getEncryptCertPublicKey());
+	        return info;
+		}
+		
+		/**
+		 * 解析返回报文的payerInfo域，敏感信息不加密时使用：<br>
+		 * @param payerInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayerInfo(String payerInfo, String encoding){
+			try {
+				byte[] b = SecureUtil.base64Decode(payerInfo.getBytes(encoding));
+				payerInfo = new String(b,encoding);
+				return SDKUtil.convertResultStringToMap(payerInfo);
+			} catch (UnsupportedEncodingException e) {
+				logger.error(e.getMessage(),e);
+				return null;
+			} catch (IOException e) {
+				logger.error(e.getMessage(),e);
+				return null;
+			}
+		}
+		
+		/**
+		 * 解析返回报文的payerInfo域，敏感信息不加密时使用：<br>
+		 * @param payerInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayeeInfo(String payeeInfo, String encoding){
+			return parsePayerInfo(payeeInfo, encoding);
+		}
+		
+		/**
+		 * 解析返回报文的payerInfo域，敏感信息加密时使用：<br>
+		 * @param payerInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayerInfoEnc(String payerInfo, String encoding){
+			payerInfo = AcpService.decryptData(payerInfo, encoding);
+			Map<String, String> payerInfoMap;
+			payerInfoMap = SDKUtil.convertResultStringToMap(payerInfo);
+			return payerInfoMap;
+		}
+		
+		/**
+		 * 解析返回报文中的payeeInfo域，敏感信息加密时使用：<br>
+		 * @param payeeInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayeeInfoEnc(String payeeInfo, String encoding){
+			return parsePayerInfoEnc(payeeInfo, encoding);
+		}
+		
+		/**
+		 * 解析返回报文中的payerInfo域，敏感信息加密时使用，多证书方式。<br>
+		 * @param payerInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayerInfoEnc(String payerInfo, String certPath, 
+				String certPwd, String encoding){
+			payerInfo = AcpService.decryptData(payerInfo, certPath, certPwd, encoding);
+			Map<String, String> payerInfoMap;
+			payerInfoMap = SDKUtil.convertResultStringToMap(payerInfo);
+			return payerInfoMap;
+		}
+		
+		/**
+		 * 解析返回报文中的payeeInfo域，敏感信息加密时使用，多证书方式。<br>
+		 * @param payeeInfo<br>
+		 * @param encoding<br>
+		 * @return
+		 */
+		public static Map<String, String> parsePayeeInfoEnc(String payeeInfo, String certPath, 
+				String certPwd, String encoding){
+			return parsePayerInfoEnc(payeeInfo, certPath, certPwd, encoding);
+		}
+}

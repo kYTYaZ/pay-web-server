@@ -1,0 +1,41 @@
+﻿##########################SDK\u914d\u7f6e\u6587\u4ef6################################
+##1\u3001\u63a5\u53e3\u516c\u7528\u53c2\u6570
+# \u673a\u6784\u53f7
+tsdk.mchId = 1900009211
+# \u5b50\u5546\u6237\u53f7
+tsdk.subMchId = 11386352
+# \u6e20\u9053\u5546\u5546\u6237\u53f7
+tsdk.channelId= 24006513
+# \u516c\u4f17\u8d26\u53f7ID
+tsdk.appId = wx2421b1c4370ec43b
+# \u5b50\u5546\u6237\u516c\u4f17\u8d26\u53f7ID
+tsdk.subAppid = wx2b029c08a6232582
+
+
+##2\u3001\u63a5\u53e3\u5730\u5740
+# \u63a5\u53e3\u5730\u5740\u524d\u7f00
+tsdk.frontTransUrl = https://tpay.test.95516.com/wx/v1
+# \u67e5\u8be2\u8ba2\u5355
+tsdk.orderqueryUrlSuffix = /pay/order/qry
+# \u5237\u5361\u652f\u4ed8  
+tsdk.micropayUrlSuffix = /pay/micropay
+# \u9884\u4e0b\u5355
+tsdk.prepayUrlSuffix = /pay/prepay
+# \u64a4\u9500\u8ba2\u5355 
+tsdk.orderreverseUrlSuffix = /pay/order/reverse
+# \u5173\u95ed\u8ba2\u5355 
+tsdk.ordercloseUrlSuffix = /pay/order/close
+# \u67e5\u8be2\u5355\u7b14\u9000\u6b3e 
+tsdk.qrysingleUrlSuffix = /pay/refund/qry/single
+# \u67e5\u8be2\u591a\u7b14\u9000\u6b3e 
+tsdk.qrymultipleUrlSuffix = /pay/refund/qry/multiple
+# \u9000\u6b3e
+tsdk.refundUrlSuffix = /pay/refund
+# \u4e0b\u5c5e\u5546\u6237\u5f55\u5165
+tsdk.submchaddUrlSuffix = /submch/manage/add
+# \u4e0b\u5c5e\u5546\u6237\u67e5\u8be2
+tsdk.submchqryUrlSuffix = /submch/qry
+
+##3\u3001\u516c\u79c1\u94a5\u4fe1\u606f
+tsdk.publicKey = MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwyFjugBEq4Pt+B4G1PZkqYHn9LJemr69XWw/yI42WDOt0qEItwmR2VMqMswSqHUc6MCa8F5nfoQpnXCH2r3b38IusfqbSTafXRLaXxAJyZPuKrq4kBY9XTYr+rj/AEYJ9O1DIYHWAew/GgNY++2JNUTse/ixXqO62Q3XXtlNaKT8YyKjj6oj56O/CTF6RZ+y4hj17u+W8GNq2CBhBCJp8qYImLltb6PVDhuOzTFk57CHcuvBarj0sORSqeX6C/NuRjV96CUmbovHdlA5DCwWrH9Oic9CSs+QFW5WiPrNuP4gn6PK/ulmgrPHugQ5GooyZEf270QkHkKW191fFqEy1QIDAQAB
+tsdk.privateKey = MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDA7HglcvDgABHnUWxjkzme9AuyKBc2N30XLthZfYsX8dfl816mBpF3O9RgFfezC8Rlbkl6mwtfYOuqMVL5p9C8vcwPJOsQhjM3Am2xKiqA5O6JYqt4H1z9hkiXmazegzqo1F964skuLF0vlrWZXmo496VMHOTDncEx24+/q85g199ofJCH1X60c4LbUKvyjhR6I9rNF1dHLBW9nzyJj/uc2VQeYZiVR4yTBRjS9EaenVG+jLx/TXyRmxKeMRCxgL5sGzVWef4Y/tfrMgvkInQKe1xfwpI/CqoKrEWPMb4VQt33y12wpbaQgf9q1hpgQWOTvd0HvnsQGzrJJ5KZ/4otAgMBAAECggEAWZMx8cldd9PwfCO9HLq17UzIxW6B4IWBCiuQ/nQhCfwbT0RhdNrl3aOk5vwsJzDWfnXnngqxDBb3NO1z5kD51TiWr41nqyN0Uh1JixHV7ETfUGDE1qBRT9FykRkkP6hUqyD4OBlmaY7lsXvbU5uX3F13nVBpEz6C/kBAjTEbQLEMPRUAqx2ApdFz8kGsoO/9vTCfERxhPAXhvKUEZH2j0N3goyaYhCWHLM+Y8G3dz4EHwAoG60H5xDN2xuBBDUZ/nJI0vMPPlBGIQFY5jcS8YClWpV16gxxRkKwu9pS633bDA05JVaAdFV+D4fx0A5/pSOoJN7IbYoPbWU5X0JTHwQKBgQDiTbe1+oGS/eps3uJQSUsyIfrqIOXmKgVh2M1apZA0D6TqywvBL82Y2Qqcd63Hcj4jVXJiLf0tvMqAcv4KmjketD+o8o8vGooLkqTRGl5XQlRD84LktuNo6Jwer5BUbG1wYLqzMi4fa0l3b13krfLK4fWhKEnElYP5ZCAa6e71nQKBgQDaPWlqJQWMB2rgbmFcY1GNAEhnFpbD9ByIi6TSaAhs7jwYwPSBZo2I7bzAybKvsCnIG4lljhcdsHfwnnL4yRWgUJ91wEd7zG5zvbKPJUfRMRDJIe94FlwzSQjLI8/w/WVnlScfllbs0c8dIfTS0Ur2eddcASW441+A4up3gNiJ0QKBgFAIHiUsT3C1fZc9B5pPIVm8bKkqM0O/rqGY857QGHxg3/jtD94lUrdwYnFNXdbADzudt1MDYpsvPgpJIJCNVBAIvM654WtOHm3TUZhlk+GWIojZcHwENc5fHP85JXjF07o/ayd+YpNX9OZZK0J5Rfj8CksRHW15Vu/2uefqvUh9AoGAWQt9m2WHod7U6MWgzAVqHNHkuMsqsMFFcyEnGwJ/jZKWyrLQEIw7a4c04KRrV+vU4GT75ofXPrHl/jNoTcIeJM9AgNb3U7fRyT+5P1bCusP+SVKjVqgo7nP6NohiK734Rg9Ba034IaBplUVpkyr6Hx8Pk+aT8aA0M25ipGfZ8kECgYBoiT8JbQnJ7iNvPln8robXkh6T3tqKAEKpkkw571LHlyvR9TB3f9e9HFGCnGSSZ0y3PBbvg78dk3JKtqykIIl9zduY5mXVRq/TSdPQqCPS1adjYgBtcRbI6E/nAEwK9uT4KH1x8V4y/o1VNvxYmI9CAc2QeOPFCYtFk6zdkOOpjw==

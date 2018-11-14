@@ -1,0 +1,1694 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: StringConstans.java
+ * Author:   justin
+ * Date:     2014-7-31 下午6:53:45
+ * Description: //模块目的、功能描述      
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.common.constants;
+
+/**
+ * 字符串常量类
+ * 
+ * 
+ * @author sunguohua
+ */
+public class StringConstans {
+	/**
+	 * 流水表SEQ长度
+	 */
+	public static int TXN_SEQ_LENG = 8;
+
+	public static String RETURN_RESP_SUCCESS_MSG = "交易正在处理中";
+
+	public static String RETURN_GET_SUCCESS_MSG = "交易处理成功";
+
+	public static String SETTLE_CURRENTY_TYPE = "156";
+
+	/**
+	 * 
+	 * 订单流水表中订单交易状态
+	 * 
+	 * @author justin
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface OrderState {
+		/**
+		 * 正在处理中
+		 */
+		public static String STATE_01 = "01";
+		/**
+		 * 交易成功
+		 */
+		public static String STATE_02 = "02";
+		/**
+		 * 交易失败
+		 */
+		public static String STATE_03 = "03";
+		/**
+		 * 交易超时
+		 */
+		public static String STATE_04 = "04";
+
+		/**
+		 * 支付成功，不可反交易
+		 */
+		public static String STATE_05 = "05";
+
+		/**
+		 * 已发送（后台进程处理调用核心或银联之前的状态,或已去微信下单）
+		 */
+		public static String STATE_06 = "06";
+
+		/**
+		 * 客户扣款成功但未入商户账(批量T+0)
+		 */
+		public static String STATE_07 = "07";
+
+		/**
+		 * 退款正在处理中(微信退款已处理)
+		 */
+		public static String STATE_08 = "08";
+
+		/**
+		 * 订单已关闭
+		 */
+		public static String STATE_09 = "09";
+
+		/**
+		 * 未知的交易状态
+		 */
+		public static String STATE_10 = "10";
+
+		/**
+		 * 交易结束不可退款
+		 */
+		public static String STATE_11 = "11";
+
+		/**
+		 * 用户未扫码，订单已关闭失败
+		 */
+		public static String STATE_12 = "12";
+
+		/**
+		 * 交易不存在
+		 */
+		public static String STATE_13 = "13";
+
+		/**
+		 * 卖家余额不足
+		 */
+		public static String STATE_14 = "14";
+
+		/**
+		 * 订单已撤销
+		 */
+		public static String STATE_15 = "15";
+
+	}
+
+	/**
+	 * 
+	 * 返回给外部系统响应码
+	 * 
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface RespCode {
+		/**
+		 * 正在处理中
+		 */
+		public static String RESP_CODE_01 = "01";
+		/**
+		 * 交易成功
+		 */
+		public static String RESP_CODE_02 = "02";
+		/**
+		 * 交易失败
+		 */
+		public static String RESP_CODE_03 = "03";
+		/**
+		 * 交易超时
+		 */
+		public static String RESP_CODE_04 = "04";
+
+		/**
+		 * 原订单不存在
+		 */
+		public static String RESP_CODE_05 = "05";
+
+		/**
+		 * 订单重复提交
+		 */
+		public static String RESP_CODE_06 = "06";
+
+		/**
+		 * 订单支付关闭失败
+		 */
+		public static String RESP_CODE_07 = "07";
+
+		/**
+		 * 退款正在处理中(微信退款已处理)
+		 */
+		public static String RESP_CODE_08 = "08";
+
+		/**
+		 * 订单已关闭
+		 */
+		public static String RESP_CODE_09 = "09";
+
+		/**
+		 * 未知的交易状态
+		 */
+		public static String RESP_CODE_10 = "10";
+
+		/**
+		 * 交易结束不可退款
+		 */
+		public static String RESP_CODE_11 = "11";
+
+		/**
+		 * 用户未支付，订单关闭
+		 */
+		public static String RESP_CODE_12 = "12";
+
+		/**
+		 * 订单已撤销
+		 */
+		public static String RESP_CODE_15 = "15";
+
+		/**
+		 * 系统异常
+		 */
+		public static String RESP_CODE_20 = "20";
+		/**
+		 * 商户的支付宝账户中无足够的资金进行撤销
+		 */
+		public static String RESP_CODE_21 = "21";
+
+		/**
+		 * 交易被冻结，不允许撤销
+		 */
+		public static String RESP_CODE_22 = "22";
+
+		/**
+		 * 未开通银联云闪付
+		 */
+		public static String NO_CUPS_PAY_VOCATION = "77";
+
+	}
+
+	/**
+	 * 
+	 * 返回给外部系统响应描述
+	 * 
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface RespDesc {
+		/**
+		 * 正在处理中
+		 */
+		public static String RESP_DESC_01 = "正在处理中";
+		/**
+		 * 交易成功
+		 */
+		public static String RESP_DESC_02 = "交易成功";
+		/**
+		 * 交易失败
+		 */
+		public static String RESP_DESC_03 = "交易失败";
+		/**
+		 * 交易超时
+		 */
+		public static String RESP_DESC_04 = "交易超时";
+
+		/**
+		 * 原订单不存在
+		 */
+		public static String RESP_DESC_05 = "原订单不存在";
+
+		/**
+		 * 订单重复提交
+		 */
+		public static String RESP_DESC_06 = "订单重复提交";
+
+		/**
+		 * 退款正在处理中
+		 */
+		public static String RESP_DESC_08 = "退款正在处理中";
+
+		/**
+		 * 订单已支付，关闭失败
+		 */
+		public static String RESP_DESC_07 = "订单已支付，关闭失败";
+
+		/**
+		 * 订单已关闭
+		 */
+		public static String RESP_DESC_09 = "订单已关闭";
+
+		/**
+		 * 未知的交易状态
+		 */
+		public static String RESP_DESC_10 = "未知的交易状态";
+
+		/**
+		 * 交易结束不可退款
+		 */
+		public static String RESP_DESC_11 = "交易结束不可退款";
+
+		/**
+		 * 用户未扫码，订单已关闭
+		 */
+		public static String RESP_DESC_12 = "用户未扫码,交易不存在,订单关闭失败";
+
+		/**
+		 * 订单已撤销
+		 */
+		public static String RESP_DESC_15 = "订单已撤销";
+	}
+
+	/**
+	 * 
+	 * 交易类型 交易类型分为：消费，查询，撤销等交易
+	 * 
+	 * @author justin
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface TransType {
+		/**
+		 * 消费
+		 */
+		public static String TRANS_CONSUME = "01";
+		/**
+		 * 消费撤销
+		 */
+		public static String TRANS_REVOKE = "31";
+		/**
+		 * 退货
+		 */
+		public static String TRANS_RETURN_GOODS = "34";
+		/**
+		 * 对账文件下载
+		 */
+		public static String TRANS_DOWN_FILE = "1001";
+
+		/**
+		 * 订单查询
+		 */
+		public static String TRANS_QUERY_ORDER = "35";
+
+		/**
+		 * 关闭订单
+		 */
+		public static String TRANS_CLOSE_ORDER = "36";
+
+		/**
+		 * 退款交易查询
+		 */
+		public static String TRANS_RETURN_ORDER_QUERY = "37";
+
+	}
+
+	/**
+	 * 渠道编号（手机银行、POSP）
+	 * 
+	 * @author 郭焕
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface CHANNEL {
+		/**
+		 * POSP
+		 */
+		public static String CHANNEL_POSP = "6001";
+
+		/**
+		 * 线上支付2.0
+		 */
+		public static String CHANNEL_ONLINE_PAY = "6002";
+
+		/**
+		 * 手机银行
+		 */
+		public static String CHANNEL_BANK = "6003";
+
+		/**
+		 * 清算
+		 */
+		public static String CHANNEL_SETTLE = "6004";
+
+		/**
+		 * 移动前端
+		 */
+		public static String CHANNEL_MOBILE_FRONT = "6005";
+
+		/**
+		 * 丰收家
+		 */
+		public static String CHANNEL_FSJ = "6006";
+
+		/**
+		 * 二维码前置专用
+		 */
+		public static String CHANNEL_SELF = "8001";
+
+	}
+
+	/**
+	 * @author Administrator 外部系统渠道号
+	 */
+	public interface OutSystemChannel {
+		/**
+		 * 手机银行的渠道号
+		 */
+		public static String CHANNEL_MOBILE_BANK = "EWMQZ";
+
+		/**
+		 * 移动前端的渠道号
+		 */
+		public static String CHANNEL_MOBILE_FRONT = "NM";
+	}
+
+	/**
+	 * 
+	 * 接入类型（本行类交易接入、微信类交易接入）
+	 * 
+	 * @author justin
+	 * @see
+	 * @since
+	 */
+	public interface PAYACCESSTYPE {
+		/**
+		 * 本行支付接入
+		 */
+		public static String ACCESS_NATIVE = "01";
+		/**
+		 * 微信支付接入
+		 */
+		public static String ACCESS_WX = "02";
+		/**
+		 * 支付宝接入
+		 */
+		public static String ACCESS_ALIPAY = "03";
+		/**
+		 * 丰收互联扫一码通
+		 */
+		public static String ACCESS_FSHL = "04";
+
+		/**
+		 * 银联二维码
+		 */
+		public static String ACCESS_CUPS = "05";
+	}
+
+	/**
+	 * 
+	 * 账单类型（微信账单、支付宝账单账单）
+	 * 
+	 * @author ZhouChaoJie // * @see
+	 * @since
+	 */
+	public interface BillType {
+		/**
+		 * 微信账单
+		 */
+		public static String BILLTYPE_WX = "01";
+		/**
+		 * 支付宝账单账单
+		 */
+		public static String BILLTYPE_ALIPAY = "02";
+
+	}
+
+	/**
+	 * 
+	 * 支付宝账单类型（trade、air、air_b2b）
+	 * 
+	 * @author ZhouChaoJie
+	 * @see
+	 * @since
+	 */
+	public interface AlipayBillType {
+
+		/**
+		 * trade
+		 */
+		public static String ALIPAYBILLTYPE_TRADE = "trade";
+
+		/**
+		 * air
+		 */
+		public static String ALIPAYBILLTYPE_AIR = "air";
+
+		/**
+		 * air_b2b
+		 */
+		public static String ALIPAYBILLTYPE_AIR_B2B = "air_b2b";
+
+	}
+
+	/**
+	 * 
+	 * 支付方式
+	 * 
+	 * @author kedong.hong
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface Pay_Type {
+
+		/**
+		 * 扫码支付 12
+		 */
+		public static String PAY_TYPE_NATIVE = "12";
+
+		/**
+		 * 微信APP支付 13
+		 */
+		public static String PAY_TYPE_WEIXIN_APP = "13";
+
+		/**
+		 * 公众号支付 14
+		 */
+		public static String PAY_TYPE_WEIXIN_JSAPI = "14";
+
+		/**
+		 * 被扫支付 15
+		 */
+		public static String PAY_TYPE_MICRO = "15";
+	}
+
+	/**
+	 * 
+	 * 服务交易码
+	 * 
+	 * @author guohuan
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface TxnServiceCode {
+		/**
+		 * 微信下单接口(扫码支付)
+		 */
+		public static String WX_UNIFIED = "1001";
+		/**
+		 * 微信被扫接口
+		 */
+		public static String WX_MICRO = "1002";
+
+		/**
+		 * 本行生成二维码扫码接口[POSP][加密]
+		 */
+		public static String LOCAL_POSP_UNIFIED_ENCODE = "1003";
+		/**
+		 * 本行二维码被扫接口[POSP][解密]
+		 */
+		public static String LOCAL_POSP_MICRO_DECODE = "1004";
+
+		/**
+		 * 获取二维码信息[手机银行][加密]
+		 */
+		public static String LOCAL_MOBILE_MICRO_ENCODE = "1005";
+		/**
+		 * 扫码支付解密接口[手机银行][解密]
+		 */
+		public static String LOCAL_MOBILE_UNIFIED_DECODE = "1006";
+		/**
+		 * 面对面转账解密接口
+		 */
+		public static String FACE_TO_FACE_DECODE = "1007";
+		/**
+		 * 微信被扫撤销接口
+		 */
+		public static String WX_MICRO_REVOKE = "2001";
+
+		/**
+		 * 微信关闭订单接口
+		 */
+		public static String WX_CLOSE_ORDER = "2002";
+		/**
+		 * 交易状态查询
+		 */
+		public static String TRANS_QUERY = "3001";
+		/**
+		 * 下载微信对账单
+		 */
+		public static String WX_BILL_DOWN = "3002";
+
+		/**
+		 * 下载微信对账单 单个费率
+		 */
+		public static String WX_BILL_SINGLE_DOWN = "3012";
+
+		/**
+		 * 下载微信对账单合成
+		 */
+		public static String WX_BILL_SUM_DOWN = "3013";
+		
+		
+		/**
+		 * 多费率配置内存刷新
+		 */
+		public static String MORE_FEE_CONFIG = "3014";
+
+		/**
+		 * 支付平台查询支付状态
+		 */
+		public static String PAY_CENTER_QUERY = "3003";
+
+		/**
+		 * 丰收互联消费额度查询
+		 */
+		public static String FSHL_LIMIT_QUERY = "3004";
+		/**
+		 * 丰收家查询三码合一流水
+		 */
+		public static String FSHL_QUERY_THREECODE = "3006";
+
+		/**
+		 * 后台接收记账结果通知
+		 */
+		public static String RECV_MOBILE_NOTIFY = "4001";
+
+		/**
+		 * 后台接收记账结果通知（只有丰收互联扫一码通才走这个接口，其他的通知都走4001）
+		 */
+		public static String RECV_FSHL_NOTIFY = "4002";
+
+		/**
+		 * 微信商户同步新增
+		 */
+		public static String WX_SYNC_MER_ADD = "5001";
+
+		/**
+		 * 微信商户同步修改
+		 */
+		public static String WX_SYNC_MER_MODIFY = "5002";
+
+		/**
+		 * 微信商户同步删除
+		 */
+		public static String WX_SYNC_MER_DELETE = "5003";
+
+		/**
+		 * 微信商户同步查询
+		 */
+		public static String WX_SYNC_MER_QUERY = "5004";
+
+		/**
+		 * 备份订单表
+		 */
+		public static String BACK_UP_ORDER = "6001";
+
+		/**
+		 * 生成静态二维码
+		 */
+		public static String LOCAL_CREATE_STATIC_QR = "7001";
+
+		/**
+		 * 解析静态二维码
+		 */
+		public static String LOCAL_PARSER_STATIC_QR = "7002";
+
+		/**
+		 * 查询静态二维码
+		 */
+		public static String LOCAL_QUERY_STATIC_QR = "7003";
+
+		/**
+		 * 停用态二维码
+		 */
+		public static String LOCAL_STOP_STATIC_QR = "7004";
+
+		/**
+		 * 生成静态二维码图片
+		 */
+		public static String LOCAL_CREATE_STATIC_QR_IMAGE = "7005";
+
+		/**
+		 * 批量查询静态二维码
+		 */
+		public static String LOCAL_BATCH_QUERY_STATIC_QR = "7006";
+		/**
+		 * 获取三码合一静态二维码
+		 */
+		public static String CREATE_STATIC_QR_OF_THREE_CODE = "7007";
+		/**
+		 * 查询三码合一静态二维码
+		 */
+		public static String QUERY_STATIC_QR_OF_THREE_CODE = "7009";
+		/**
+		 * 停用三码合一静态二维码
+		 */
+		public static String STOP_STATIC_QR_OF_THREE_CODE = "7010";
+		/**
+		 * 生成三码合一静态二维码图片
+		 */
+		public static String CREATE_STATIC_QR_IMAGE_OF_THREE_CODE = "7011";
+
+		/**
+		 * 更新三码合一静态二维码
+		 */
+		public static String UPDATE_SINGLE_STATIC_QR_OF_THREE_CODE = "7012";
+
+		/**
+		 * 支付宝下单
+		 */
+		public static String ALIPAY_UNIFIED = "8001";
+
+		/**
+		 * 支付宝被扫
+		 */
+		public static String ALIPAY_MICRO = "8002";
+
+		/**
+		 * 支付宝增加子商户
+		 */
+		public static String ALIPAY_SYNC_MER_ADD = "8003";
+
+		/**
+		 * 支付宝查询子商户
+		 */
+		public static String ALIPAY_SYNC_MER_QUERY = "8004";
+
+		/**
+		 * 支付宝修改子商户
+		 */
+		public static String ALIPAY_SYNC_MER_MODIFY = "8005";
+
+		/**
+		 * 支付宝删除子商户
+		 */
+		public static String ALIPAY_SYNC_MER_DELETE = "8006";
+
+		/**
+		 * 支付宝关闭订单
+		 */
+		public static String ALIPAY_CLOSE_ORDER = "8007";
+
+		/**
+		 * 支付宝撤销
+		 */
+		public static String ALIPAY_REVOKE_ORDER = "8008";
+
+		/**
+		 * 支付宝退货
+		 */
+		public static String ALIPAY_REFUND_ORDER = "8009";
+
+		/**
+		 * 支付宝退货交易查询
+		 */
+		public static String ALIPAY_REFUND_ORDER_QUERY = "8010";
+
+		/**
+		 * 支付宝对账单下载
+		 */
+		public static String ALIPAY_BILL_DOWN = "8011";
+
+		/**
+		 * 向核心发送T+0入账交易
+		 */
+		public static String T0_ACCOUNTED_TXN = "1111";
+		/**
+		 * 查询微信和支付宝订单
+		 */
+		public static String TC_QUERY_ORDER = "1112";
+
+		/**
+		 * 生成三码合一微信和支付宝对账单
+		 */
+		public static String TC_WX_AND_ALIPAY_BILL = "1113";
+
+		/**
+		 * 生成三码合一流水记录文件
+		 */
+		public static String TC_ORDER_BILL = "1114";
+
+		/**
+		 * C2B消费银联二维码被扫
+		 */
+		public static String C2B_EWM_SCANED = "9001";
+
+		/**
+		 * C2B银联二维码被扫消费冲正
+		 */
+		public static String C2B_CONSUME_REVERSE = "9002";
+
+		/**
+		 * C2B银联二维码被扫消费查询
+		 */
+		public static String C2B_CONSUME_QUERY = "9003";
+				
+		/**
+		 * C2B银联二维码主扫
+		 */
+		public static String C2B_UNIFIED_QUERY = "1009";
+		
+		/**
+		 * C2B银联二维码主扫营销查询
+		 */
+		public static String C2B_MARKET_QUERY="1010";
+
+	}
+
+	/**
+	 * 外部系统服务码
+	 */
+	public interface OutSystemServiceCode {
+		/**
+		 * 请求手机银行的服务码
+		 */
+		public static String REQUEST_MOBILE_BANK = "MB1001";
+
+		/**
+		 * 请求移动前端进行支付
+		 */
+		public static String REQUEST_MOBILE_FRONT = "AS_MFS_PAY_CODEPAY";
+
+		/**
+		 * 丰收互联查询
+		 */
+		public static String QUERY_FSHL_ORDER = "AS_MFS_QRPAY_RESULTQRY";
+
+		/**
+		 * 支付平台结果通知
+		 */
+		public static String PAY_CENTER_NOTIFY = "AS_IPP_RECEIVECODE_NOFIFY";
+	}
+
+	/**
+	 * 是否验密标志 0:不验密 1:验密
+	 * 
+	 * @author justin
+	 * @see 1.0
+	 * @since 1.0
+	 */
+	public interface CHECK_PWD_FLAG {
+		/**
+		 * 验证密码
+		 */
+		public static String CHECK_PWD = "1";
+		/**
+		 * 不验密
+		 */
+		public static String NO_CHECK_PWD = "0";
+	}
+
+	/**
+	 * 微信支付交易类型
+	 * 
+	 * @author guohuan
+	 *
+	 */
+	public interface WeiXinTransType {
+		/** 扫码支付 */
+		public static String NATIVE = "NATIVE";
+		/** APP支付 */
+		public static String APP = "APP";
+		/** 公众号支付 */
+		public static String JSAPI = "JSAPI";
+	}
+
+	/**
+	 * 返回码
+	 *
+	 */
+	public interface returnCode {
+		/**
+		 * 返回处理成功
+		 */
+		public static String SUCCESS = "0000";
+
+		/**
+		 * 返回处理失败
+		 */
+		public static String FAIL = "9999";
+	}
+
+	/**
+	 * 二维码类型
+	 *
+	 */
+	public interface QRCodeType {
+		/**
+		 * 静态
+		 */
+		public static String STATIC = "1";
+
+		/**
+		 * 动态
+		 */
+		public static String DYNAMIC = "0";
+	}
+
+	/**
+	 * 二维码类型
+	 *
+	 */
+	public interface QRCodeStatus {
+		/**
+		 * 有效
+		 */
+		public static String ENABLE = "0";
+
+		/**
+		 * 无效
+		 */
+		public static String DISABLE = "1";
+	}
+
+	/**
+	 * 协议类型
+	 *
+	 */
+	public interface Portocol {
+		/**
+		 * xml
+		 */
+		public static String PROTOCOL_XML = "XML";
+		/**
+		 * json
+		 */
+		public static String PROTOCOL_JSON = "JSON";
+	}
+
+	/**
+	 * 
+	 * 定时任务的名称
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	public interface TakeTimingTaskName {
+
+		/**
+		 * 拷贝二维码表
+		 */
+		public static String TIMING_TASK_COPY_TBL_EWM = "Timing_Task_Copy_TBL_Ewm";
+		/**
+		 * 拷贝订单表
+		 */
+		public static String TIMING_TASK_COPY_TBL_ORDER_TXN = "Timing_Task_Copy_TBL_ORDER_TXN";
+		/**
+		 * 删除二维码表
+		 */
+		public static String TIMING_TASK_DELETE_TBL_EWM = "Timing_Task_Delete_TBL_EWM";
+		/**
+		 * 删除订单表
+		 */
+		public static String TIMING_TASK_DELETE_TBL_ORDER_TXN = "Timing_Task_Delete_TBL_ORDER_TXN";
+		/**
+		 * 打包、压缩文件
+		 */
+		public static String TIMING_PACK_LOG = "Timing_Task_PACK_LOG";
+		/**
+		 * 查询01、06订单(支付宝)
+		 */
+		public static String TIMING_TASK_QUERY_INDEFINITE_ORDER_ALI = "Timing_Task_Query_Indefinite_Order_Ali";
+		/**
+		 * 查询01、06订单(微信)
+		 */
+		public static String TIMING_TASK_QUERY_INDEFINITE_ORDER_WX = "Timing_Task_Query_Indefinite_Order_Wx";
+		/**
+		 * 生成微信和支付宝对账单
+		 */
+		public static String TIMING_TASK_CREAT_WXANDALIPAY_BILL = "Timg_Task_Creat_WxAndAliapy_Bill";
+		/**
+		 * 生成三码合对账单流水
+		 */
+		public static String TIMING_TASK_CREAT_THREE_CODE_BILL = "Timing_Task_Creat_Three_Code_Bill";
+		/**
+		 * 查询入账状态未知
+		 */
+		public static String TIMING_TASK_QUERY_SETTLE_UNKNOW_STATUS = "Timing_Task_Query_Settle_Unknow_Status";
+
+	}
+
+	/**
+	 * 
+	 * 定时任务执行成功标志说明
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	public interface TimingExceResult {
+
+		/**
+		 * 定时任务执行成功
+		 */
+		public static String TIMING_EXCE_SUCESS = "SUCCESS";
+
+		/**
+		 * 定时任务执行失败
+		 */
+		public static String TIMING_EXCE_FAILURE = "FAILURE";
+
+	}
+
+	/**
+	 * 查询定时任务处理标志
+	 * 
+	 * @author Administrator
+	 */
+	public interface TimingTaskHandler {
+
+		/**
+		 * 处理标志 01正在执行
+		 */
+		public static String HANDLER_STATE_01 = "01";
+
+	}
+
+	/**
+	 * @author Administrator 静态二位有效期
+	 */
+	public interface StaticQRCodeExpire {
+		public static String STATIC_QR_CODE_EXPIRE = "-1";
+	}
+
+	/**
+	 * @author Administrator 报文类型
+	 */
+	public interface ProtocolType {
+		/**
+		 *  xml报文
+		 */
+		public static final String PROTOCOL_XML = "XML";
+		/**
+		 *  json报文
+		 */
+		public static final String PROTOCOL_JSON = "JSON";
+	}
+
+	/**
+	 * @author Administrator 支付宝交易状态
+	 */
+	public interface AlipayTradeStatus {
+
+		/**
+		 *  交易创建 等待卖家付款
+		 */
+		public static final String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+
+		/**
+		 *  未付款交易，超时关闭，或支付完成后全额退款
+		 */
+		public static final String TRADE_CLOSED = "TRADE_CLOSED";
+
+		/**
+		 *  交易成功
+		 */
+		public static final String TRADE_SUCCESS = "TRADE_SUCCESS";
+
+		/**
+		 *  交易结束
+		 */
+		public static final String TRADE_FINISH = "TRADE_FINISH";
+
+		/**
+		 *  交易失败
+		 */
+		public static final String TRADE_FAILED = "TRADE_FAILED";
+
+		/**
+		 *  交易未知
+		 */
+		public static final String TRADE_UNKNOWN = "TRADE_UNKNOWN";
+
+	}
+
+	public interface AlipayErrorCode {
+		/**
+		 *  系统异常
+		 */
+		public static final String SYSTEM_ERROR = "ACQ.SYSTEM_ERROR";
+		/**
+		 *  系统异常
+		 */
+		public static final String SYSTEM_ERROR_AOP = "aop.ACQ.SYSTEM_ERROR";
+		/**
+		 *  交易不存在
+		 */
+		public static final String TRADE_NOT_EXIST = "ACQ.TRADE_NOT_EXIST";
+		/**
+		 *  交易状态不合法
+		 */
+		public static final String TRADE_STATUS_ERROR = "ACQ.TRADE_STATUS_ERROR";
+		/**
+		 *  参数无效
+		 */
+		public static final String INVALID_PARAMETER = "ACQ.INVALID_PARAMETER";
+		/**
+		 *  商户的支付宝账户中无足够的资金进行撤销
+		 */
+		public static final String SELLER_BALANCE_NOT_ENOUGH = "ACQ.SELLER_BALANCE_NOT_ENOUGH";
+		/**
+		 *  交易被冻结，不允许撤销
+		 */
+		public static final String REASON_TRADE_BEEN_FREEZEN = "ACQ.REASON_TRADE_BEEN_FREEZEN";
+
+	}
+
+	/**
+	 * @author ZhouChaoJie 对账单交易状态
+	 */
+	public interface BillTradeStatus {
+		/**
+		 * 成功
+		 */
+		public static final String TRADE_SUCCESS = "0";
+	}
+
+	/**
+	 * @author ZhouChaoJie 货币种类
+	 */
+	public interface CurrencyCode {
+		/**
+		 * 人民币
+		 */
+		public static final String CNY = "156";
+	}
+
+	/**
+	 * @author ZhouChaoJie 对账单交易类型
+	 */
+	public interface BillTradeType {
+		/**
+		 * 1消费
+		 */
+		public static final String SUCCESS = "1";
+		/**
+		 * 2撤销
+		 */
+		public static final String REVOKED = "2";
+		/**
+		 * 3退货
+		 */
+		public static final String REFUND = "3";
+	}
+
+	/**
+	 * 编码格式
+	 */
+	public interface Charsets {
+		/**
+		 * utf-8
+		 */
+		public static final String UTF_8 = "UTF-8";
+		/**
+		 * GBK
+		 */
+		public static final String GBK = "GBK";
+		/**
+		 * GB2312
+		 */
+		public static final String GB2312 = "GB2312";
+	}
+
+	/**
+	 * 设备信息
+	 * 
+	 * @author lenovo
+	 *
+	 */
+	public interface DeviceInfo {
+		/**
+		 * POSP
+		 */
+		public static final String POSP = "POS";
+		/**
+		 * WEB
+		 */
+		public static final String WEB = "WEB";
+
+	}
+
+	/**
+	 * 是否用信用卡
+	 * 
+	 * @author lenovo
+	 *
+	 */
+	public interface IsCredit {
+		/**
+		 * 不支持信用卡
+		 */
+		public static final String NONSUPPORT_CREDIT = "0";
+		/**
+		 * 支持信用卡
+		 */
+		public static final String SUPPORT_CREDIT = "1";
+
+	}
+
+	/**
+	 * 二维码前置订单号前缀
+	 * 
+	 * @author lenovo
+	 *
+	 */
+	public interface PrefixOrder {
+		/**
+		 * 三码合一
+		 */
+		public static final String THREE_CODE = "TC";
+
+		/**
+		 * 订单前缀ONLINE
+		 */
+		public static final String ONLINE = "ONLINE";
+
+	}
+
+	/**
+	 * 默认费率
+	 * 
+	 * @author lenovo
+	 *
+	 */
+	public interface DefaultFeeRate {
+		/**
+		 * 微信默认费率
+		 */
+		public static final String WX_FEE_RATE = "0.002";
+		/**
+		 * 支付宝默认费率
+		 */
+		public static final String ALIPAY_FEE_RATE = "0.002";
+
+	}
+
+	/**
+	 * 对账单文件名后缀
+	 * 
+	 * @author lenovo
+	 *
+	 */
+	public interface SuffixBillName {
+		/**
+		 * 支付宝线上对账单文件名后缀
+		 */
+		public static final String ALIPAY_ONLINE = "_2PAYZFB_ONLINE";
+		/**
+		 * 支付宝线下对账单文件名后缀
+		 */
+		public static final String ALIPAY_OFFLINE = "_2PAYZFB";
+		/**
+		 * 支付宝三码合一对账单文件名后缀
+		 */
+		public static final String ALIPAY_TC = "_2PAYZFB_TC";
+		/**
+		 * 微信线上对账单文件名后缀
+		 */
+		public static final String WX_ONLINE = "_2PAYCFT_ONLINE";
+		/**
+		 * 微信线下对账单文件名后缀
+		 */
+		public static final String WX_OFFLINE = "_2PAYCFT";
+		/**
+		 * 微信三码合一对账单文件名后缀
+		 */
+		public static final String WX_TC = "_2PAYCFT_TC";
+
+	}
+
+	/**
+	 * 支付宝同步商户返回信息
+	 */
+	public interface aliPaySyncReturnMsg {
+		public static final String ALIPAY_ADD_SUCCESS = "新增商户成功";
+		public static final String ALIPAY_DEL_SUCCESS = "删除商户成功";
+		public static final String ALIPAY_UPD_SUCCESS = "变更商户成功";
+		public static final String ALIPAY_QUERY_SUCCESS = "查询商户成功";
+	}
+
+	public interface WxErrorCode {
+
+		/**
+		 * 接口返回错误
+		 */
+		String SYSTEM_ERROR = "SYSTEMERROR";
+
+		/**
+		 * 用户支付中，需要输入密码
+		 */
+		String USER_PAYING = "USERPAYING";
+
+		/**
+		 * 银行系统异常
+		 */
+		String BANK_ERROR = "BANKERROR";
+		
+		String ORDER_NOTEXIST = "ORDERNOTEXIST";
+	}
+
+	/**
+	 * @author Administrator 微信交易状态描述
+	 */
+	public interface WxTradeStatus {
+
+		/**
+		 *  支付成功
+		 */
+		String SUCCESS = "SUCCESS";
+		/**
+		 *  转入退款
+		 */
+		String REFUND = "REFUND";
+		/**
+		 *  未支付
+		 */
+		String NOTPAY = "NOTPAY";
+		/**
+		 *  已关闭
+		 */
+		String CLOSED = "CLOSED";
+		/**
+		 *  已撤销
+		 */
+		String REVOKED = "REVOKED";
+		/**
+		 *  用户支付中
+		 */
+		String USERPAYING = "USERPAYING";
+		/**
+		 *  支付失败(其他原因，如银行返回失败)
+		 */
+		String PAYERROR = "PAYERROR";
+	}
+
+	/**
+	 * 商户清算方式
+	 */
+	public interface SettleMethod {
+
+		/**
+		 *  T+0
+		 */
+		String SETTLEMETHOD0 = "0";
+		/**
+		 *  T+1
+		 */
+		String SETTLEMETHOD1 = "1";
+
+	}
+
+	/**
+	 * T+0入账结果
+	 */
+	public interface AccountedFlag {
+
+		/**
+		 *  01-入账成功
+		 */
+		String ACCOUNTEDSUCCESS = "01";
+		/**
+		 *  02-挂账
+		 */
+		String ACCOUNTEDFAIL = "02";
+		/**
+		 *  03-未明确
+		 */
+		String ACCOUNTEDUNKNOWN = "03";
+
+	}
+
+	/**
+	 * 核心返回信息
+	 */
+	public interface CoreBackInfo {
+		/**
+		 *  0-成功 交易状态
+		 */
+		String COREBACKSTATUS = "0";
+
+		/**
+		 *  对账响应报文标识
+		 */
+		String ACCOUNTEDRESPOND = "BWO";
+
+		/**
+		 *  轮询返回报文标识
+		 */
+		String QUERYRESPOND = "BDO";
+	}
+
+	/**
+	 * 清算（入账，查询交易所需信息）
+	 */
+	public interface SettleInfo {
+		/**
+		 *  货币代码
+		 */
+		String CURRENCY_CODE = "CNY";
+
+		/**
+		 *  支付方式——支付宝
+		 */
+		String PAY_ACCESS_TYPE_ALIPAY = "支付宝";
+
+		/**
+		 *  支付方式——微信
+		 */
+		String PAY_ACCESS_TYPE_WX = "微信";
+
+		/**
+		 *  入账标识1
+		 */
+		String ACCOUNTEDONE = "1";
+
+		/**
+		 *  入账标识2
+		 */
+		String ACCOUNTEDTWO = "2";
+
+		/**
+		 *  入账标识3
+		 */
+		String ACCOUNTEDTHREE = "3";
+
+	}
+
+	/**
+	 * 银标二维码常用字段
+	 */
+	public interface CupsEwmInfo {
+		/**
+		 *  卡属性（借记卡）
+		 */
+		String CATD_ATTR_DEBIT = "01";
+
+		/**
+		 *  卡属性（贷记卡）
+		 */
+		String CATD_ATTR_CREDIT = "02";
+
+		/**
+		 *  卡属性（电子账户）
+		 */
+		String CATD_ATTR_ELECTRON = "03";
+
+		/**
+		 *  银标二维码请求类型，借记卡35
+		 */
+		String EWM_REQUEST_TYPE_DEBIT = "35";
+
+		/**
+		 *  银标二维码请求类型，贷记卡51
+		 */
+		String EWM_REQUEST_TYPE_CREDIT = "51";
+
+		/**
+		 *  银标二维码请求类型，其他40
+		 */
+		String EWM_REQUEST_TYPE_OTHER = "40";
+
+		/**
+		 *  银标二维码版本号
+		 */
+		String CUPS_EWM_VERSION = "1.0.0";
+
+		/**
+		 *  银标二维码前缀
+		 */
+		String CUPS_EWM_PREFIX = "62";
+		
+		/**
+		 *  银标二维码前缀
+		 */
+		String CUPS_EWM_OWN = "https://qr.95516.com";
+
+	}
+
+	/**
+	 * 本行他行标识
+	 */
+	public interface BankFlag {
+		/**
+		 *  本行标识
+		 */
+		String IS_BANK = "1";
+		/**
+		 *  他行标识
+		 */
+		String NO_BANK = "0";
+	}
+
+	/**
+	 * 银标二维码交易类型
+	 */
+	public interface CupsTradeType {
+		/**
+		 *  被扫申请C2B码交易类型
+		 */
+		String APPLY_C2B_TYPE = "0210000903";
+
+		/**
+		 *  他行二维码被扫交易消费
+		 */
+		String OTEHR_EWM_SCANED_TYPE = "0310000903";
+
+		/**
+		 *  C2B附加处理
+		 */
+		String C2B_ADD_HANDLER = "0230000903";
+
+		/**
+		 *  本行二维码被扫附加处理结果通知(他行pos扫本行银标二维码)
+		 */
+		String C2B_SCANED_HANDLER_NOTIFY = "0240000903";
+
+		/**
+		 *  C2B交易通知
+		 */
+		String C2B_TXN_NOTIFY = "0250000903";
+
+		/**
+		 *  本行二维码被扫消费冲正
+		 */
+		String C2B_CONSUME_REVERDE = "0320000903";
+
+		/**.
+		 *  消费结果通知
+		 */
+		String CONSUME_RESULT_NOTIFY = "0360000903";
+
+		/**
+		 *  本行二维码被扫消费查询
+		 */
+		String C2B_CONSUME_QUERY = "0350000903";
+
+		/**
+		 *  退货
+		 */
+		String CONSUME_TXN_REFOUND = "0340000903";	
+
+		/**
+		 *  撤销
+		 */
+		String CONSUME_TXN_CANCEL = "0330000903";
+				
+		/**
+		 *  他行二维码主扫查询订单
+		 */
+		String OTEHR_EWM_OWN_SEARCHA = "0120000903";
+		
+		/**
+		 *  银联二维码他行主扫付款
+		 */
+		String C2B_MAIN_SCAVENGING_PAY = "0130000903";
+		
+		/**
+		 *  营销查询
+		 */
+		String C2B_MARKET_QUERY = "0180000903";
+		/**
+		 *  C2B主扫交易通知
+		 */
+		String C2B_ZS_NOTIFY = "0160000903";
+		/**
+		 *  C2B主扫订单查询
+		 */
+		String C2B_ZS_QUERY = "0120000903";
+	}
+
+	/**
+	 * 丰收互联返回状态和订单状态
+	 * 
+	 * @author Yuyk
+	 *
+	 */
+	public interface FshlOrderState {
+
+		/**
+		 *  订单失败
+		 */
+		String FAILED = "0";
+		/**
+		 *  订单成功
+		 */
+		String SUCCESS = "1";
+		/**
+		 *  订单处理中
+		 */
+		String PROCESSING = "2";
+		/**
+		 *  查询成功
+		 */
+		String returnCodeSuccess = "00000000";
+		/**
+		 *  查询记录不存在
+		 */
+		String returnCodeHandle = "00000002";
+		/**
+		 *  查询参数不全
+		 */
+		String returnCodeNotNull = "00000001";
+		/**
+		 *  查询到多条记录
+		 */
+		String returnCodeMoreCount = "00000003";
+	}
+
+	/**
+	 * 系统加载初始化缓存
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	public interface MappingConfig {
+
+		/**
+		 *  多费率渠道配置
+		 */
+		String CHANNEL_CONFIG = "CHANNEL_CONFIG";
+	}
+
+	/**
+	 * 支付渠道(CHANNEL_CONFIG)
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	public interface PAY_ChANNEL {
+		/**
+		 *  支付宝
+		 */
+		String ALI = "ALI";
+		/**
+		 *  微信
+		 */
+		String WX = "WX";
+		/**
+		 *  银联支付宝
+		 */
+		String YLALI = "YLALI";
+		/**
+		 *  银联微信
+		 */
+		String YLWX = "YLWX";
+	}
+	
+	/**
+	 * 连接类型
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	public interface CONNECT_METHOD {
+		/**
+		 * 直连
+		 */
+		String directly = "0";
+		/**
+		 * 间连
+		 */
+		String indirect = "1";
+	}
+	
+	/**
+	 * 存量类型
+	 * @author Administrator
+	 *
+	 */
+	public interface RESERVE_TYPE {
+		/**
+		 * 存量
+		 */
+		String stock = "0";
+		/**
+		 * 增量
+		 */
+		String increase = "1";
+		/**
+		 *存量转增量
+		 */
+		String conversion = "2";
+	}
+	
+//	public interface YLWX_Code{
+//		String SUCCESS = "SUCCESS";
+//		String FAIL = "FAIL";
+//		String USERPAYING = "USERPAYING";
+//		String NOT_SUPPORT_METHOD = "NOT_SUPPORT_METHOD";//不支持http get方法
+//		String XML_FORMAT_ERROR = "XML_FORMAT_ERROR";
+//	}
+	
+	
+	/**
+	 *@author Yuyk
+	 * 支付宝返回码code
+	 */
+	public interface AL_CODE{
+		/**
+		 * 接口调用成功
+		 */
+		int CODE_10000 = 10000;
+		/**
+		 * 用户支付中
+		 */
+		int CODE_10003 = 10003;
+		/**
+		 * 服务不可用
+		 */
+		int CODE_20000 = 20000;
+		/**
+		 * 授权权限不足
+		 */
+		int CODE_20001 = 20001;
+		/**
+		 * 缺少必选参数
+		 */
+		int CODE_40001 = 40001;
+		/**
+		 * 非法的参数
+		 */
+		int CODE_40002 = 40002;
+		/**
+		 * 业务处理失败
+		 */
+		int CODE_40004 = 40004;
+		/**
+		 * 权限不足
+		 */
+		int CODE_40006 = 40006;
+	}
+	
+	/**
+	 * 支付宝撤销 是否需要重试
+	 */
+	public interface RETRY_FLAG{
+		/**
+		 * 不需要
+		 */
+		String N="N";
+	}
+}

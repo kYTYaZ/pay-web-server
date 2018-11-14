@@ -1,0 +1,26 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.action.extension" value="do" />
+	<package name="projectstruts" extends="struts-default">
+		<interceptors>
+			<interceptor name="authority" class="com.huateng.pay.interceptor.AuthorityInterceptor" />
+			<interceptor-stack name="projectdefault">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="authority" />
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="projectdefault" />
+		
+		<global-results>
+			<result name="login" type="redirect">/login.html</result>
+			<result name="index" type="redirect">/index.html</result>
+		</global-results>
+	</package>
+	<include file="struts/struts-wx.xml" />
+	<include file="struts/struts-alipay.xml" />
+	<include file="struts/struts-tc.xml" />
+	<include file="struts/struts-cups.xml" />
+</struts>

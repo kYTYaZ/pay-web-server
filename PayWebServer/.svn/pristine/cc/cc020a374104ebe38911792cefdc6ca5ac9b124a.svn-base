@@ -1,0 +1,635 @@
+package com.huateng.pay.services.base.imple;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.common.date.DateUtil;
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.huateng.pay.common.constants.Dict;
+import com.huateng.pay.common.constants.StringConstans;
+import com.huateng.pay.common.util.Constants;
+import com.huateng.pay.common.util.StringUtil;
+import com.huateng.pay.services.alipay.AliPayPayService;
+import com.huateng.pay.services.base.IRemoteService;
+import com.huateng.pay.services.db.IOrderService;
+import com.huateng.pay.services.local.ILocalBankService;
+import com.huateng.pay.services.statics.IThreeCodeStaticQRCodeService;
+import com.huateng.pay.services.weixin.WxPayService;
+import com.huateng.utils.Signature;
+import com.huateng.utils.Util;
+
+public class RemoteServiceImple implements IRemoteService {
+	private static Logger logger = LoggerFactory.getLogger(RemoteServiceImple.class);
+	
+	private ILocalBankService localBankService;
+	private WxPayService wxPayService;
+	private AliPayPayService aliPayPayService;
+	private IOrderService orderService;
+	private IThreeCodeStaticQRCodeService threeCodeStaticQRCodeService;
+	
+	
+	@Override
+	public Map<String, Object> getAlipayUserIdAndCreatOrder(Map<String, Object> paramMap) {
+		
+		logger.info("[PayWebServer-RemoteService 调用支付宝授权接口并创建订单流程 ] START: paramMap("+paramMap.toString()+")");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("code", paramMap.get("code"));
+			map.put("grantType", paramMap.get("grantType"));
+			
+			Map<String, Object> getUserIdMap = getAlipayAccessToken(map);
+			
+			String respCode= String.format("%s", getUserIdMap.get("respCode"));
+			
+			String respDesc= String.format("%s", getUserIdMap.get("respDesc"));
+			
+			String userId = String.format("%s", getUserIdMap.get("userId"));
+			
+			if(!StringConstans.RespCode.RESP_CODE_02.equals(respCode)){
+				resultMap.put("respDesc",StringConstans.RespCode.RESP_CODE_03);
+				resultMap.put("respDesc","获取支付宝用户信息失败"+respDesc);
+				return resultMap;
+			}
+			
+			Map<String,Object> creatOrderMap = new HashMap<String,Object>();
+			creatOrderMap.put("orderAmount", paramMap.get("orderAmount"));
+			creatOrderMap.put("buyerId", userId);
+			creatOrderMap.put("qrCode", paramMap.get("qrCode"));
+			creatOrderMap.put("remark", paramMap.get("remark"));
+			
+			
+			resultMap=createAlipayOrder(creatOrderMap);
+			
+		} catch (Exception e) {
+			logger.error("[调用支付宝授权接口并创建订单流程 ]报错"+e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "获取支付宝授权码并创建订单失败");
+		}
+		logger.info("[PayWebServer-RemoteService 调用支付宝授权接口并创建订单流程 ] EDN: paramMap("+resultMap.toString()+")");
+		return resultMap;
+	}
+	
+	/**
+	 * 获取支付宝授权
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> getAlipayAccessToken(Map<String, Object> paramMap) {
+		logger.info("PayWebServer-RemoteService 调用支付宝授权接口流程  START paramMap("+paramMap.toString()+")");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			InputParam inputParam = new InputParam();
+			inputParam.putMap(paramMap);
+			
+			logger.info("[PayWebServer-RemoteService获取支付宝授权码] 调用授权码接口	开始");
+			OutputParam outputParam = aliPayPayService.getAuthToken(inputParam);
+			logger.info("[PayWebServer-RemoteService获取支付宝授权码] 调用授权码接口	结束");
+			
+			resultMap = outputParam.getReturnObj();
+			
+		} catch (FrameException e) {
+			logger.error("[PayWebServer-RemoteService获取支付宝授权码] 获取支付宝授权码出现异常:" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "获取支付宝授权码异常");
+		} finally {
+			logger.info("PayWebServer-RemoteService 调用支付宝授权接口流程 END,返回报文:"+resultMap.toString());
+		}
+		
+		return resultMap;
+	}
+
+
+	/**
+	 * 创建支付宝订单
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> createAlipayOrder(Map<String, Object> paramMap) {
+
+		logger.info("------------------ PayWebServer-RemoteService 调用支付宝下单接口流称 START ------------");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			//二维码串码
+			String qrCode = String.format("%s", paramMap.get("qrCode"));
+			//订单金额
+			String orderAmount = String.format("%s", paramMap.get("orderAmount"));
+			//用户信息
+			String buyerId = String.format("%s", paramMap.get("buyerId"));
+			//订单备注信息
+			String remark = String.format("%s", paramMap.get("remark"));
+			
+			Map<String, Object> decryptQRCodeMap = this.decryptQRCode(qrCode);
+
+			//响应码
+			String respCode = String.format("%s", decryptQRCodeMap.get("respCode"));
+			
+			//响应描述
+			String respDesc = String.format("%s", decryptQRCodeMap.get("respDesc"));
+			
+			if(!StringConstans.RespCode.RESP_CODE_02.equals(respCode)){
+				resultMap.put("respCode", respCode);
+				resultMap.put("respDesc", respDesc);
+				return resultMap;
+			}
+			
+			//商户ID
+			String merId = String.format("%s", decryptQRCodeMap.get("merId"));
+			//商户名称
+			String merName = String.format("%s", decryptQRCodeMap.get("merName"));
+			//支付宝子商户号
+			String alipayMerchantId = String.format("%s", decryptQRCodeMap.get("subAlipayMerId"));
+			//storeId
+			String storeId = String.format("%s", decryptQRCodeMap.get("storeId"));
+			//商户订单号
+			String orderNumber = orderService.getOrderNo(StringConstans.CHANNEL.CHANNEL_SELF);
+			//商户订单时间
+			String orderTime = DateUtil.format(new Date(), DateUtil.YYYYMMDDHHMMSS);
+			//二维码明文
+			String ewmData = ObjectUtils.toString(decryptQRCodeMap.get("ewmData"));
+			
+			InputParam inptuParam = new InputParam();
+			inptuParam.putParams("merId", merId);
+			inptuParam.putParams("ewmData", ewmData);
+			inptuParam.putParams("orderNumber", orderNumber);
+			inptuParam.putParams("orderTime", orderTime);
+			inptuParam.putParams("merName", merName);
+			inptuParam.putParams("buyerId", buyerId);
+			inptuParam.putParams("storeId", storeId);
+			inptuParam.putParams("subject", merName + "消费");
+			inptuParam.putParams("alipayMerchantId", alipayMerchantId);
+			inptuParam.putParams("orderAmount", StringUtil.amountTo12Str(orderAmount));
+			inptuParam.putParams("transType", StringConstans.TransType.TRANS_CONSUME);
+			inptuParam.putParams("payType", StringConstans.Pay_Type.PAY_TYPE_NATIVE);
+			inptuParam.putParams("currencyType", StringConstans.CurrencyCode.CNY);
+			inptuParam.putParams("channel", StringConstans.CHANNEL.CHANNEL_SELF);
+			inptuParam.putParams("payAccessType", StringConstans.PAYACCESSTYPE.ACCESS_ALIPAY);
+			inptuParam.putParams("remark", remark);
+			
+			OutputParam alipayCreatOrderOut = aliPayPayService.aLiPayCreate(inptuParam);
+	
+			resultMap = alipayCreatOrderOut.getReturnObj();
+
+		} catch (FrameException e) {
+			logger.error("[PayWebServer-RemoteService 调用支付宝下单接口] 调用支付宝下单接口出现异常" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "调用支付宝下单接口出现异常");
+		}
+		logger.info("------------------ PayWebServer-RemoteService 调用支付宝下单接口流程   END ------------resultMap("+resultMap.toString()+")");
+		return resultMap;
+	}
+	
+	/**
+	 * 获取微信授权并下单
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> getWxpayAccessTokenAndCreatOrder(Map<String, Object> paramMap) {
+		
+		logger.info("[获取微信授权并下单接口流程 ] START paramMap:"+paramMap.toString());
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("code", paramMap.get("code"));
+			map.put("grantType", paramMap.get("grantType"));
+			
+			Map<String, Object> getTokenMap=getWxAccessToken(map);
+			
+			//返回码 02成功
+			String accessTokenByCodeRespCode = ObjectUtils.toString(getTokenMap.get("respCode"));
+			
+			// 返回描述
+			String accessTokenByCodeRespDesc = ObjectUtils.toString(getTokenMap.get("respDesc"));
+			
+			if (!StringConstans.RespCode.RESP_CODE_02.equals(accessTokenByCodeRespCode)) {
+				resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+				resultMap.put("respDesc", "获取AccessToken失败"+accessTokenByCodeRespDesc);
+				return resultMap;
+			}
+			
+			//用户标识
+			String openId = ObjectUtils.toString(getTokenMap.get("openId"));
+			
+			if(StringUtil.isEmpty(openId)){
+				resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+				resultMap.put("respDesc", "用户标志openId为空");
+				return resultMap;
+			}
+			
+			paramMap.put("openId", openId);
+			
+			logger.debug("[获取微信AccessToken并下单]  调用微信下单接口  开始 paramMap："+paramMap.toString());
+			
+			resultMap = createWxOrder(paramMap);
+			
+			logger.debug("[获取微信AccessToken并下单]  调用微信下单接口   结束 resultMap："+resultMap.toString());
+			
+			
+		} catch (Exception e) {
+			logger.error("[获取微信授权并下单接口] 获取微信授权并下单接口出现异常" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "获取微信授权并下单接口出现异常");
+			logger.info("[获取微信授权并下单接口流程 ]调用获取微信授权并下单接口流程出现异常  END");
+		}
+		return resultMap;
+	}
+	/**
+	 * 获取微信授权
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> getWxAccessToken(Map<String, Object> paramMap) {
+		
+		logger.info("------------------ PayWebServer-RemoteService 调用微信授权接口流程  START ------------");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			InputParam inputParam = new InputParam();
+			inputParam.putMap(paramMap);
+ 			logger.info("[PayWebServer-RemoteService获取微信授权码] 调用授权码接口	开始");
+			
+			OutputParam wxAuthCodeOut = wxPayService.getWxAuthCode(inputParam);
+			
+			logger.info("[PayWebServer-RemoteService获取微信授权码] 调用授权码接口	结束");
+			
+			resultMap = wxAuthCodeOut.getReturnObj();
+			
+			logger.info("------------------ PayWebServer-RemoteService 调用微信授权接口流程  END ------------");
+		
+		} catch (Exception e) {
+			logger.error("[PayWebServer-RemoteService获取微信授权码] 获取微信授权码出现异常" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "获取微信AccessToken出现异常");
+		}
+		
+		return resultMap;
+	}
+	
+	/**
+	 * 解析串码并且创建微信订单
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> createWxOrder(Map<String, Object> paramMap) {
+		
+		logger.info("------------------ PayWebServer-RemoteService 调用微信下单流程  START ------------paramMap("+paramMap.toString()+")");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			// 加密串码
+			String qrCode = ObjectUtils.toString(paramMap.get("qrCode"));
+			// 用户标识
+			String openId = ObjectUtils.toString(paramMap.get("openId"));
+			// 订单金额
+			String orderAmount = StringUtil.amountTo12Str(ObjectUtils.toString(paramMap.get("orderAmount")));
+			// 订单备注
+			String remark = ObjectUtils.toString(paramMap.get("remark"));
+			
+			// 为了不将账号暴露在jsp上因此再次查询数据库
+			Map<String, Object> decryptQRCodeMap = this.decryptQRCode(qrCode);
+			
+			//响应码
+			String respCode = String.format("%s", decryptQRCodeMap.get("respCode"));
+			
+			//响应描述
+			String respDesc = String.format("%s", decryptQRCodeMap.get("respDesc"));
+			
+			if(!StringConstans.RespCode.RESP_CODE_02.equals(respCode)){
+				resultMap.put("respCode", respCode);
+				resultMap.put("respDesc", respDesc);
+				return resultMap;
+			}
+			
+			// 商户名称
+			String merName = ObjectUtils.toString(decryptQRCodeMap.get("merName"));
+			// 商户号
+			String merId = ObjectUtils.toString(decryptQRCodeMap.get("merId"));
+			//微信商户号
+			String subWxMerId = ObjectUtils.toString(decryptQRCodeMap.get("subWxMerId"));
+			//订单号
+			String orderNumber = orderService.getOrderNo(StringConstans.CHANNEL.CHANNEL_SELF);
+			//订单时间
+			String orderTime = DateUtil.format(new Date(),DateUtil.YYYYMMDDHHMMSS);
+			//二维码明文
+			String ewmData = ObjectUtils.toString(decryptQRCodeMap.get("ewmData"));
+			
+			InputParam input = new InputParam();
+			input.putParams("merId", merId);
+			input.putParams("merName", merName);
+			input.putParams("openId", openId);
+			input.putParams("ewmData", ewmData);
+			input.putParams("orderAmount", orderAmount);
+			input.putParams("orderNumber", orderNumber);
+			input.putParams("orderTime",orderTime);
+			input.putParams("body", merName + "-" + orderNumber);
+			input.putParams("subWxMerId", subWxMerId);
+			input.putParams("channel", StringConstans.CHANNEL.CHANNEL_SELF);
+			input.putParams("payType",StringConstans.Pay_Type.PAY_TYPE_WEIXIN_JSAPI);
+			input.putParams("transType",StringConstans.TransType.TRANS_CONSUME);
+			input.putParams("isCredit", StringConstans.IsCredit.SUPPORT_CREDIT);
+			input.putParams("currencyType", StringConstans.CurrencyCode.CNY);
+			input.putParams("payAccessType",StringConstans.PAYACCESSTYPE.ACCESS_WX);
+			input.putParams("deviceInfo", StringConstans.DeviceInfo.WEB);
+			input.putParams("customerIp", Util.getLocalIP());
+			input.putParams("remark", remark);
+			
+			logger.debug("[PayWebServer-RemoteService 调用微信下单接口] 调用微信下单接口	开始");
+			
+			OutputParam wxAuthCodeOut = wxPayService.wxUnifiedConsumeOnLine(input);
+			
+			logger.debug("[PayWebServer-RemoteService 调用微信下单接口] 调用微信下单接口	结束");
+			
+			
+			//响应码
+			String resCode = String.format("%s", wxAuthCodeOut.getValue("respCode"));
+			
+			//响应描述
+			String resDesc = String.format("%s",wxAuthCodeOut.getValue("respDesc"));
+			
+			if(!StringConstans.RespCode.RESP_CODE_02.equals(resCode)){
+				resultMap.put("respCode", resCode);
+				resultMap.put("respDesc", resDesc);
+				return resultMap;
+			}
+			
+			//预支付Id
+			String prepayId = ObjectUtils.toString(wxAuthCodeOut.getValue("prepayId"));
+			//时间戳
+			String wxTimeStamp = String.valueOf(System.currentTimeMillis() / 1000);
+			//32为随机数
+			String randomStr =  Util.getRandomStringByLength(32);
+			//预支付ID
+			String wxPackage =  String.format("%s%s", "prepay_id=",prepayId);
+			//APPID
+			String appId = Constants.getParam("jg_appId");
+			// 获取微信商户号的key
+			String key = Constants.getParam("jg_key");
+			
+			Map<String, Object> sianMap = new HashMap<String, Object>();
+			sianMap.put("appId", appId);
+			sianMap.put("timeStamp", wxTimeStamp);
+			sianMap.put("nonceStr", randomStr);
+			sianMap.put("package", wxPackage);
+			sianMap.put("signType", "MD5");
+			
+			logger.debug("[PayWebServer-RemoteService 调用微信下单接口] 调用数字签名方法	开始");
+			
+			String paySign = Signature.getSign(sianMap, key);
+			
+			logger.debug("[PayWebServer-RemoteService 调用微信下单接口] 调用数字签名方法	结束");
+			
+			sianMap.put("paySign",paySign);
+			
+			resultMap = wxAuthCodeOut.getReturnObj();
+			
+			//map Copy
+			Util.mapCopy(resultMap, sianMap);
+			
+			resultMap.put("respDesc","微信下单成功");
+			resultMap.put("respCode",StringConstans.RespCode.RESP_CODE_02);
+		
+			
+		} catch (Exception e) {
+			logger.error("[PayWebServer-RemoteService 调用微信下单接口] 调用微信下单接口异常:" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "调用微信下单接口出现异常");
+		}finally {
+			logger.info("------------------ PayWebServer-RemoteService 调用微信下单流程  END ------------resultMap("+resultMap.toString()+")");
+		}
+		return resultMap;
+	}
+	
+	/**
+	 * 解密二维码
+	 * @param qrCode
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> decryptQRCode(String qrCode) {
+		
+		logger.info("------------------ PayWebServer-RemoteService 调用静态二维码解析接口流程 START ------------qrCode("+qrCode+")");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			InputParam input = new InputParam();
+			input.putParams("channel", StringConstans.CHANNEL.CHANNEL_SELF);
+			input.putParams("codeUrl", qrCode);
+			
+			OutputParam decryptQRCodeCodeOut = threeCodeStaticQRCodeService.parseThreeCodeStaticQRCode(input);
+			
+			resultMap = decryptQRCodeCodeOut.getReturnObj();
+		
+		} catch (Exception e) {
+			logger.error("[PayWebServer-RemoteService 静态二维码解析接口] 二维码信息解密异常" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "二维码信息解密异常");
+		}
+		logger.info("------------------ PayWebServer-RemoteService 调用静态二维码解析接口流程 END ------------resultMap("+resultMap.toString()+")");
+		return resultMap;
+	}
+
+	/**
+	 * 创建本行订单并通知手机银行付款
+	 * @param paramMap
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> createLocalOrderAndNotifyMobileBankPay(Map<String, Object> paramMap) {
+		
+		logger.info("------------------ PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付流程 START ------------");
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			// 加密串码
+			String qrCode = ObjectUtils.toString(paramMap.get("qrCode"));
+			
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 解析二维码信息  开始");
+			// 为了不将账号暴露在jsp上因此再次查询数据库
+			Map<String, Object> decryptQRCodeMap = this.decryptQRCode(qrCode);
+			
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 解析二维码信息  结束");
+			
+			//响应码
+			String respCode = String.format("%s", decryptQRCodeMap.get("respCode"));
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 解析二维码信息响应码respCode=" + respCode);
+			
+			//响应描述
+			String respDesc = String.format("%s", decryptQRCodeMap.get("respDesc"));
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 解析二维码信息响应描述 respDesc=" + respDesc);
+			
+			if(!StringConstans.RespCode.RESP_CODE_02.equals(respCode)){
+				logger.info("[PayWebServer-RemoteService 调用微信下单接口] 解析二维码信息失败");
+				resultMap.put("respCode", respCode);
+				resultMap.put("respDesc", respDesc);
+				return resultMap;
+			}
+			
+			InputParam inputParam = new InputParam();
+			Util.mapCopy(decryptQRCodeMap, paramMap);
+			inputParam.setParams(decryptQRCodeMap);
+			
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 调用处理本行支付的接口  开始");
+			
+			OutputParam handlerLocalThreedQRCodeOut = localBankService.handlerLocalThreedQRCode(inputParam);
+			
+			logger.info("[PayWebServer-RemoteService 创建本行交易流水并通知手机银行支付] 调用处理本行支付的接口  结束");
+			
+			resultMap = handlerLocalThreedQRCodeOut.getReturnObj();
+			
+			logger.info("------------------ PayWebServer-RemoteService 创建本行交易流水并通知知手机银行支付流程 END ------------");
+			
+		} catch (Exception e) {
+			logger.error("[PayWebServer-RemoteService 创建本行交易流水并通知知手机银行支付] 本行创建订单系统异常:" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "二维码前置异常");
+		}
+		
+		return resultMap;
+	}
+	
+	/***************************************************************************丰收互联***********************************************************************************************/
+	
+	/**
+	 * 丰收互联
+	 */
+	@Override
+	public Map<String, Object> createOrderAndNotifyMobileFrontPay(Map<String, Object> paramMap) {
+		
+		logger.info("------------------ PayWebServer-RemoteService 丰收互联解码并下单流程    START ------------(paramMap:"+paramMap.toString()+")");
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		try {
+			String qrCode = ObjectUtils.toString(paramMap.get("qrCode"));
+			logger.debug("解析二维码信息qrCode=" + qrCode);
+
+			logger.debug("[PayWebServer-RemoteService 丰收互联解码并下单流程] 解析二维码信息  开始");
+			Map<String, Object> decryptQRCodeResult = this.decryptQRCode(qrCode);
+			
+			logger.debug("[PayWebServer-RemoteService 丰收互联解码并下单流程] 解析二维码信息  结束");
+			
+			String respCode = ObjectUtils.toString(decryptQRCodeResult.get("respCode"));
+			String respDesc = ObjectUtils.toString(decryptQRCodeResult.get("respDesc"));
+
+			if (StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+
+				String acctNo = ObjectUtils.toString(decryptQRCodeResult.get("acctNo"));
+				String merName = ObjectUtils.toString(decryptQRCodeResult.get("merName"));
+				String merId = ObjectUtils.toString(decryptQRCodeResult.get("merId"));
+				String reserve = ObjectUtils.toString(decryptQRCodeResult.get("reserve"));
+
+				InputParam input = new InputParam();
+				input.setParams(decryptQRCodeResult);
+
+				logger.debug("[PayWebServer-RemoteService 丰收互联解码并下单流程] 调用处理丰收互联下单的接口  开始");
+				
+				OutputParam orderOut = localBankService.createMobileFrontThreeQrCode(input);
+				
+				logger.debug("[PayWebServer-RemoteService 丰收互联解码并下单流程] 调用处理丰收互联下单的接口   结束");
+
+				respCode = ObjectUtils.toString(orderOut.getValue("respCode"));
+				respDesc = ObjectUtils.toString(orderOut.getValue("respDesc"));
+
+				if (StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+
+					String txnSeqId = ObjectUtils.toString(orderOut.getValue("txnSeqId"));
+					String txnTime = ObjectUtils.toString(orderOut.getValue("txnTime"));
+					String initOrderNumber = ObjectUtils.toString(orderOut.getValue("initOrderNumber"));
+					String tradeAmtDay = ObjectUtils.toString(orderOut.getValue("tradeAmtDay"));
+					String tradeAmtMonth = ObjectUtils.toString(orderOut.getValue("tradeAmtMonth"));
+					String limitAmtDay = ObjectUtils.toString(orderOut.getValue("limitAmtDay"));
+					String limitAmtMonth = ObjectUtils.toString(orderOut.getValue("limitAmtMonth"));
+
+					resultMap.put("txnSeqId", txnSeqId);
+					resultMap.put("txnTime", txnTime);
+					resultMap.put("initOrderNumber", initOrderNumber);
+					resultMap.put("acctNo", acctNo);
+					resultMap.put("merName", merName);
+					resultMap.put("merId", merId);
+					resultMap.put("reserve", reserve);
+					resultMap.put("tradeAmtDay", tradeAmtDay);
+					resultMap.put("tradeAmtMonth", tradeAmtMonth);
+					resultMap.put("limitAmtDay", limitAmtDay);
+					resultMap.put("limitAmtMonth", limitAmtMonth);
+
+				}
+
+			}
+			resultMap.put("respCode", respCode);
+			resultMap.put("respDesc", respDesc);
+			
+		} catch (Exception e) {
+			logger.error("[PayWebServer-RemoteService 丰收互联解码并下单流程 ] 丰收互联解码下单系统异常:" + e.getMessage(),e);
+			resultMap.put("respCode", StringConstans.RespCode.RESP_CODE_03);
+			resultMap.put("respDesc", "二维码前置异常");
+		}
+		logger.info("------------------ PayWebServer-RemoteService 丰收互联解码并下单流程    END ------------返回参数："+resultMap.toString());
+		return resultMap;
+	}
+	
+	/***************************************************************************丰收互联***********************************************************************************************/
+	
+		
+	public ILocalBankService getLocalBankService() {
+		return localBankService;
+	}
+	
+	public void setLocalBankService(ILocalBankService localBankService) {
+		this.localBankService = localBankService;
+	}
+	
+	public WxPayService getWxPayService() {
+		return wxPayService;
+	}
+	
+	public void setWxPayService(WxPayService wxPayService) {
+		this.wxPayService = wxPayService;
+	}
+	
+	public AliPayPayService getAliPayPayService() {
+		return aliPayPayService;
+	}
+	
+	public void setAliPayPayService(AliPayPayService aliPayPayService) {
+		this.aliPayPayService = aliPayPayService;
+	}
+
+	public IOrderService getOrderService() {
+		return orderService;
+	}
+
+	public void setOrderService(IOrderService orderService) {
+		this.orderService = orderService;
+	}
+
+	public IThreeCodeStaticQRCodeService getThreeCodeStaticQRCodeService() {
+		return threeCodeStaticQRCodeService;
+	}
+
+	public void setThreeCodeStaticQRCodeService(IThreeCodeStaticQRCodeService threeCodeStaticQRCodeService) {
+		this.threeCodeStaticQRCodeService = threeCodeStaticQRCodeService;
+	}
+
+}

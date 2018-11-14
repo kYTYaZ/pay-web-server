@@ -1,0 +1,15 @@
+package com.yyk;
+
+public class Test {
+	
+	static class User{
+        String name = "chenssy";
+        int age = 23;
+		
+	}
+
+	public static void main(String[] args) {
+		String s= "https://qr.95516.com/00010000/62018234220713201191981800210721";
+		System.out.println(s.length());
+	}
+}

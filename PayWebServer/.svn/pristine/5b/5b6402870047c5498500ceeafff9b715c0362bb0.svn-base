@@ -1,0 +1,101 @@
+#if($sqlName=='queryC2BOtherOrder')
+	SELECT
+		VOUCHER_NUM,
+		UP_RESVERT,
+		TXN_TM,
+		TXN_STA,
+		TXN_SEQ_ID,
+		TXN_DT,
+		TRADE_MONEY,
+		RES_DESC,
+		QR_NO,
+		ORDER_NUMBER,
+		ORDER_TIME,
+		ENCRYPT_CERID,
+		BANK_FLAG,
+		ACC_NO
+	FROM EWM.TBL_C2B_OTHER_BANK_TXN
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	    #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($qrNo)
+			AND QR_NO = '${qrNo}'
+	    #end
+#end
+
+
+#if($sqlName=='updateC2BOtherOrder')
+	UPDATE  EWM.TBL_C2B_OTHER_BANK_TXN SET
+		#if ($txnSeqId)TXN_SEQ_ID='${txnSeqId}',#end
+		#if ($txnDt)TXN_DT='${txnDt}',#end
+		#if ($txnTm)TXN_TM='${txnTm}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($voucherNum)VOUCHER_NUM='${voucherNum}',#end
+		#if ($accNo)ACC_NO='${accNo}',#end
+		#if ($upResvert)UP_RESVERT='${upResvert}',#end
+		#if ($resDesc)RES_DESC='${resDesc}',#end
+		#if ($qrNo)QR_NO='${qrNo}',#end
+		#if ($orderNumber)ORDER_NUMBER='${orderNumber}',#end
+		#if ($orderTime)ORDER_TIME='${orderTime}',#end
+		#if ($encryptCerid)ENCRYPT_CERID='${encryptCerid}',#end
+		#if ($bankFlag)BANK_FLAG='${bankFlag}',#end
+		#if ($txnSta)TXN_STA='${txnSta}'#end
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+            #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	     #if ($qrNo)
+			AND QR_NO = '${qrNo}'
+	    #end
+#end
+
+
+#if($sqlName=='insertC2BOtherOrder')
+	INSERT INTO EWM.TBL_C2B_OTHER_BANK_TXN	
+	(
+		#if($txnSeqId)TXN_SEQ_ID,#end
+		#if($txnDt)TXN_DT,#end
+		#if($tradeMoney)TRADE_MONEY,#end
+		#if($voucherNum)VOUCHER_NUM,#end
+		#if($accNo)ACC_NO,#end
+		#if($upResvert)UP_RESVERT,#end
+		#if($resDesc)RES_DESC,#end
+		#if($qrNo)QR_NO,#end
+		#if($orderNumber)ORDER_NUMBER,#end
+		#if($orderTime)ORDER_TIME,#end
+		#if($encryptCerid)ENCRYPT_CERID,#end
+		#if($bankFlag)BANK_FLAG,#end
+		#if($txnSta)TXN_STA,#end
+		TXN_TM
+	)
+	VALUES(
+		#if ($txnSeqId)'${txnSeqId}',#end
+		#if ($txnDt)'${txnDt}',#end
+		#if ($tradeMoney)'${tradeMoney}',#end
+		#if ($voucherNum)'${voucherNum}',#end
+		#if ($accNo)'${accNo}',#end
+		#if ($upResvert)'${upResvert}',#end
+		#if ($resDesc)'${resDesc}',#end
+		#if ($qrNo)'${qrNo}',#end
+		#if ($orderNumber)'${orderNumber}',#end
+		#if ($orderTime)'${orderTime}',#end
+		#if ($encryptCerid)'${encryptCerid}',#end
+		#if ($bankFlag)'${bankFlag}',#end
+		#if ($txnSta)'${txnSta}',#end
+		'${txnTm}'
+	)
+#end
+

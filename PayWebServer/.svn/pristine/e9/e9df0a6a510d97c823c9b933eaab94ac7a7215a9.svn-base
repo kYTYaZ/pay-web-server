@@ -1,0 +1,487 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: StringUtil.java
+ * Author:   justin
+ * Date:     2014-7-29 下午6:18:09
+ * Description: //模块目的、功能描述
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.common.util;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.cert.CertUtils;
+import com.huateng.po.ReqMerchantOrder;
+import com.huateng.po.RespMerchantOrder;
+import com.huateng.service.SignVerifyService;
+import com.huateng.util.CopyUtil;
+import com.wldk.framework.utils.MappingUtils;
+
+/**
+ * 字符串工具类
+ * 
+ * @author sunguohua
+ */
+public class StringUtil {
+    private static Logger logger = LoggerFactory.getLogger(StringUtil.class);
+
+    /*
+     * 判断字符串是否为空
+     */
+    public static boolean isEmpty(String str) {
+        if (null == str || "".equals(str.trim()) || "null".equals(str.trim()) || str.trim().length() == 0) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * 所有字符串不为空返回false，有一个为空返回true
+     * @param str
+     * @return
+     */
+    public static boolean isEmptyMultipleStr (String ...str) {
+    	for (String st : str) {
+    		if (null == st || "".equals(st.trim()) || "null".equals(st.trim()) || st.trim().length() == 0) {
+    			return true;
+    		}
+		}
+    	return false;
+    }
+    
+
+    /*
+     * 判断字符串是否为空
+     */
+    public static boolean isEmpty(Object str) {
+        if (null == str || "".equals(str) || "null".equals(str)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * 判断list对象是否为空
+     */
+    public static boolean listIsEmpty(List list) {
+        return (list == null || list.size() == 0) ? true : false;
+    }
+
+    /*
+     * 空字符串对象转空字符串
+     */
+    public static String null2String(String str) {
+        return str == null ? "" : str;
+    }
+
+    /*
+     * 去掉字符串前后空格
+     */
+    public static String trim(String str) {
+        return str.trim();
+    }
+
+    /**
+     * 把 数组1 与数组2 相加。
+     * 
+     * @param src 开始数组，
+     * @param dst 结束数组
+     * @return 返回 开始数组+结束数据
+     */
+    public static byte[] appendArray(byte[] src, byte[] dst) {
+        byte[] newBytes = new byte[src.length + dst.length];
+        System.arraycopy(src, 0, newBytes, 0, src.length);
+        System.arraycopy(dst, 0, newBytes, src.length, dst.length);
+        return newBytes;
+    }
+
+    /**
+     * 
+     * 判断对象是否为空
+     * 
+     * @param obj
+     * @return
+     * @see 1.0
+     * @since 1.0
+     */
+    public static boolean isNull(Object obj) {
+        return obj == null || "null".equals(obj.toString());
+    }
+
+    /**
+     * 
+     * 
+     * @param Number
+     * @param decimal
+     * @return
+     */
+    public static String parseDecNumner(String Number, int decimal) {
+        String value = null;
+        int divid = 1;
+        if (decimal > 0) {
+            for (int i = 0; i < decimal; i++) {
+                divid = divid * 10;
+            }
+            value = String.valueOf(Float.parseFloat(Number) / (divid * 1.0));
+            StringBuffer sb = new StringBuffer();
+            sb.append(value);
+            int pos = value.indexOf(".") + 1;
+            pos = value.length() - pos;
+            if (pos < decimal) {
+                for (int i = pos; i < decimal; i++) {
+                    // value = value + "0";
+                    sb.append("0");
+                }
+                value = sb.toString();
+            } else if (pos > decimal) {
+                value = value.substring(0, value.length() - pos + decimal);
+            }
+        } else {
+            value = Number;
+        }
+        return value;
+    }
+
+    public static String fillString(String str, int i) {
+        if (str.length() > i)
+            return str.substring(0, i);
+        int len = str.length();
+        // 不足i位左边补0
+        for (int j = 0; j < i - len; j++) {
+            str = "0" + str;
+        }
+        return str;
+    }
+
+    public static String rightEmptyString(String str, int i) {
+        if (str.length() > i)
+            return str.substring(0, i);
+        int len = str.length();
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(str);
+        // 不足i位右边补空格
+        for (int j = 0; j < i - len; j++) {
+            sb.append(" ");
+            // str = str+"0";
+        }
+        return sb.toString();
+    }
+
+    public static void copyMerchant(ReqMerchantOrder reqMerchantOrder, RespMerchantOrder respMerchantOrder) {
+        reqMerchantOrder.setOrderAmount(StringUtil.isEmpty(reqMerchantOrder.getOrderAmount()) ? "" : (Float
+                .parseFloat(reqMerchantOrder.getOrderAmount()) / 100) + "");
+        CopyUtil.copyBean2Bean(reqMerchantOrder, respMerchantOrder);
+    }
+
+    /**
+     * 金额转12位长度的字符串 元为单位
+     * @param amount
+     * @return
+     */
+    public static String amountTo12Str(String amount){
+    	
+    	if(StringUtil.isEmpty(amount)){
+    		return  amount;
+    	}
+    	
+    	if(!amount.matches("((-?[0-9]{1,12})|(-?[0-9]{1,10}\\.[0-9]{1,2}))")){
+    		return amount;
+    	}
+    	
+    	BigDecimal  amt = new BigDecimal(amount);
+    	amt = amt.multiply(new BigDecimal(100));
+    	
+    	String amt12 = String.format("%012d", amt.longValue());
+    	
+    	return amt12;
+    	
+    }
+    
+    /**
+     * 金额转12位长度的字符串 分为单位
+     * @param amount
+     * @return
+     */
+    public static String amountTo12Str2(String amount){
+    	
+    	if(StringUtil.isEmpty(amount)){
+    		return  amount;
+    	}
+    	
+    	if(!amount.matches("((-?[0-9]{1,12})|(-?[0-9]{1,10}\\.[0-9]{1,2}))")){
+    		return amount;
+    	}
+    	
+    	BigDecimal  amt = new BigDecimal(amount);
+    	
+    	String amt12 = String.format("%012d", amt.longValue());
+    	
+    	return amt12;
+    	
+    }
+    
+    public static String str12ToAmount(String amount){
+    	if(!amount.matches("^[0-9]{1,12}")){
+    		return amount;
+    	}
+    	
+    	BigDecimal amt = new BigDecimal(amount);
+    	BigDecimal tradeAmount = amt.divide(new BigDecimal(100)).setScale(2);
+    	
+    	return	tradeAmount.toString();
+    }
+
+    public static String strToIntAmount(String amount){
+    
+    	if(!amount.matches("^[0-9]{1,12}")){
+    		return amount;
+    	}
+    	
+    	BigDecimal amt = new BigDecimal(amount);
+    	return amt.toString();
+    }
+    
+    public static String intTo12Str(int amount){
+    	
+    	BigDecimal  amt = new BigDecimal(amount);
+    	String amt12 = String.format("%012d", amt.longValue());
+    	
+    	return amt12.toString();
+    }
+    
+    public static String strTo12Str(String amount){
+    	
+    	if(!amount.matches("^[0-9]{1,12}") && !amount.matches("^[0-9]{1,10}\\.[0-9]{1,2}")){
+    		return amount;
+    	}
+    	
+    	BigDecimal  amt = new BigDecimal(amount).multiply(new BigDecimal(100));
+    	
+    	String amt12 = String.format("%012d", amt.longValue());
+    	
+    	return amt12.toString();
+    }
+    
+
+
+/**
+     * 
+     * 返回商户加签
+     * 
+     * @param respMerchantOrder
+     * @return
+     * @see 1.0
+     * @since 1.0
+     */
+    public static RespMerchantOrder addSignature(RespMerchantOrder respMerchantOrder) {
+        // 获取加密私钥，密码
+        String keyPath = MappingUtils.getString("SYSPARAM", "netwaypfx"); // 私钥证书
+        String keyPwd = MappingUtils.getString("SYSPARAM", "netwaypwd"); // 私钥证书密码
+        String version = respMerchantOrder.getVersion();
+        try {
+        	if("2.0.0".equals(version)){
+        		String certId = CertUtils.getSignCertId(keyPath, keyPwd);
+        		respMerchantOrder.setCertId(certId);
+        	}
+            String signature = SignVerifyService.getSignStr(respMerchantOrder);
+            String signVerify = SignVerifyService.getSignVerify(signature, keyPath, keyPwd);
+            respMerchantOrder.setSignature(signVerify);
+        } catch (Exception e) {
+        	logger.error("商户加签失败："+e.getMessage(),e);
+        }
+        return respMerchantOrder;
+    }
+    
+   /**
+    * 字符串长度不够补位
+    * @param str 字符串
+    * @param position 1前面补位 2后面补位
+    * @param wholeLength 需要达到的字符串长度
+    * @param userChar 使用的填充字符
+    * @return
+    */
+	public static String padding(String str, int position, int length,char useChar) {
+
+		StringBuffer sb = new StringBuffer();
+		int n = length - str.length();
+
+		if (n <= 0) {
+			return str;
+		}
+		if (position == 1) {
+			for (int i = 0; i < n; i++) {
+				sb.append(useChar);
+			}
+			sb.append(str);
+		}
+		if (position == 2) {
+			sb.append(str);
+			for (int i = 0; i < n; i++) {
+				sb.append(useChar);
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String minusTo12StrAmt(String amount){
+		
+		if(StringUtil.isEmpty(amount)){
+    		return  amount;
+    	}
+    	
+    	if(!amount.matches("((^-[0-9]{1,12})|(^-[0-9]{1,10}\\.[0-9]{1,2}))")){
+    		return amount;
+    	}
+    	
+    	BigDecimal  amt = new BigDecimal(amount);
+    	amt = amt.multiply(new BigDecimal(100));
+    	
+    	String amt12 = String.format("%013d", amt.longValue());
+    	
+    	return amt12;
+	
+	}
+	
+	/**
+	 * 将负数转换为使用标识位的字符串描述
+	 * @param str
+	 * @return
+	 */
+	public static String minusToStrUseBitFlag(String amount){
+		
+		BigDecimal  amt = new BigDecimal(0);
+		
+		if(!amount.matches("^-[0-9]{1,12}$") && !amount.matches("^-[0-9]{1,10}\\.[0-9]{1,2}")){
+			return amount;
+		}
+		
+		if(amount.matches("^-[0-9]{1,12}$")){
+			amt = new BigDecimal(amount);
+		}
+		
+		
+		if(amount.matches("^-[0-9]{1,10}\\.[0-9]{1,2}")){
+			amt = new BigDecimal(amount).multiply(new BigDecimal(100));
+		}
+    	
+    	String amt12 = String.format("%013d", amt.longValue()).replace("-", "").replaceFirst("0", "1");
+		
+		return amt12;
+	}
+	
+	
+	/**
+	 * 格式化手续费金额
+	 * @param amount
+	 * @return
+	 */
+	public static String formateFeeAmt(String amount){
+		
+		if(amount.matches("^[0-9]{1,12}") ){
+    		return String.format("%012d", new BigDecimal(amount).longValue());
+    	}
+		
+		if(amount.matches("^[0-9]{1,10}\\.[0-9]{1,2}")){
+			return String.format("%012d", new BigDecimal(amount).multiply(new BigDecimal(100)).longValue());
+		}
+		
+		return minusToStrUseBitFlag(amount);
+	}
+	
+	  /**
+     * 交换字符串中两位置的字符
+     * @param str
+     * @param indexa
+     * @param indexb
+     * @return
+     */
+    public static String exchangeCharInString(String str,int indexa,int indexb ){
+    	
+    	
+    	char c = str.charAt(indexa);
+    	StringBuffer sb = new StringBuffer(str);
+    	
+    	sb.replace(indexa, indexa+1, String.valueOf(str.charAt(indexb)))
+    	  .replace(indexb, indexb+1, String.valueOf(c));
+    	
+    	return sb.toString();
+    }
+    
+    /**
+     * 
+     * 根据费率获取手续费
+     * @author Administrator  
+     * date：2017-05-18
+     * @param feeRate
+     * @param tradeAmount
+     * @return
+     */
+    public static String getFeeByTradeAmount(String feeRate,String tradeAmount){
+    	
+    	feeRate = StringUtil.isEmpty(feeRate) ? "0" : feeRate;
+    	
+    	BigDecimal tradeAmt = new BigDecimal(tradeAmount).divide(new BigDecimal(100));
+    	BigDecimal feeRate2 = new BigDecimal(feeRate);
+    	
+		BigDecimal fee = (tradeAmt.multiply(feeRate2)).setScale(2,  BigDecimal.ROUND_HALF_UP);		
+		
+		return fee.toString();
+    }
+    
+    public static String underlineToCamel(String key) {
+		if (key == null || "".equals(key.trim())) {
+			return "";
+		}
+		int len = key.length();
+		StringBuffer sb = new StringBuffer(len);
+		for (int i = 0; i < len; i++) {
+			char c = key.charAt(i);
+			if (c == '_') {
+				if (++i < len) {
+					sb.append(Character.toUpperCase(key.charAt(i)));
+				}
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+    
+    /**根据正则表达式获取Map
+	 * 
+	 * @param regex
+	 * @param map
+	 * @return
+	 */
+	public static Map<String, Object> getMapByRegx(String regex,Map<String,Object> paramMap){
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		for (Entry<String, Object> entry : paramMap.entrySet()) {
+			 if(entry.getKey().matches(regex)){
+				 map.put(underlineToCamel(entry.getKey()), entry.getValue());
+			 }
+		}
+		
+		return map;
+	}
+	
+	public static String toString(Object str){
+		return ObjectUtils.toString(str);
+	}
+	
+	public static String toString(Object str,Object str2){
+		return isEmpty(str) ? toString(str2) : toString(str);
+	}
+}

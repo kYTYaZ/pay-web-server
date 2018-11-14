@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mappings SYSTEM "mapping-config.dtd">
+<!-- 格式说明参考：mapping-config.dtd -->
+<!--
+手动获取映射数据自定义：
+<mapping id="M_001" dsName="manual">
+		<entity>
+			<option name="用户名已登陆！" value="0"/>
+		</entity>
+</mapping>
+
+id表示取值时的唯一表示，不能重复
+dsName="manual",设置定义数据类型,"manual"表示手动获取映射数据类型；
+<entity></entity>设置解析时开始和结束表示；
+数据定义格式：
+<option name="用户名已登陆！" value="0"/>
+ name：表示value(name中定义的值：'('表示：'<'，')'表示：'>'，'/)'表示：'/>'，可以通过这些自定义显示信息的css样式);
+ value:表示key;
+在jsp页面通过
+<ex:mapping key="id" value="key"/>
+翻译成value(name)
+-->
+<!--
+SQL语句获取映射数据自定义：
+	<mapping id="SYS_002" dsName="oracle">
+		<sql>
+			<![CDATA[SELECT DISTINCT BTN_ID,RIGHT_NAME,MENU_ID,JS_ID FROM T01_SYS_AUTHORITY_INFO where SYS_BTNS_STATUS='0']]>
+		</sql>
+	</mapping>
+
+id表示取值时的唯一表示，不能重复
+dsName="oracle",设置定义数据库类型,"oralce"表示SQL映射的数据库类型；
+<sql></sql>设置解析时开始和结束表示；
+<![CDATA[  ]]>数据库SQL语句存放中间
+数据定义格式：
+<option name="用户名已登陆！" value="0"/>
+ name：表示value(name中定义的值：'('表示：'<'，')'表示：'>'，'/)'表示：'/>'，可以通过这些自定义显示信息的css样式);
+ value:表示key;
+在jsp页面通过
+<ex:mapping key="SYS_002(id)" value="SQL语句中的第一个字段值"  index='设置显示第几位（select后面开始从0算起）'/>
+ -->
+<mappings>
+	<!-- 公共参数类型 -->
+	<mapping id="M_001" dsName="manual">
+		<entity>
+			<option name="用户名已登陆！" value="0"/>
+			<option name="用户不存在！" value="1"/>
+			<option name="密码不正确!" value="2"/>
+			<option value="4" name="验证码错误！"/>
+			<option name="登陆成功！" value="3"/>
+		</entity>
+	</mapping>
+
+	<mapping id="CHANNEL_CONFIG" dsName="oracle">
+		<sql>
+			<![CDATA[select * from TBL_CHANNEL_CONFIGURATION]]>
+		</sql>
+	</mapping>
+</mappings>

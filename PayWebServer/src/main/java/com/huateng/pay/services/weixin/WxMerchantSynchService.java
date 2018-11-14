@@ -1,0 +1,78 @@
+/*
+ * Copyright (C), 2012-2015, 上海华腾软件系统有限公司
+ * FileName: WxMerchantSynchService.java
+ * Author:   Feihong247
+ * Date:     2015-9-21 下午2:52:12
+ * Description: //模块目的、功能描述      
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.services.weixin;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+
+/**
+ * 微信同步商户处理
+ *  
+ * @author guohuan
+ */
+public interface WxMerchantSynchService {
+	
+	/**
+	 * 根据商户号查询直连间联
+	 * @param input
+	 * @return
+	 */
+	public OutputParam routing(InputParam input);
+    
+	/**
+     * 
+     * 新增微信同步商户
+     * 
+     * @param input
+     */
+    public OutputParam addWxMer(InputParam input) throws FrameException;
+    
+    
+    /**
+     * 
+     * 新增银联微信同步商户
+     * 
+     * @param input
+     */
+    public OutputParam addWxMerYL(InputParam input) throws FrameException;
+
+    /**
+     * 
+     * 修改微信同步商户
+     * 
+     * @param input
+     */
+    public OutputParam modifyWxMer(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 删除微信同步商户
+     * 
+     * @param input
+     */
+    public OutputParam deleteWxMer(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 查询微信同步商户
+     * 
+     * @param input
+     */
+    public OutputParam queryWxMer(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 	查询微信同步商户间连
+     * @param input
+     */
+    public OutputParam queryWxMerYL(InputParam input) throws FrameException;
+}

@@ -1,0 +1,23 @@
+package com.util;
+
+public class StringUtil {
+
+	public static boolean isEmpty(String str) {
+		if (null == str || "".equals(str.trim()) || "null".equals(str.trim())
+				|| str.trim().length() == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static String fillString(String str, int i) {
+		if (str.length() > i)
+			return str.substring(0, i);
+		int len = str.length();
+		for (int j = 0; j < i - len; j++) {
+			str = "0" + str;
+		}
+		return str;
+	}
+
+}

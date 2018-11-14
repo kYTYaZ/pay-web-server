@@ -1,0 +1,99 @@
+	#if($sqlName=='queryLimitByDtAndAcctNo')
+		SELECT
+    	CASE t.limit_dt
+        	WHEN '${limitDt}'
+        	THEN t.tradeamt_day
+        	ELSE '0'
+    	END AS tradeamt_day,
+    	CASE SUBSTR(t.limit_dt,1,6)
+        	WHEN SUBSTR('${limitDt}',1,6)
+        	THEN t.tradeamt_month
+        	ELSE '0'
+    	END AS tradeamt_month
+		FROM
+    	(
+        	SELECT
+            	tradeamt_day,tradeamt_month,limit_dt
+        	FROM
+            	TBL_MER_TRADE_LIMIT
+        	WHERE
+            	acct_no='${acctNo}'
+    	)t
+	#end
+	
+	
+	#if($sqlName=='queryByDtAndAcctNo')
+		select 
+			LIMIT_ID,LIMIT_DT,ACCT_NO,TRADEAMT_DAY,TRADEAMT_MONTH,UPDATE_TM 
+		from 
+			TBL_MER_TRADE_LIMIT  
+		where 
+			limit_dt='${limitDt}' 
+			 and 
+			acct_no='${acctNo}' 
+	#end
+	
+	#if($sqlName=='queryByAcctNo')
+		select 
+			LIMIT_ID,LIMIT_DT,ACCT_NO,TRADEAMT_DAY,TRADEAMT_MONTH,UPDATE_TM 
+		from 
+			TBL_MER_TRADE_LIMIT  
+		where 
+			acct_no='${acctNo}' 
+	#end
+	
+	#if($sqlName=='queryMonthAmtByDtAndAcctNo')
+		SELECT
+    		LIMIT_ID,
+    		LIMIT_DT,
+    		ACCT_NO,
+    		TRADEAMT_DAY,
+    		TRADEAMT_MONTH,
+    		UPDATE_TM
+		FROM
+    		TBL_MER_TRADE_LIMIT
+		WHERE
+    		acct_no='${acctNo}'
+			AND limit_dt=
+    	(
+        	SELECT
+            	MAX(limit_dt)
+        	FROM
+            	TBL_MER_TRADE_LIMIT
+        	WHERE
+            	acct_no='${acctNo}'
+        	AND SUBSTR(limit_dt,1,6)=SUBSTR('${limitDt}',1,6) )
+	#end
+	
+	#if($sqlName=='insertLimitTbl')
+		INSERT INTO TBL_MER_TRADE_LIMIT	
+			(
+				LIMIT_ID,
+    			LIMIT_DT,
+    			ACCT_NO,
+    			TRADEAMT_DAY,
+    			TRADEAMT_MONTH
+			)
+		VALUES
+			(
+				'${limitId}',
+				'${limitDt}',
+				'${acctNo}',
+				'${tradeamtDay}',
+				'${tradeamtMonth}'
+			)
+	#end
+		
+		
+	#if($sqlName=='updateLimitTbl')
+		UPDATE  
+			TBL_MER_TRADE_LIMIT 
+			SET
+			LIMIT_DT='${limitDt}',
+			TRADEAMT_DAY='${tradeamtDay}',
+			TRADEAMT_MONTH='${tradeamtMonth}',
+			UPDATE_TM='${updateTm}'
+		where 
+			LIMIT_ID='${limitId}'
+	#end
+	

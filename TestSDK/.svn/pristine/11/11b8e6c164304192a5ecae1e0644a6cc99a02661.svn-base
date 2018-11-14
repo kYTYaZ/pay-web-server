@@ -1,0 +1,31 @@
+package com.trade.wx.trading;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.common.constants.SDKConstant;
+import com.util.DateUtil;
+
+public class WxCreateMer {
+	
+	public static Map<String, String> getData() {
+	System.out.println("开始组装微信商户新增报文");
+
+	Map<String, String> map = new HashMap<String, String>();
+	map.put("txnCode", SDKConstant.TXN_CODE.CODE_5001);
+	map.put("mchtName", "浙农信商户新增测试");
+	map.put("mchtShortName", "浙农信商户");
+	map.put("servicePhone", "15900001238");
+	map.put("business", "10");
+	map.put("contactName", "客户810");
+	map.put("contactPhone", "13524862405");
+	map.put("orgCode", "801000");
+	String merId = DateUtil.getDateStr("yyyyMMddHHmmssHHmmss");
+	map.put("merId", merId);
+	map.put("mchtRemark", merId);
+
+	return map;
+}
+
+
+}

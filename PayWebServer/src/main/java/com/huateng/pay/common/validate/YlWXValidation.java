@@ -1,0 +1,35 @@
+package com.huateng.pay.common.validate;
+
+import com.huateng.pay.common.constants.Dict;
+
+public class YlWXValidation {
+
+	// 断直连微信商户新增
+	public static String[] vali_YlWXCreateMer = {Dict.mchtName, Dict.mchtShortName, Dict.servicePhone,
+			Dict.business, Dict.mchtRemark, Dict.merId };
+	
+	// 断直连微信商户修改
+	public static final String[] vali_YlWXEditMer = { };
+
+	// 断直连微信商户查询
+	public static String[] vali_YlWXQueryMer = {};
+
+	// 断直连微信订单查询
+	public static String[] vali_YlWXQuery = {};
+
+	// 断直连微信撤销交易
+	public static String[] vali_YlWXRevoke = {Dict.orderAmount, Dict.orderNumber, Dict.orderTime, Dict.transType, 
+			Dict.merId, Dict.channel, Dict.payAccessType, Dict.currencyType, Dict.initOrderNumber, Dict.initOrderTime};
+
+	// 断直连微信扫码支付
+	public static String[] vali_YlWXPreCreate = {};
+
+	// 断直连微信关闭订单
+	public static String[] vali_YlWXClose = { Dict.channel, Dict.payAccessType, Dict.initOrderNumber,
+			Dict.initOrderTime, Dict.merId};
+	
+	// 断直连微信被扫交易
+	public static final String[] vali_YlWXMicroPay = { Dict.rateChannel,Dict.orderAmount, Dict.isCredit, Dict.channel, Dict.transType,
+			Dict.orderNumber, Dict.orderTime, Dict.merId, Dict.merName, Dict.payType , Dict.transType , Dict.subWxMerId , Dict.payAccessType , Dict.currencyType , Dict.authCode  };
+
+}

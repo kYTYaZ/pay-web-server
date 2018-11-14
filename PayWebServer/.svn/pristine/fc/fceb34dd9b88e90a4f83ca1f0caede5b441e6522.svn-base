@@ -1,0 +1,402 @@
+#\u672c\u884c\u5916\u7f51\u5730\u5740 \u751f\u6210\u4e8c\u7ef4\u7801\u56fe\u7247
+zjrc_external_network_ip=http://www.zj96596.com.cn/payWeb/index.html?qrCode=
+#\u672c\u884c\u4e8c\u7ef4\u7801\u5bc6\u94a5
+des_key=11111111111111111111111111111111
+#\u672c\u884c\u4e8c\u7ef4\u7801\u6709\u6548\u671f(\u5206\u949f)
+qrcode_expire=5
+#\u7cfb\u7edf\u65e5\u5fd7\u5b58\u653e\u8def\u5f84
+sys_log_path=/home/wasadmin/payweblog/
+
+##############################   \u8bf7\u6c42\u624b\u673a\u94f6\u884c\u7684\u914d\u7f6e   ##########################
+#\u8bf7\u6c42\u624b\u673a\u94f6\u884c\u7684ip\u5730\u5740(\u5f00\u53d1)
+notify_mobile_ip=158.222.65.147
+
+#notify_mobile_ip=158.222.65.146
+
+
+#\u8bf7\u6c42\u624b\u673a\u94f6\u884c\u7684ip\u5730\u5740(\u751f\u4ea7)
+#notify_mobile_ip=154.233.10.101
+
+#\u8bf7\u6c42\u624b\u673a\u94f6\u884c\u7684\u7aef\u53e3
+notify_mobile_port=8858
+
+#socket \u8bfb\u53d6\u8d85\u65f6\u65f6\u95f4
+timeout=40000
+
+#\u5206\u9875\u67e5\u8be2\u6bcf\u9875\u6570\u91cf
+record_per_page=5000
+
+#\u8bbe\u7f6ehttps\u901a\u8baf\u4ee3\u7406\u662f\u5426\u6253\u5f00: true\u6253\u5f00 
+httpsRequestProxy=false
+notifyTimes = 3
+poolSize = 200
+
+########################    \u5fae\u4fe1\u652f\u4ed8\u76f8\u5173\u914d\u7f6e         ############################
+
+#############  \u6d4b\u8bd5\u914d\u7f6e     ################
+jg_key=3ACA91426F056322E053645AA8C0CC12
+#jg_key=8d3d86aca760ccfc26efe7950b24ac46
+
+
+jg_appId=wxdace645e0bc2c424
+#jg_appId=wxabbe9484a03eafce
+jg_merId=1900008971
+#jg_merId=1900008781
+wx_jg_pfx_path=/home/wasadmin/apiclient_cert.p12
+#wx_jg_pfx_path=/home/wasadmin/apiclient_cert_jg_test.p12
+wx_jg_pwd=1900008971
+#wx_jg_pwd=1900008781
+wx_jsapi_secret=7ce045d0b202fb94bb7cce94c4835f07
+#wx_channel_id=30163624
+#wx_channel_id=51192070
+#wx_channel_id=57711167
+#wx_channel_id=57715225
+#wx_channel_id=57706668 --
+wx_channel_id=30251471
+#wx_channel_id=57715024
+#wx_channel_id=57715091
+
+#############  \u751f\u4ea7\u914d\u7f6e     ################
+#\u673a\u6784\u5546\u6237key
+#jg_key=123456789abcdefg123456789abcdefg
+#\u673a\u6784\u5546\u6237APPID
+#jg_appId=wxbfa7e9adff4131d8
+#\u673a\u6784\u5546\u6237\u5546\u6237\u53f7
+#jg_merId=1321836301
+#\u5fae\u4fe1\u673a\u6784\u5546\u6237\u8bc1\u4e66
+#wx_jg_pfx_path=/home/wasadmin/apiclient_cert_jg.p12
+#wx_jg_pwd=1321836301
+
+#\u4e0b\u8f7d\u5fae\u4fe1\u5bf9\u8d26\u5355\u8def\u5f84
+wx_downloadBill_path=/home/wasadmin/wxBill/
+
+#\u63a5\u6536\u5fae\u4fe1\u540e\u53f0\u901a\u77e5\u63a5\u53e3\u8def\u5f84
+#\u5f00\u53d1\u5730\u5740
+#resevWxNotifyUrl=http://131.87.46.114:80/PayWebServer/pay/wx/recvWxNotifyReq.do
+resevWxNotifyUrl=http://zjrc-test.wxpay.local/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u7535\u4fe1\u4e3b\u7ebf(100.100.200.50)
+#resevWxNotifyUrl=http://zjrc.wxpay.local/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u7535\u4fe1\u4e3b\u7ebf(100.100.200.51)
+#resevWxNotifyUrl=http://zjrc.wxpay.local/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u8054\u901a\u5907\u7ebf(100.100.200.50)
+#resevWxNotifyUrl=http://zjrc.wxpay.local/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u8054\u901a\u5907\u7ebf(100.100.200.51)
+#resevWxNotifyUrl=http://zjrc.wxpay.local/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u7535\u4fe1\u4e3b\u7ebf(100.100.200.50)
+#resevWxNotifyUrl=http://131.87.46.124:80/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u7535\u4fe1\u4e3b\u7ebf(100.100.200.51)
+#resevWxNotifyUrl=http://131.87.46.125:80/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u8054\u901a\u5907\u7ebf(100.100.200.50)
+#resevWxNotifyUrl=http://131.87.34.60:80/PayWebServer/pay/wx/recvWxNotifyReq.do
+#\u751f\u4ea7\u5730\u5740\u8054\u901a\u5907\u7ebf(100.100.200.51)
+#resevWxNotifyUrl=http://131.87.34.61:80/PayWebServer/pay/wx/recvWxNotifyReq.do
+
+
+#\u5fae\u4fe1\u7edf\u4e00\u4e0b\u5355\u63a5\u53e3URL
+wx_unifiedOrder_url=https://api.mch.weixin.qq.com/pay/unifiedorder
+#\u5fae\u4fe1\u88ab\u626b\u652f\u4ed8(\u5237\u5361)\u63a5\u53e3URL
+wx_microPay_url=https://api.mch.weixin.qq.com/pay/micropay
+#\u5fae\u4fe1\u8ba2\u5355\u67e5\u8be2\u63a5\u53e3URL
+wx_orderQuery_url=https://api.mch.weixin.qq.com/pay/orderquery
+#\u5fae\u4fe1\u7533\u8bf7\u9000\u6b3e\u63a5\u53e3URL
+wx_refund_url=https://api.mch.weixin.qq.com/secapi/pay/refund
+#\u5fae\u4fe1\u9000\u6b3e\u67e5\u8be2\u63a5\u53e3URL
+wx_refundQuery_url=https://api.mch.weixin.qq.com/pay/refundquery
+#\u5fae\u4fe1\u4e0b\u8f7d\u5bf9\u8d26\u5355\u63a5\u53e3URL
+wx_downloadBill_url=https://api.mch.weixin.qq.com/pay/downloadbill
+#\u5fae\u4fe1\u7533\u8bf7\u64a4\u9500\u63a5\u53e3URL
+wx_reverse_url=https://api.mch.weixin.qq.com/secapi/pay/reverse
+#\u5fae\u4fe1\u7533\u8bf7\u5173\u95ed\u8ba2\u5355\u63a5\u53e3URL
+wx_close_url=https://api.mch.weixin.qq.com/pay/closeorder
+#\u5fae\u4fe1\u540c\u6b65\u5546\u6237(add)\u63a5\u53e3URL
+wx_addMer_url=https://api.mch.weixin.qq.com/secapi/mch/submchmanage?action=add
+#\u5fae\u4fe1\u540c\u6b65\u5546\u6237(modify)\u63a5\u53e3URL
+wx_modifyMer_url=https://api.mch.weixin.qq.com/secapi/mch/submchmanage?action=modify
+#\u5fae\u4fe1\u540c\u6b65\u5546\u6237(del)\u63a5\u53e3URL
+wx_delMer_url=https://api.mch.weixin.qq.com/secapi/mch/submchmanage?action=del
+#\u5fae\u4fe1\u540c\u6b65\u5546\u6237(query)\u63a5\u53e3URL
+wx_queryMer_url=https://api.mch.weixin.qq.com/secapi/mch/submchmanage?action=query
+#\u5fae\u4fe1\u83b7\u53d6\u6388\u6743URL
+wx_Auth_Url=http://api.weixin.qq.com:8080/sns/oauth2/access_token
+
+
+################################  \u652f\u4ed8\u5b9d  \u6d4b\u8bd5##################################################
+
+# \u652f\u4ed8\u5b9d\u7f51\u5173\u540d\u3001partnerId\u548cappId
+#open_api_domain=http://openapi.alipaydev.com/gateway.do
+open_api_domain=https://openapi.alipay.com/gateway.do
+mcloud_api_domain=http://mcloudmonitor.com/gateway.do
+
+pid=2088911212416201
+#pid=2088102168848352
+appid=2015051100069170
+#appid=2016072800109770
+alipay_jg_merId=2088501624560335
+#alipay_jg_merId=2088911212416201
+#alipay_jg_merId=2088102168848352
+#\u52a0\u89e3\u5bc6\u516c\u79c1\u94a5
+#private_key=MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAMomsB6OHzdzsWpgTKUv52I0vR3+BFh01GJSSfJ7ST0Lm64DBta/btVM2A66VqGWZOZJ01TJhaZpiHjdex1o9X5smIL0oJZN69NEOLqG0HgZF1G5JVKyvVZ3jlnv5S76L3rtsYHimapceySspms0IVcbs+QXibNSoSUIVXOn8C2/AgMBAAECgYAyJ48ixZgxJd8qyWG6yjvaPcN+IXvqhnH7Qvdd1gDByJODhPS5ax2QhlREsy6zQKEgEckBDE7AjwZxFmJpVZUyq1+bt8XNNjzXN6b6Xrx/7eTe9OEJZY/Cu/kYPbUjljmuxl/H+5LNC2Chhdz9js8l4+sAfykSMr3GKrPQ5yC0oQJBAPjrKFLegwPJfDntgGv+Jm3PZ69NIxC9xn9zcshX0aaT93hLLwRZC++QydDrT/6mKwKSj27UGnl8W7O8iLLeEYMCQQDP5u3RaFFyaCh+IuPc3s8072stDGu8DWme3rGkqkAdjbS0lobVhI+XdhX8UC5bYcgbIaOZAOVOB1ywMnYGveoVAkEArDcWOO9VuaMG3ZUiCpVVxRd/5tr5bbW+xaL8QPvxQsyQpJtvthRdm6uS1YZYXBhfHXKE5eq9Plv5ngrMkOPvPQJBAJ+sfu6cLiGuOZtW9KbIQWAomaoJphzSOFKaOtl7IK8SDL299mS64QW03gHhGxl4KhYcaeezNmoNYXS57MgUyFkCQQC1HDDNf5YisNDV5bCmLsIwclGFzkS07ZCpudxQ834SvE1epIZZNhO2DStyQ8nIRRaioAi6AZ6lMHsfO0/VSW3i
+alipay_public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB
+
+private_key=MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBANHinVzTvrfldn9qhb7bBb2y/BKTkc4wEEvAGkCQ06uKaq6XSRsHccXWVxFfPVBBt/Vp3WKs0UNv5kYz2Ls6lmQy1lhWF6wdtH2cwDiRA9VoazFLW2O39f27MKQVLFet/+SPhzpagKBn1OMI80I3cSbFjygPk94C8VXzvYSUZdQpAgMBAAECgYEAyKlxK6uhvm2agi0Um6kI7xmtGBGQJ+IZ4mJSdwI/7NRUNIGdOkM+yhenfItislVyjCZfq5RwKZpVPS8aeb6EwqFkKBwsxZ1iaMYyUm9bsWtE23cjc8qi5wZzKhrZb6k9OV8gC8GeiUJC0NLMFy39igExaq63mxfldinPAkVkCIECQQD0TO3KtQ48OM4WE9k4PNC7GTjrj7oJJZkaIp6vGZYXS9ytAYfZJYKMQ/pXgowCsYIq0hdxHhnyOZ8jyo1KK/hxAkEA2+/DCDFU0raObubxZ66BN/bmdVDCk6+dVnPY/rCNrkQi5fgKi85Y33Wettqu/5xUeeAPTHqBkFVWZmr65m0zOQJAHW/7o1ZnzbfmlWB050Lkv/bNFg1ulFWUekK7rku9+zan86zgirjrXy19x/eyGUz8a15/dqDy7W4mD/EDT3G28QJAIldQk6HoRbJ9kPF8dhz4Tj2+BElk6Fx+a7ZRBouYw8Id1NyjAOtqUxHxg0moE39cbV8/5EgonNnGUN2ZaYtZeQJBAIebNAWNfjPqMTFhCH5DUEc1jhw+Kxmi8lOypFIB+8fowqEgnQsta8BI+Mmpes/Si+hf0+Gmnva3sah6b92PHhE=
+#alipay_public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB
+
+# \u5f53\u9762\u4ed8\u6700\u5927\u67e5\u8be2\u6b21\u6570\u548c\u67e5\u8be2\u95f4\u9694\uff08\u6beb\u79d2\uff09
+max_query_retry=6
+query_duration=10000
+
+# \u5f53\u9762\u4ed8\u6700\u5927\u64a4\u9500\u6b21\u6570\u548c\u64a4\u9500\u95f4\u9694\uff08\u6beb\u79d2\uff09
+max_cancel_retry=3
+cancel_duration=2000
+
+# \u4ea4\u6613\u4fdd\u969c\u7ebf\u7a0b\u7b2c\u4e00\u6b21\u8c03\u5ea6\u5ef6\u8fdf\u548c\u8c03\u5ea6\u95f4\u9694\uff08\u79d2\uff09
+heartbeat_delay=5
+heartbeat_duration=900 
+
+#\u63a5\u6536\u652f\u4ed8\u5b9d\u540e\u53f0\u901a\u77e5\u5730\u5740
+resevAlipayNotifyUrl=http://10.53.70.114/PayWebServer/pay/alipay/recvAlipayNotifyReq.do
+
+#\u652f\u4ed8\u5b9dsftp\u4e0b\u8f7d\u5bf9\u8d26\u5355\u8def\u5f84
+alipay_sftp_down_path=/download/
+alipay_downloadBill_path=/home/wasadmin/wxBill/
+alipay_originalBill_path=/home/wasadmin/alipayBill/
+
+#\u5bf9\u8d26\u5355 sftp \u7528\u6237\u540d
+sftp_username=root
+#\u5bf9\u8d26\u5355 sftp \u5bc6\u7801
+sftp_password=123456
+#\u5bf9\u8d26\u5355 sftp \u8bbf\u95eeip
+sftp_host=158.222.68.209
+#\u5bf9\u8d26\u5355 sftp \u8bbf\u95ee\u7aef\u53e3
+sftp_port=22
+
+
+###################################  \u652f\u4ed8\u5b9d \u751f\u4ea7\u914d\u7f6e  #################################################
+#open_api_domain=http://openapi.alipay.com/gateway.do
+#mcloud_api_domain=http://mcloudmonitor.com/gateway.do
+
+#pid=2088421655911433
+#appid=2016122004451491
+#alipay_jg_merId=2088421655911433
+
+#\u52a0\u89e3\u5bc6\u516c\u79c1\u94a5
+#private_key=MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAIOdoCVrr/bWnmPEaDYoPJSH7cfrtGBTMFQjeE2v73GlTEWPjJNs7T6aTPcmXNeIiyLmLzOL8AgArrn2pjgpw04nIetW3ZaiczrRzK3E+zadfEDf4KighWgGeYVgLRfNYirDBnaqQMk3XcvDhYoF6hTZWg4q8ABNcvXTI4FLGWtVAgMBAAECgYBdbCp7xWee55KAMK7kGkV+DMo8iVN8uC/q2U6QnlxxJ6rvCUj4cG4qbK5LFID8QKC6gfdpOGCF3a4otCoiXYqSTxEUuntEqS5rtovxvW/fP3TPLZ3DFFIwt2F7np6dvRQ5sLqRvHWNS4r716XDXfxV/BsflEwaaxAOZ4/6uG1nVQJBAMC28NxyRb/9MdrEufKDjMcuZEnw1TjSJVyuKlS8eSdTvq12viH+ZWeFHYcq9U8ZVN0vKEWUBmCHV8qZlyKS2RMCQQCu1j8cMG0bkQuB8WHtNvs80lRXqIMvfsyDco06JjAdUJfULs187qwSrMN2nhwWQf+8gFSPv7YFfqcfAYHRF173AkEAqVxcwq9eYwJl3OfErr8zahx4II8ZI61zDkc1hnB4XLp5OULAh2llvps6vv5exVvyu8tkrfkPvadT3QYrz0OUpwJBAK2kSV+01Ng5EQXId6rCHXoFpxC8YzYLqBCw94SWItkqjvCEXz/CR5Hwldy8IUcV22kax2FRVPVWGaMYuxawMHcCQGir3STI2uP/RIcShyA12ZfwzYRbJqtAVt3C991l8piDrf5n0lxtSP1TeFZ/L5zjDjCGEveNa5HJuj4re8xhyps=
+#alipay_public_key=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB
+
+# \u5f53\u9762\u4ed8\u6700\u5927\u67e5\u8be2\u6b21\u6570\u548c\u67e5\u8be2\u95f4\u9694\uff08\u6beb\u79d2\uff09
+#max_query_retry=6
+#query_duration=10000
+
+# \u5f53\u9762\u4ed8\u6700\u5927\u64a4\u9500\u6b21\u6570\u548c\u64a4\u9500\u95f4\u9694\uff08\u6beb\u79d2\uff09
+#max_cancel_retry=3
+#cancel_duration=2000
+
+# \u4ea4\u6613\u4fdd\u969c\u7ebf\u7a0b\u7b2c\u4e00\u6b21\u8c03\u5ea6\u5ef6\u8fdf\u548c\u8c03\u5ea6\u95f4\u9694\uff08\u79d2\uff09
+#heartbeat_delay=5
+#heartbeat_duration=900 
+
+#\u63a5\u6536\u652f\u4ed8\u5b9d\u540e\u53f0\u901a\u77e5\u5730\u5740
+#resevAlipayNotifyUrl=http://10.53.70.98/PayWebServer/pay/alipay/recvAlipayNotifyReq.do
+
+#\u652f\u4ed8\u5b9dsftp\u4e0b\u8f7d\u5bf9\u8d26\u5355\u8def\u5f84
+#alipay_sftp_down_path=/download/
+#alipay_downloadBill_path=/home/wasadmin/wxBill/
+#alipay_originalBill_path=/home/wasadmin/alipayBill/
+
+#\u5bf9\u8d26\u5355 sftp \u7528\u6237\u540d
+#sftp_username=openvisezjnxsd
+#\u5bf9\u8d26\u5355 sftp \u5bc6\u7801
+#sftp_password=SRVE9N
+#\u5bf9\u8d26\u5355 sftp \u8bbf\u95eeip
+#sftp_host=sftp.alipay.com
+#\u5bf9\u8d26\u5355 sftp \u8bbf\u95ee\u7aef\u53e3
+#sftp_port=1688
+
+#************************************ \u6d4b\u8bd5\u914d\u7f6e ************************************
+#\u4e92\u8054\u7f51\u524d\u7f6e\u8bf7\u6c42IP uat
+internet_lead_ip=158.222.188.140
+#\u4e92\u8054\u7f51\u524d\u7f6e\u8bf7\u6c42IP \u51c6\u751f\u4ea7
+#internet_lead_ip=158.222.185.65
+
+#\u4e92\u8054\u7f51\u524d\u7f6e\u8bf7\u6c42\u7aef\u53e3 uat
+internet_lead_port=28990
+#\u4e92\u8054\u7f51\u524d\u7f6e\u8bf7\u6c42\u7aef\u53e3 \u51c6\u751f\u4ea7
+#internet_lead_port=28990
+
+#***********************************************************************************
+
+#*******************************  \u63a8\u9001\u914d\u7f6e **********************************************
+#\u7ebf\u4e0a\u652f\u4ed8\u7ed3\u679c\u901a\u77e5IP 
+online_notify_ip=158.220.41.40
+#\u7ebf\u4e0a\u652f\u4ed8\u7ed3\u679c\u901a\u77e5PORT
+online_notify_port=18005
+#\u7ebf\u4e0a\u652f\u4ed8\u7ed3\u679c\u901a\u77e5\u8fde\u63a5\u8d85\u65f6\u65f6\u95f4
+connectTimeout=15000
+
+#\u7ebf\u4e0a\u652f\u4ed8\u7ed3\u679c\u8bfb\u53d6\u8d85\u65f6\u65f6\u95f4
+soTimeout=15000
+
+#\u662f\u5426\u5f00\u542f\u63a8\u9001
+is_push=true
+
+#*******************************  \u63a8\u9001\u914d\u7f6e **********************************************
+
+
+
+#*******************************  T+0\u6e05\u7b97\u914d\u7f6e *******************************************
+#\u8bf7\u6c42\u6e20\u9053IP
+#\u5f00\u53d1\u73af\u5883 
+#send_to_core_ip=158.222.65.158
+#\u6d4b\u8bd5\u73af\u5883
+send_to_core_ip=158.222.65.151
+#\u8bf7\u6c42\u6e20\u9053PORT
+#\u5f00\u53d1\u73af\u5883 
+#send_to_core_port=10561
+#\u6d4b\u8bd5\u73af\u5883
+send_to_core_port=22561
+
+#pos\u7cfb\u7edf\u7f16\u53f7
+pos_platform_id=34
+
+#T+0\u6e05\u7b97\u4ea4\u6613\u7801
+settle_txn_num=502450
+#T+0\u67e5\u8be2\u4ea4\u6613\u7801
+query_txn_num=415502
+
+#\u6e20\u9053\u7f16\u53f7
+channel_id=ICTD
+
+#\u662f\u5426\u5f00\u542f\u6838\u5fc3\u540c\u6b65\u5165\u8d26
+is_to_core_synchronous=true
+
+#*******************************  T+0\u6e05\u7b97\u914d\u7f6e *******************************************
+
+
+#*******************************  \u94f6\u6807\u4e8c\u7ef4\u7801\u914d\u7f6e *******************************************
+#\u53d7\u7406\u673a\u6784\u4ee3\u7801
+#acqCode = 90880023
+acqCode = 49990399
+#acqCode=14293310
+#\u6d88\u8d39\u53d7\u7406\u673a\u6784
+consumeAcqCode = 14293310
+#c2b\u673a\u6784\uff08\u94f6\u884c\uff09\u7aef\u4ea4\u6613\u5730\u5740\uff08\u751f\u6210\u4e8c\u7ef4\u7801\uff09
+#\u4e13\u7ebf
+#qrcB2cIssBackTransUrl=http://c2c.test.95516.com/qrc/api/issBackTransReq.do
+#\u516c\u7f51
+qrcB2cIssBackTransUrl=https://c2c.test.95516.com/qrc/api/issBackTransReq.do
+#qrcB2cIssBackTransUrl=http://127.0.0.1:80/qrc/api/issBackTransReq.do
+#c2b\u673a\u6784\uff08\u6e20\u9053\uff09\u7aef\u4ea4\u6613\u5730\u5740\uff08C2B\u88ab\u626b\u6d88\u8d39\uff09
+#\u4e13\u7ebf
+#qrcB2cMerBackTransUrl=http://c2c.test.95516.com/qrc/api/merBackTransReq.do
+#\u516c\u7f51
+qrcB2cMerBackTransUrl=https://c2c.test.95516.com/qrc/api/merBackTransReq.do
+
+#c2b\u673a\u6784\uff08\u6e20\u9053\uff09\u7aef\u4ea4\u6613\u5730\u5740\uff08C2B\u88ab\u626b\u6d88\u8d39\u67e5\u8be2\uff09
+qrcBackTransUrl=http://c2c.test.95516.com/qrc/api/backTransReq.do
+
+#\u63a5\u6536\u94f6\u8054\u540e\u53f0\u901a\u77e5\u5730\u5740
+resevCupsNotifyUrl=ZX|http://145.40.73.94:8081/PayWebServer/pay/cups/recvCupsNotifyReq.do
+
+
+#\u514d\u5bc6\u9650\u989d  \u5355\u4f4d\uff1a\u5206
+pinFree=0
+#\u6700\u5927\u4ea4\u6613\u91d1\u989d  \u5355\u4f4d\uff1a\u5206
+maxAmont=100000
+#*******************************  \u94f6\u6807\u4e8c\u7ef4\u7801\u914d\u7f6e  *******************************************
+
+#******************************* \u4e30\u6536\u4e92\u8054\u67e5\u8be2\u8ba2\u5355*******************************************
+
+#\u4e30\u6536\u4e92\u8054\u67e5\u8be2\u8ba2\u5355\u6700\u5927\u67e5\u8be2\u6b21\u6570
+max_query_fshl=3
+#\u662f\u5426\u5f00\u542f\u8f6e\u8be2
+is_query_fshl=true
+
+#******************************* \u4e30\u6536\u4e92\u8054\u67e5\u8be2\u8ba2\u5355*******************************************
+
+#\u4e0b\u8f7d\u5fae\u4fe1\u5bf9\u8d26\u5355\u901f\u7387\u9650\u5236   12kb/s
+download_speed=40
+
+socketConnNum=500
+
+#*******************************\u5546\u6237\u9650\u989d*******************************************
+#***\u65e5\u9650\u989d
+limitAmtDay=000000100000
+#***\u6708\u9650\u989d
+limitAmtMonth=000001000000
+
+# true:jianlian false:zhilian
+asdk.switch=false
+
+asdk.notifyUrl = http://ysh.jijiaming.com/PayWebServer/pay/alipay/recvAlipayNotifyReqYL.do
+#asdk.frontTransUrl=http://9.234.252.112:80/ali/aligateway
+asdk.frontTransUrl=https://apay.test.95516.com/ali/aligateway
+
+# \u5546\u6237\u5165\u9a7b---\u95f4\u8fde\u5546\u6237\u5206\u7ea7\u5165\u9a7b\u63a5\u53e3
+asdk.indirectCreate = ant.merchant.expand.indirect.create
+# \u5546\u6237\u4fe1\u606f\u67e5\u8be2---\u95f4\u8fde\u5546\u6237\u5206\u7ea7\u4fe1\u606f\u67e5\u8be2
+asdk.indirectQuery = ant.merchant.expand.indirect.query
+# \u5546\u6237\u4fe1\u606f\u4fee\u6539---\u5546\u6237\u5206\u7ea7\u4e0e\u4fe1\u606f\u4fee\u6539
+asdk.indirectModify = ant.merchant.expand.indirect.modify
+#\u95f4\u8fde\u5546\u6237\u8f6c\u79fb\u7ed9\u94f6\u8054\u7f51\u8054\u63a5\u53e3
+asdk.indirectTransfer = ant.merchant.expand.indirect.transfer
+# \u626b\u7801\u652f\u4ed8---\u7edf\u4e00\u6536\u5355\u7ebf\u4e0b\u4ea4\u6613\u9884\u521b\u5efa
+asdk.tradePrecreate = alipay.trade.precreate
+# \u6761\u7801\u652f\u4ed8---\u7edf\u4e00\u6536\u5355\u4ea4\u6613\u652f\u4ed8\u63a5\u53e3
+asdk.tradePay = alipay.trade.pay
+# \u7edf\u4e00\u4e0b\u5355---\u7edf\u4e00\u6536\u5355\u4ea4\u6613\u521b\u5efa\u63a5\u53e3
+asdk.tradeCreate = alipay.trade.create
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u64a4\u9500
+asdk.tradeCancel = alipay.trade.cancel
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u9000\u6b3e\u67e5\u8be2
+asdk.tradeRefundQuery = alipay.trade.fastpay.refund.query
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u9000\u6b3e\u63a5\u53e3
+asdk.tradeRefund = alipay.trade.refund
+# \u7edf\u4e00\u6536\u5355\u7ebf\u4e0b\u4ea4\u6613\u67e5\u8be2
+asdk.tradeQuery = alipay.trade.query
+#\u5173\u95ed\u8ba2\u5355
+asdk.tradeClose = alipay.trade.close 
+
+#0.2%
+yl_pid_20=2088131795640121
+#0.1%
+yl_pid_10=2088131795640130
+#0%
+yl_pid_00=2088131795640143
+#0.6%
+yl_pid_60=2088131785469280
+
+
+# true:jianlian false:zhilian
+tsdk.switch=true
+
+##2\u3001\u63a5\u53e3\u5730\u5740
+# \u63a5\u53e3\u5730\u5740\u524d\u7f00
+#tsdk.frontTransUrl = http://9.234.252.96:80/wx/v1
+tsdk.frontTransUrl = https://tpay.test.95516.com/wx/v1
+
+tsdk.notifyUrl = http://ysh.jijiaming.com/PayWebServer/pay/wx/recvWxNotifyReqYL.mvc
+# \u67e5\u8be2\u8ba2\u5355
+tsdk.orderqueryUrlSuffix = /pay/order/qry
+# \u5237\u5361\u652f\u4ed8  
+tsdk.micropayUrlSuffix = /pay/micropay
+# \u9884\u4e0b\u5355
+tsdk.prepayUrlSuffix = /pay/prepay
+# \u64a4\u9500\u8ba2\u5355 
+tsdk.orderreverseUrlSuffix = /pay/order/reverse
+# \u5173\u95ed\u8ba2\u5355 
+tsdk.ordercloseUrlSuffix = /pay/order/close
+# \u67e5\u8be2\u5355\u7b14\u9000\u6b3e 
+tsdk.qrysingleUrlSuffix = /pay/refund/qry/single
+# \u67e5\u8be2\u591a\u7b14\u9000\u6b3e 
+tsdk.qrymultipleUrlSuffix = /pay/refund/qry/multiple
+# \u9000\u6b3e
+tsdk.refundUrlSuffix = /pay/refund
+# \u4e0b\u5c5e\u5546\u6237\u5f55\u5165
+tsdk.submchaddUrlSuffix = /submch/manage/add
+# \u4e0b\u5c5e\u5546\u6237\u67e5\u8be2
+tsdk.submchqryUrlSuffix = /submch/qry
+
+spnsrId = 00010000
+
+unionPay.backUrl = "http://127.0.0.1:8080/PayWebServer/pay/cups/recvCupsNotifyReq.do"
+

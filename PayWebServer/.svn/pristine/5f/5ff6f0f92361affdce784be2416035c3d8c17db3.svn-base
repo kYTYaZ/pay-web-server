@@ -1,0 +1,106 @@
+package com.huateng.pay.manager.weixin;
+
+import java.util.Map;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+
+/**
+ * 微信支付交易业务处理模块接口
+ * @author guohuan
+ *
+ */
+public interface IWxManager {
+
+	/**
+	 * 微信统一下单请求处理(第一次去下单)
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toWxUnifiedOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 微信被扫支付(刷卡)请求处理
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toWxMicroPay(InputParam input) throws FrameException;
+	
+	/**
+	 * 发起到微信申请退款
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toWxRefundOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 处理微信后台通知的订单状态
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toWxRecivBack(InputParam input) throws FrameException;
+	
+	public OutputParam toWxRecivBackYL(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信支付统一下单新增订单表信息
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam addConsumeOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信支付被扫撤销新增订单表信息
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam addRevokeOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信断直连撤销新增订单表信息
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam addRevokeOrderYL(InputParam input) throws FrameException;
+	
+	/**
+	 * 更新微信订单状态
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam updateConsumeOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 获取微信授权码
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam getWxAuthCode(InputParam input) throws FrameException;
+	
+	/**
+	 * 线上微信统一下单请求处理
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toWxUnifiedOrderOnLine(InputParam input) throws FrameException;
+	
+	/**
+	 * 查询微信订单信息
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam toQueryWxOrder(InputParam input) throws FrameException;
+
+}

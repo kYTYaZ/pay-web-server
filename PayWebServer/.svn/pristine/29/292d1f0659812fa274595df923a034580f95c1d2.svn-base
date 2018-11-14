@@ -1,0 +1,279 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: IOrderService.java
+ * Author:   sunguohua
+ * Date:     2014-8-6 下午12:33:47
+ * Description: //模块目的、功能描述
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.services.db;
+
+import java.util.List;
+import java.util.Map;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.wldk.framework.db.PageVariable;
+/**
+ * 订单信息处理接口类
+ * 
+ * @author sunguohua
+ */
+public interface IOrderService {
+	
+	/**
+	 * 获取订单号
+	 * @return
+	 */
+	public  String getOrderNo() throws FrameException;
+	/**
+	 * 获取订单号
+	 * @return
+	 */
+	public  String getOrderNo(String channel) throws FrameException;
+    /**
+     * 插入订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author tpf
+     */
+    public OutputParam insertOrder(InputParam input) throws FrameException;
+
+    /**
+     * 
+           * 查询订单
+     * @param input
+     * @return
+     * @author tpf
+     */
+    public OutputParam queryOrder(InputParam input) throws FrameException;
+    
+    /**
+     * 
+           * 查询月表订单
+     * @param input
+     * @return
+     */
+    public OutputParam queryOrderMonth(InputParam input) throws FrameException;
+    /**
+     * 查询商户当天可退款金额
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author zlg
+     */
+    public OutputParam queryMerEnableMoneyByDay(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 查询C2B订单
+     * 
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public OutputParam queryC2BOrder(InputParam input) throws FrameException;
+    
+   /**
+    * 查询订单并且锁定记录
+    * @param inputParam
+    * @return
+    * @throws FrameException
+    * @author tpf
+    */
+   public OutputParam queryOrderForUpate(InputParam inputParam) throws FrameException;
+ 
+   /**
+    * 根据订单号查询订单信息
+    * @param txnSeqId 流水号
+    * @return
+    * @throws FrameException
+    * @author tpf
+    */
+   public OutputParam queryOrderByTxnSeqId(String txnSeqId) throws FrameException;
+  
+   /**
+   * 根据订单号查询订单信息锁定记录
+   * @param txnSeqId 流水号
+   * @return
+   * @throws FrameException
+   * @author tpf
+   */
+   public OutputParam queryOrderByTxnSeqIdForUpdate(String txnSeqId) throws FrameException;
+
+   /**
+    * 根据订单号更新订单
+    * @param params
+    * @return
+    * @throws FrameException
+    * @author tpf
+    */
+   public OutputParam updateOrderByTxnSeqId(String  txnSeqId) throws FrameException;
+   
+   /**
+    * 更行订单状态
+    * @param orderParam
+    * @return
+    * @throws FrameException
+    */
+   public OutputParam updateOrderState(InputParam inputParam) throws FrameException;
+
+   /**
+    * 更新订单表
+    * @param orderParam
+    * @return
+    * @throws FrameException
+    * @author tpf
+    */
+   public OutputParam updateOrder(InputParam inputParam) throws FrameException;
+   
+   /**
+    * 更新C2B订单表
+    * @param orderParam
+    * @return
+    * @throws FrameException
+    * @authorghl
+    */
+   public OutputParam updateC2BOrder(InputParam inputParam) throws FrameException;
+   
+    /**
+     * 更新微信支付订单信息
+     * @param input
+     * @return
+     * @throws FrameException
+     */
+    public OutputParam updateWxOrderInfo(InputParam input) throws FrameException;
+    
+    /**
+     * 查询微信支付订单状态是否支付成功
+     */
+    public OutputParam queryWxOrderSta(InputParam input) throws FrameException;
+    
+    /**
+     * 更新累计退货总金额
+     * @param input
+     * @return
+     * @throws FrameException
+     */
+    public OutputParam updateRefundTotalAmount(String txnSeqId, String txnDt,String txnTm, String totalRefundFee) throws FrameException;
+    
+    /**
+     * 分页查询订单信息
+     * @param queryMap
+     * @param page
+     * @return
+     * @throws FrameException
+     */
+    public OutputParam queryOrderByPage (Map<String, String> queryMap, PageVariable page)throws FrameException;
+    
+    /**
+     * 查询订单总数
+     * @param queryMap
+     * @return
+     * @throws FrameException
+     */
+    public int queryOrderNumber (Map<String, String> queryMap)throws FrameException;
+  
+	  /**
+     * 查询三码合一流水信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	public List<Map<String, Object>> queryThreadCodeStatement(InputParam input,PageVariable page)	throws FrameException;
+	
+	/**
+	 * 查询三码合一流水汇总
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String,Object>> queryThreeCodeBillSummary(InputParam input)	throws FrameException;
+	
+	/**
+	 * 分页查询三码合一流水明细
+	 * @param input
+	 * @param page
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String,Object>> queryThreeCodeBillDetail(InputParam input,PageVariable page)throws FrameException;
+	
+	
+	/**
+     * 插入C2B订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author tpf
+     */
+    public OutputParam insertC2BOrder(InputParam input) throws FrameException;
+    
+    /**
+     * 插入他行扫本行C2B订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public OutputParam insertC2BOtherOrder(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 查询他行扫本行C2B订单
+     * 
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public OutputParam queryC2BOtherOrder(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 更新他行扫本行C2B订单
+     * 
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public OutputParam updateC2BOtherOrder(InputParam input) throws FrameException;
+    
+    /**
+     * 
+     * 查询T+0入账标识为未知的交易总数
+     * 
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public int queryUnknowSettleNumber(Map<String, String> queryMap) throws FrameException;
+    
+    /**
+     * 
+     * 查询T+0入账标识为未知的交易明细
+     * 
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+    public OutputParam queryUnknowSettleOrders(Map<String, String> queryMap) throws FrameException;
+	
+}

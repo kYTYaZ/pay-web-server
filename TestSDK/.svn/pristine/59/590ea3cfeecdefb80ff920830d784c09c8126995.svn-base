@@ -1,0 +1,54 @@
+package com.util;
+
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class CommonUtil {
+
+	public static String getOrderNo() {
+		return new SimpleDateFormat("MMDDHHmmss").format(new Date());
+	}
+
+	/**
+	 * ×Ö·û²¹È«
+	 * @param content
+	 * @return
+	 */
+	public static String fillString(int content){
+		return String.format("%06d", content);
+	}
+	
+	public static String fillString(String content){
+		try {
+			return String.format("%06d", content.getBytes("UTF-8").length);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static void sleepTime(int time){
+		try {
+			Thread.sleep(time);
+			System.out.println();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sleepTime(int time,boolean flag){
+		try {
+			Thread.sleep(time);
+			if(flag){
+				System.out.println();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+}

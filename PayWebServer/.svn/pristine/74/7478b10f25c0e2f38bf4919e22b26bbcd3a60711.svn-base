@@ -1,0 +1,45 @@
+package com.huateng.pay.common.validate;
+
+import com.huateng.pay.common.constants.Dict;
+
+public class YlAliValidation {
+
+	/** 断直连支付宝商户修改 */
+	public static final String[] vali_YlAliEditMer = { Dict.name, Dict.aliasName, Dict.servicePhone, Dict.contactName,
+			Dict.contactType, Dict.idCardNo, Dict.categoryId, Dict.merId, Dict.alipayMerchantId };
+
+	/** 断直连支付宝商户新增 */
+	public static String[] vali_YlAliCreateMer = { Dict.merId, Dict.name, Dict.aliasName, Dict.servicePhone,
+			Dict.contactName, Dict.contactType, Dict.idCardNo, Dict.categoryId, Dict.channel };
+
+	/** 断直连支付宝商户查询 */
+	public static String[] vali_YlAliQueryMer = { Dict.channel, Dict.alipayMerchantId, Dict.merId };
+
+	/** 断直连支付宝订单查询 */
+	public static String[] vali_YlAliQuery = {};
+
+	/** 断直连支付宝撤销交易 */
+	public static String[] vali_YlAliRevoke = { Dict.orderNumber, Dict.orderTime, Dict.orderAmount, Dict.merId,
+			Dict.transType, Dict.channel, Dict.payAccessType, Dict.initOrderNumber, Dict.initOrderTime };
+
+	/** 断直连支付宝扫码支付 */
+	public static String[] vali_YlAliPreCreate = { Dict.orderNumber, Dict.orderTime, Dict.orderAmount, Dict.merId,
+			Dict.merName, Dict.transType, Dict.payType, Dict.currencyType, Dict.channel, Dict.payAccessType,
+			Dict.subject, Dict.storeId, Dict.termId, Dict.alipayMerchantId };
+
+	/** 断直连支付宝一码通 */
+	public static String[] vali_YlAliYmt = { Dict.orderNumber, Dict.orderTime, Dict.orderAmount, Dict.merId,
+			Dict.merName, Dict.transType, Dict.payType, Dict.currencyType, Dict.channel, Dict.payAccessType,
+			Dict.subject, Dict.storeId, Dict.alipayMerchantId, Dict.buyerId };
+
+	/** 断直连支付宝关闭订单 */
+	public static String[] vali_YlAliClose = { Dict.initTxnSeqId, Dict.initTxnTime, Dict.merId };
+
+	/** 断直连支付宝被扫交易 */
+	public static final String[] vali_YlAliMicroPay = { Dict.orderNumber, Dict.orderTime, Dict.merId, Dict.merName,
+			Dict.scene, Dict.authCode, Dict.subject, Dict.storeId, Dict.alipayMerchantId };
+	
+	/** 支付宝存量商户迁移 */
+	public static final String[] vali_YlAliTransfer = { Dict.merId, Dict.alipayMerchantId };
+
+}

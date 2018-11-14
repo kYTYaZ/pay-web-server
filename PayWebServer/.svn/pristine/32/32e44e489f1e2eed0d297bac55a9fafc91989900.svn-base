@@ -1,0 +1,775 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: OrderDaoImpl.java
+ * Author:   justin
+ * Date:     2014-8-6 下午1:59:18
+ * Description: //模块目的、功能描述
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.dao.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.pay.common.constants.SqlVmConstants;
+import com.huateng.pay.common.util.StringUtil;
+import com.huateng.pay.dao.inter.IOrderDao;
+import com.wldk.framework.dao.JdbcSpringDaoFromWorkManagerUtil;
+import com.wldk.framework.db.PageVariable;
+import com.wldk.framework.db.ParameterProvider;
+
+/**
+ * 订单dao实现类
+ * 
+ * @author justin
+ * @see 1.0
+ * @since 1.0
+ */
+public class OrderDaoImpl extends JdbcSpringDaoFromWorkManagerUtil implements IOrderDao {
+
+	private static Logger logger = LoggerFactory.getLogger(OrderDaoImpl.class);
+	
+	 /**
+     * 查询订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryOrder(Map<String,String> queryMap)	throws FrameException {
+		
+		try {
+			
+			queryMap.put("sqlName", "queryOrder");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	 /**
+     * 查询商户当天可退款金额
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author zlg
+     */
+	@Override
+	public List<Map<String, Object>> queryMerEnableMoneyByDay(Map<String,String> queryMap)	throws FrameException {
+		
+		try {
+			
+			queryMap.put("sqlName", "queryMerEnableMoneyByDay");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	/**
+     * 查询C2B订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryC2BOrder(Map<String, String> queryMap) throws FrameException {
+		try {
+			
+			queryMap.put("sqlName", "queryC2BOrder");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.C2BOrder.C2B_ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	/**
+     * 查询他行扫本行C2B订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryC2BOtherOrder(Map<String, String> queryMap) throws FrameException {
+		try {
+			
+			queryMap.put("sqlName", "queryC2BOtherOrder");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.C2BOtherOrder.C2B_ORDER_OTHER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	/**
+     * 查询他行扫本行C2B订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public boolean insertC2BOtherOrder(Map<String, String> insertMap) throws FrameException {
+		try {
+	    	
+			insertMap.put("sqlName", "insertC2BOtherOrder");
+	    	
+	    	return executeUpdate(insertMap, SqlVmConstants.C2BOtherOrder.C2B_ORDER_OTHER_001);
+	    	
+	    } catch (Exception e) {
+	    	logger.error(e.getMessage(),e);
+	      throw new FrameException(e.getMessage());
+	    }
+	}
+
+	
+	/**
+     * 查询订单并且锁定记录
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryOrderForUpdate(Map<String,String> queryMap)throws FrameException {
+
+		try {
+			
+			queryMap.put("sqlName", "queryOrderForUpdate");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	 /**
+     * 根据订单号查询订单
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryOrderByTxnSeqId(String txnSeqId) throws FrameException {
+		
+		try {
+			
+			Map<String, String> queryMap = new HashMap<String, String>();
+			queryMap.put("txnSeqId", txnSeqId);
+			queryMap.put("sqlName", "queryOrderByTxnSeqId");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	
+	 /**
+     * 根据订单号更新订单
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public List<Map<String, Object>> queryOrderByTxnSeqIdForUpdate(String txnSeqId) throws FrameException {
+		try {
+			
+			Map<String, String> queryMap = new HashMap<String, String>();
+			queryMap.put("txnSeqId", txnSeqId);
+			queryMap.put("sqlName", "queryOrderByTxnSeqIdForUpdate");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+   
+	/**
+     * 新增订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public boolean insertOrder(Map<String, String> insertMap) throws FrameException {
+		
+		try {
+	    	
+			insertMap.put("sqlName", "insertOrder");
+	    	
+	    	return executeUpdate(insertMap, SqlVmConstants.Order.ORDER_001);
+	    	
+	    } catch (Exception e) {
+	    	logger.error(e.getMessage(),e);
+	      throw new FrameException(e.getMessage());
+	    }
+	}
+	
+	/**
+     * 新增C2B订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author ghl
+     */
+	@Override
+	public boolean insertC2BOrder(Map<String, String> insertMap) throws FrameException {
+
+		try {
+	    	
+			insertMap.put("sqlName", "insertC2BOrder");
+	    	
+	    	return executeUpdate(insertMap, SqlVmConstants.C2BOrder.C2B_ORDER_001);
+	    	
+	    } catch (Exception e) {
+	    	logger.error(e.getMessage(),e);
+	      throw new FrameException(e.getMessage());
+	    }
+	}
+	
+	 /**
+     * 更新订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */ 
+	@Override
+	public boolean updateOrder(Map<String, String> updateMap)	throws FrameException {
+		try {
+		
+			updateMap.put("sqlName", "updateOrder");
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }    
+	}
+	
+	
+	 /**
+     * 更新C2B订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */ 
+	@Override
+	public boolean updateC2BOrder(Map<String, String> updateMap) throws FrameException {
+		try {
+			
+			updateMap.put("sqlName", "updateC2BOrder");
+            return executeUpdate(updateMap, SqlVmConstants.C2BOrder.C2B_ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }  
+	}
+	
+	/**
+     * 更新他行扫本行C2B订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */ 
+	@Override
+	public boolean updateC2BOtherOrder(Map<String, String> updateMap) throws FrameException {
+		try {
+			
+			updateMap.put("sqlName", "updateC2BOtherOrder");
+            return executeUpdate(updateMap, SqlVmConstants.C2BOtherOrder.C2B_ORDER_OTHER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        } 
+	}
+	
+	 /**
+     * 更新订单表锁定记录
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */ 
+	@Override
+	public boolean updateOrderForUpdate(Map<String, String> updateMap) throws FrameException {
+		try {
+			
+			updateMap.put("sqlName", "updateOrder");
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }    
+	}
+    /**
+     * 根据订单号更新订单
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public boolean updateOrderByTxnSeqId(String txnSeqId) throws FrameException {
+		try {
+			Map<String, String> updateMap = new HashMap<String, String>();
+			updateMap.put("txnSeqId", txnSeqId);
+			updateMap.put("sqlName", "updateOrderByTxnSeqId");
+        	
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }    
+	}
+	
+	/**
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public boolean updateOrderByTxnSeqIdForUpdate(String txnSeqId)	throws FrameException {
+		try {
+			
+			Map<String, String> updateMap = new HashMap<String, String>();
+			updateMap.put("txnSeqId", txnSeqId);
+			updateMap.put("sqlName", "updateOrderByTxnSeqIdForUpdate");
+        	
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }    
+	}
+	 
+	/**
+     * 更新订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateOrderState(Map<String, String> updateMap) throws FrameException {
+
+        try {
+        	updateMap.put("sqlName", "updateOrderState");
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }
+    }
+  
+	 /**
+     * 根据订单号更新订单锁定记录
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+	@Override
+	public boolean updateOrderStateForUpdate(Map<String, String> updateMap) throws FrameException {
+		
+		try {
+			
+			updateMap.put("sqlName", "updateOrderStateForUpdate");
+        	
+            return executeUpdate(updateMap, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }    
+	}
+
+    @Override
+    public List<Map<String, Object>> queryOrder(String mchtNo, String orderId, String orderTime, String txnType)
+            throws FrameException {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("mchtId", new String[] { mchtNo });
+        params.put("orderId", new String[] { orderId });
+        if (!StringUtil.isEmpty(orderTime)) {
+            params.put("orderTime", new String[] { orderTime });
+        }
+        params.put("txnType", new String[] { txnType });
+        params.put("sqlName", new String[] { "queryTxnSeq" });
+        List<Map<String, Object>> orderSeq = null;
+        try {
+            orderSeq = queryMap(params, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }
+        return orderSeq;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.huateng.pay.dao.inter.IOrderDao#queryOrderSta(java.lang.String, java.lang.String, java.lang.String,
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<Map<String, Object>> queryOrderSta(String mchtNo, String orderId, String orderTime, String secMerId,
+            String accessType) throws FrameException {
+        Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("mchtId", new String[] { mchtNo });
+        params.put("orderId", new String[] { orderId });
+        params.put("txnOrDt", new String[] { orderTime.substring(0, 8) });
+//        params.put("txnOrTm", new String[] { orderTime.substring(8, 14) });
+        if (!StringUtil.isEmpty(secMerId)) {
+            params.put("secMerId", new String[] { secMerId });
+        }
+        params.put("accessType", new String[] { accessType });
+        params.put("sqlName", new String[] { "queryTxnOrder" });
+        List<Map<String, Object>> orderSeq = null;
+        try {
+            orderSeq = queryMap(params, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+            throw new FrameException(e.getMessage());
+        }
+        return orderSeq;
+    }
+
+
+
+    @Override
+    public List<Map<String, Object>> queryRealOrderByMer(Map<String, String[]> orderParam) throws FrameException {
+        orderParam.put("sqlName", new String[] { "queryOrderTxnByMer" });
+        List<Map<String, Object>> selL = new ArrayList<Map<String, Object>>();
+        try {
+            selL = queryMap(orderParam, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(),e);;
+            throw new FrameException(e.getMessage());
+        }
+        return selL;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.huateng.pay.dao.inter.IOrderDao#queryOrderTxnBySeqId(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<Map<String, Object>> queryOrderTxnBySeqIdForUpdate(String txnSeqId, String txnDt,String txnType)
+            throws FrameException {
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("txnSeqId", txnSeqId);
+            params.put("txnDt", txnDt);
+            if(!StringUtil.isEmpty(txnType)){
+                params.put("txnType", txnType);    
+            }
+            params.put("sqlName", "queryOrderTxnBySeqIdForUpdate");
+            return queryMapS(params, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(),e);
+            throw new FrameException(e.getMessage());
+        }
+    }
+
+    /**
+     * 更新订单状态
+     * @param params
+     * @return
+     * @throws FrameException
+     */
+    public boolean tblcpordertxnStaUpdate(Map<String, String> params) throws FrameException {
+        params.put("sqlName", "tblcpordertxnStaUpdate");
+        try {
+            return executeUpdate(params, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(),e);
+            throw new FrameException(e.getMessage());
+        }
+    }
+    
+    /**
+     * 查询微信支付订单信息
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    @Override
+    public List<Map<String, Object>> queryWxOrder(Map<String, String> params) throws FrameException{
+	    try {
+	        params.put("sqlName", "queryWxOrder");
+	        return queryMapS(params, SqlVmConstants.Order.ORDER_001);
+	    } catch (Exception e) {
+	    	throw new FrameException(e.getMessage());
+	    }
+    }
+    
+    /**
+     * 查询微信支付订单信息forUpdate
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    @Override
+    public List<Map<String, Object>> queryWxOrderForUpdate(Map<String, String> params) throws FrameException{
+	    try {
+	        params.put("sqlName", "queryWxOrderForUpdate");
+	        return queryMapS(params, SqlVmConstants.Order.ORDER_001);
+	    } catch (Exception e) {
+	    	throw new FrameException(e.getMessage());
+	    }
+    }
+
+    /**
+     * 查询微信支付订单状态
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    @Override
+	public List<Map<String, Object>> queryWxOrderSta(Map<String, String> params) throws FrameException {
+	    try {
+	        params.put("sqlName", "queryWxOrderSta");
+	        return queryMapS(params, SqlVmConstants.Order.ORDER_001);
+	    } catch (Exception e) {
+	    	throw new FrameException(e.getMessage());
+	    }
+    }
+    
+    /**
+     * 更新微信支付订单信息
+     */
+    @Override
+	public boolean UpdateWxOrder(Map<String, String> orderParam) throws FrameException {
+    	orderParam.put("sqlName", "updateWxOrder");
+        try {
+            return executeUpdate(orderParam, SqlVmConstants.Order.ORDER_001);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(),e);
+            throw new FrameException(e.getMessage());
+        }
+	}
+    
+    /**
+     * 查询微信对账单的订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	@Override
+	public List<Map<String, Object>> queryWxBillOrder(Map<String,String> queryMap)	throws FrameException {
+		try {
+			queryMap.put("sqlName", "queryWxBillOrder");
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+			return orderList;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	@Override
+    public boolean updateRefundTotalAmount(String txnSeqId, String txnDtTm,String txnTm, String totalRefundFee) throws FrameException {
+        try {
+        	
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("txnSeqId", txnSeqId);
+            params.put("txnDt", txnDtTm);
+            params.put("txnTm", txnTm);
+            params.put("totalRefundFee", totalRefundFee);
+            params.put("sqlName", "updateRefundTotalFee");
+            
+            return executeUpdate(params, SqlVmConstants.Order.ORDER_001);
+            
+        } catch (Exception e) {
+        	logger.error(e.getMessage(),e);
+            throw new FrameException(e.getMessage());
+        }
+    }
+	
+	/**
+	 * 查询订单信息总数
+	 */
+	@Override
+	public int queryOrderNumber(Map<String, String> queryMap)throws FrameException {
+			
+		try {
+			
+			queryMap.put("sqlName", "queryOrderNumber");
+			int totalNumber = queryTotalNumber(queryMap, SqlVmConstants.Order.ORDER_001); 
+			
+			return totalNumber;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+	/**
+	 * 分页查询订单信息
+	 */
+	@Override
+	public List<Map<String, Object>> queryOrderByPage(Map<String, String> queryMap, PageVariable page)throws FrameException {
+		
+		try {
+			
+			ParameterProvider paramProvider = new ParameterProvider();
+			queryMap.put("sqlName", "queryOrder");
+			paramProvider.addParameters(queryMap);
+			List<Map<String, Object>>  orderList = queryMap(paramProvider, SqlVmConstants.Order.ORDER_001 ,page);
+
+			return orderList;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	
+	 /**
+     * 查询三码合一流水信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	@Override
+	public List<Map<String, Object>> queryThreadCodeStatement(Map<String, String> queryMap,PageVariable page) throws FrameException {
+		try {
+			
+			ParameterProvider paramProvider = new ParameterProvider();
+			queryMap.put("sqlName", "queryThreadCodeStatement");
+			paramProvider.addParameters(queryMap);
+			return queryMap(paramProvider, SqlVmConstants.Order.ORDER_001 ,page);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 分页查询三码合一流水明细
+	 */
+	@Override
+	public List<Map<String, Object>> queryThreeCodeBillDetail(Map<String,String> queryMap,PageVariable page) throws FrameException {
+		try {
+			
+			ParameterProvider paramProvider = new ParameterProvider();
+			queryMap.put("sqlName", "queryThreeCodeBillDetails");
+			paramProvider.addParameters(queryMap);
+			return queryMap(paramProvider, SqlVmConstants.Order.ORDER_001 ,page);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 查询三码合流水一汇总
+	 */
+	@Override
+	public List<Map<String, Object>> queryThreeCodeBillSummary(Map<String,String> queryMap)throws FrameException {
+		try {
+			
+			queryMap.put("sqlName", "queryThreeCodeBillSummary");
+
+			List<Map<String, Object>>  orderList = queryMapS(queryMap, SqlVmConstants.Order.ORDER_001);
+		
+			return orderList;
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 查询T+0入账标识为未知的交易总数
+	 */
+	@Override
+	public int queryUnknowSettleNumber(Map<String, String> queryMap) throws FrameException {
+		try{
+			
+			queryMap.put("sqlName", "queryUnknowSettleOrderNumber");
+			
+			int totalNumber = queryTotalNumber(queryMap, SqlVmConstants.Order.ORDER_001); 
+			
+			return totalNumber;
+			
+		}catch(Exception e){
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	/**
+	 * 查询T+0入账标识为未知的交易明细
+	 */
+	@Override
+	public List<Map<String, Object>> queryUnknowSettleOrders(Map<String, String> queryMap) throws FrameException { 
+		try{
+			
+			queryMap.put("sqlName", "queryUnknowSettleOrders");
+			
+			ParameterProvider paramProvider = new ParameterProvider();
+	        paramProvider.addParameters(queryMap);
+			
+			List<Map<String, Object>>  orderList = queryMap(paramProvider, SqlVmConstants.Order.ORDER_001); 
+			
+			return orderList;
+			
+		}catch(Exception e){
+			throw new FrameException(e.getMessage());
+		}
+	}
+
+	
+
+	
+	
+
+	
+
+	
+
+}

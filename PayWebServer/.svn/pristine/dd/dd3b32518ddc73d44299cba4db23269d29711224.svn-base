@@ -1,0 +1,357 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: IOrderDao.java
+ * Author:   justin
+ * Date:     2014-8-6 下午1:58:54
+ * Description: //模块目的、功能描述      
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.dao.inter;
+
+import java.util.List;
+import java.util.Map;
+
+import com.huateng.frame.exception.FrameException;
+import com.wldk.framework.db.PageVariable;
+
+/**
+ * 订单dao接口类
+ * 
+ * @author justin
+ * @see 1.0
+ * @since 1.0
+ */
+public interface IOrderDao {
+  
+    /**
+     * 查询订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public List<Map<String, Object>> queryOrder(Map<String,String> queryMap) throws FrameException;
+    
+    /**
+           * 查询月表订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+    public List<Map<String, Object>> queryOrderMonth(Map<String,String> queryMap) throws FrameException;
+    
+    /**
+     * 查询商户当天可退款金额
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author zlg
+     */
+    public List<Map<String, Object>> queryMerEnableMoneyByDay(Map<String,String> queryMap) throws FrameException;
+    
+    /**
+     * 查询C2B订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author ghl
+     */
+    public List<Map<String, Object>> queryC2BOrder(Map<String,String> queryMap) throws FrameException;
+    
+    /**
+     * 查询订单并且锁定记录
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public List<Map<String, Object>> queryOrderForUpdate(Map<String,String> queryMap) throws FrameException;
+  
+    /**
+     * 根据订单号查询订单信息
+     * @param txnSeqId 流水号
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public List<Map<String, Object>> queryOrderByTxnSeqId(String txnSeqId) throws FrameException;
+   
+    /**
+    * 根据订单号查询订单信息锁定记录
+    * @param txnSeqId 流水号
+    * @return
+    * @throws FrameException
+    * @author tpf
+    */
+    public List<Map<String, Object>> queryOrderByTxnSeqIdForUpdate(String txnSeqId) throws FrameException;
+
+    /**
+     * 根据订单号更新订单
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateOrderByTxnSeqId(String  txnSeqId) throws FrameException;
+    
+    /**
+     * 根据订单号更新订单锁定记录
+     * @param params
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateOrderByTxnSeqIdForUpdate(String  txnSeqId) throws FrameException;
+
+    /**
+     * 更行订单状态
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     */
+    public boolean updateOrderState(Map<String, String> updatMap) throws FrameException;
+    
+    /**
+     * 更行订单状态锁定记录
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     */
+    public boolean updateOrderStateForUpdate(Map<String, String> updatMap) throws FrameException;
+ 
+    /**
+     * 更新订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateOrder(Map<String, String> updatMap) throws FrameException;
+    
+    /**
+     * 更新C2B订单表
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateC2BOrder(Map<String, String> updatMap) throws FrameException;
+    
+    /**
+     * 更新订单表锁定记录
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean updateOrderForUpdate(Map<String, String> updateMap) throws FrameException;
+
+    /**
+     * 新增订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean insertOrder(Map<String, String> orderParam) throws FrameException;
+    
+    /**
+     * 新增订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author tpf
+     */
+    public boolean insertC2BOrder(Map<String, String> orderParam) throws FrameException;
+    
+    /**
+     * 新增订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author ghl
+     */
+    public boolean insertC2BOtherOrder(Map<String, String> orderParam) throws FrameException;
+    
+    
+    /**
+     * 查询C2B他行扫本行订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author ghl
+     */
+    public List<Map<String, Object>> queryC2BOtherOrder(Map<String, String> queryMap) throws FrameException;
+    
+    /**
+     * 更新C2B他行扫本行订单
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     * @author ghl
+     */
+    public boolean updateC2BOtherOrder(Map<String, String> updatMap) throws FrameException;
+
+    /**
+     * 根据订单号查询订单并且锁定记录
+     * @param txnSeqId
+     * @param txnDt
+     * @param txnType
+     * @return
+     * @throws FrameException
+     * @author 
+     */
+    public List<Map<String, Object>> queryOrderTxnBySeqIdForUpdate(String txnSeqId, String txnDt,String txnType) throws FrameException;
+    
+
+    /**
+     * 根据商户订单信息
+     * 
+     * @param mchtNo
+     * @param orderId
+     * @param orderTime
+     * @param txnType
+     * @return
+     * @throws FrameException
+     * @see 1.0
+     * @since 1.0
+     */
+    public List<Map<String, Object>> queryOrder(String mchtNo, String orderId, String orderTime, String txnType)
+            throws FrameException;
+
+    /**
+     * 查询订单状态信息
+     * 
+     * @param mchtNo
+     * @param orderId
+     * @param orderTime
+     * @param secMerId
+     * @return
+     * @throws FrameException
+     * @see 1.0
+     * @since 1.0
+     */
+    public List<Map<String, Object>> queryOrderSta(String mchtNo, String orderId, String orderTime, String secMerId,
+            String accessType) throws FrameException;
+
+
+    /**
+     * 
+     * 根据商户订单信息查询
+     * 
+     * @return
+     * @throws FrameException
+     * @see 1.0
+     * @since 1.0
+     */
+    public List<Map<String, Object>> queryRealOrderByMer(Map<String, String[]> orderParam) throws FrameException;
+   
+    /**
+     * 查询微信支付订单信息
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    public List<Map<String, Object>> queryWxOrder(Map<String, String> params) throws FrameException;
+
+    /**
+     * 查询微信支付订单信息ForUpdate
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    public List<Map<String, Object>> queryWxOrderForUpdate(Map<String, String> params) throws FrameException;
+    
+    /**
+     * 查询微信支付订单状态
+     * 
+     * @param params
+     * @throws FrameException
+     */
+    public List<Map<String, Object>> queryWxOrderSta(Map<String, String> params) throws FrameException;
+
+    
+    /**
+     * 更新微信支付订单信息
+     * @param orderParam
+     * @return
+     * @throws FrameException
+     */
+    public boolean UpdateWxOrder(Map<String, String> orderParam) throws FrameException;
+
+    /**
+     * 查询微信对账单的订单信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	public List<Map<String, Object>> queryWxBillOrder(Map<String,String> queryMap)	throws FrameException;
+	
+	/**
+	 * 更新AddMoney
+	 * @param txnSeqId
+	 * @param txnDtTm
+	 * @param addMoney
+	 * @return
+	 * @throws FrameException
+	 */
+	public boolean updateRefundTotalAmount(String txnSeqId, String txnDt,String txnTm,String totalRefundFee) throws FrameException;
+	
+	/**
+	 * 查询订单总数
+	 * @return
+	 * @throws FrameException
+	 */
+	public int queryOrderNumber(Map<String,String> queryMap)throws FrameException;
+	
+	/**
+	 * 分页查询订单信息
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String, Object>> queryOrderByPage(Map<String,String> queryMap, PageVariable page )throws FrameException;
+	/**
+     * 查询三码合一流水信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	public List<Map<String, Object>> queryThreadCodeStatement(Map<String,String> queryMap,PageVariable page)	throws FrameException;
+	
+	/**
+	 * 查询三码合一流水汇总
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String, Object>> queryThreeCodeBillSummary(Map<String,String> queryMap)	throws FrameException;
+	
+	/**
+	 * 分页查询三码合一流水明细
+	 * @param input
+	 * @param page
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String, Object>> queryThreeCodeBillDetail(Map<String,String> queryMap,PageVariable page)throws FrameException;
+	
+	/**
+	 * 查询T+0入账标识为未知的交易总数
+	 * @param queryMap
+	 * @return
+	 * @throws FrameException
+	 */
+	public int queryUnknowSettleNumber(Map<String, String> queryMap) throws FrameException;
+
+	/**
+	 * 查询T+0入账标识为未知的交易明细
+	 * @param queryMap
+	 * @param page
+	 * @return
+	 * @throws FrameException
+	 */
+	public List<Map<String, Object>> queryUnknowSettleOrders (Map<String, String> queryMap) throws FrameException;
+}

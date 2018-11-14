@@ -1,0 +1,260 @@
+ #if($sqlName=='timingCopyTblEwmInfoToHis') 
+   
+      INSERT INTO EWMHIS.TBL_EWM_INFO_HIS 
+     (
+         SELECT * FROM TBL_EWM_INFO  WHERE  1=1
+           AND
+              CREATE_TIME >= (select TO_CHAR(current timestamp - 1 DAYS,'yyyyMMdd')|| '000000 ' from sysibm.sysdummy1) 
+           AND   
+              CREATE_TIME <= (select TO_CHAR(current timestamp - 1 DAYS,'yyyyMMdd') || '235959 ' from sysibm.sysdummy1)
+     )
+ #end
+ 
+#if($sqlName=='timingDelteTblEwmInfo') 
+ 	delete from TBL_EWM_INFO
+             WHERE 1=1
+             AND
+                 CREATE_TIME >= (select TO_CHAR(current timestamp - 2 DAYS,'yyyyMMdd') || '000000' from sysibm.sysdummy1)
+             AND
+                 CREATE_TIME <= (select TO_CHAR(current timestamp - 2 DAYS,'yyyyMMdd') || '235959' from sysibm.sysdummy1)
+ #end
+ 
+ #if($sqlName=='timingCopyTblOrderInfoToHis') 
+     INSERT INTO EWMHIS.TBL_ORDER_TXN_HIS 
+     (
+         SELECT * FROM TBL_ORDER_TXN  WHERE  1=1 AND TXN_DT = (select TO_CHAR(current timestamp - 1 DAYS,'yyyyMMdd') from sysibm.sysdummy1)      
+     )
+ #end
+ 
+ #if($sqlName=='timingCopyTblOrderInfoToHisByDate') 
+     INSERT INTO EWMHIS.TBL_ORDER_TXN_HIS 
+     (
+         SELECT * FROM TBL_ORDER_TXN  WHERE  1=1 AND TXN_DT = '${backupDate}'    
+     )
+ #end
+ 
+ #if($sqlName=='timingDelteTblOrderInfo') 
+ 	 DELETE FROM TBL_ORDER_TXN  
+ 	 WHERE 
+ 	 	1=1 
+ 	 AND 
+ 	 	TXN_DT = (select TO_CHAR(current timestamp - 30 DAYS,'yyyyMMdd') from sysibm.sysdummy1)
+            
+ #end
+ 
+ #if($sqlName=='timingQueryOrderWxOrAli')
+ 	SELECT 
+ 		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE
+ 	FROM TBL_ORDER_TXN  
+ 	WHERE  1=1
+	#if ($wxAccess)
+	 	AND PAY_ACCESS_TYPE = '${wxAccess}'
+	#end
+	#if ($alipayAccess)
+	 	AND PAY_ACCESS_TYPE = '${alipayAccess}'
+	#end 
+	#if($txnStaOne||$txnStaSix)
+	 	AND(
+	 		#if ($txnStaOne)
+	 			TXN_STA = '${txnStaOne}'
+	 		#end
+	 		#if ($txnStaSix)
+	 			OR TXN_STA = '${txnStaSix}'
+	 		#end )
+	#end
+ 	#if	($txnType)
+ 		AND TXN_TYPE = '${txnType}'
+ 	#end
+ 	#if ($channel)
+ 		AND TXN_CHANNEL = '${channel}'
+ 	#end
+ 	#if ($txnTmStart||$txnTmEnd)
+ 		AND TXN_TM between '${txnTmStart}' and '${txnTmEnd}'
+ 	#end
+ 	#if ($txnDt)
+ 		AND TXN_DT = '${txnDt}'
+ 	#end	
+ 	WITH UR 
+ #end
+ 
+ #if($sqlName=='timingQueryThreeCodeOrder')
+ 	SELECT 
+ 		O.TXN_SEQ_ID,
+		O.TXN_DT,
+		O.TXN_TM,
+		O.EWM_DATA,
+		O.MER_ORDER_ID,
+		O.MER_OR_DT,
+		O.MER_OR_TM,
+		O.OGL_ORD_ID,
+		O.OGL_ORD_DATE,
+		O.MOBILE_ORDER_ID,
+		O.MOBILE_OR_DT,
+		O.MOBILE_OR_TM,
+		O.TXN_TYPE,
+		O.TXN_CHANNEL,
+		O.PAY_ACCESS_TYPE,
+		O.PAY_TYPE,
+		O.TRADE_MONEY,
+		O.CURRENCY_CODE,
+		O.MER_ID,
+		O.WX_ORDER_NO,
+		O.CODE_URL,
+		O.ALIPAY_PREPAY_ID,
+		O.WX_PREPAY_ID,
+		O.RANDOM_STR,
+		O.WX_MER_ID,
+		O.SUB_WX_MER_ID,
+		O.TXN_STA,
+		O.RES_DESC,
+		O.SETTLE_DATE,
+		O.SUB_ALIPAY_MER_ID,
+		O.ALIPAY_MER_ID,
+		O.DISCOUNTABLE_AMOUNT,
+		O.UNDISCOUNTABLE_AMOUNT,
+		O.ALIPAY_TRADE_NO,
+		O.RECEIPT_AMOUNT,
+		O.OUT_REQUEST_NO,
+		O.REFUND_AMOUNT,
+		O.ALIPAY_REFUND_FEE,
+		O.TOTAL_REFUND_FEE,
+		O.SEND_BACK_FEE,
+		O.ACCOUNTED_FLAG,
+		O.BANK_FEE_RATE OBANK,
+		O.SETTLE_METHOD,
+		T.BANK_FEE_RATE TBANK,
+		T.EWM_SEQ,
+		T.EWM_DATA,
+		T.EWM_CIPHERTEXT,
+		T.MER_ID,
+		T.MER_NAME,
+		T.SUB_ALIPAY_MER_ID,
+		T.SUB_WX_MER_ID,
+		T.STORE_ID,
+		T.CUSTOMER_NO,
+		T.CUSTOMER_NAME,
+		T.ORG_ID,
+		T.ORG_CODE,
+		T.CHANNEL,
+		T.CURRENCY_TYPE,
+		T.ACCT_NO,
+		T.BANK_FEE_UPPER_LIMIT,
+		T.BANK_FEE_LOWER_LIMIT,
+		T.WX_FEE_RATE,
+		T.ALIPAY_FEE_RATE,
+		T.GOODS_DISCOUNT,
+		T.DISCOUNT_BEGIN_DATE,
+		T.DISCOUNT_END_DATE,
+		T.CREATE_DT,
+		T.EWM_TYPE,
+		T.EWM_STATUE,
+		T.VALIDATE_DAY,
+		T.UPDATE_DT,
+		T.REMARK
+	
+ 	FROM  TBL_ORDER_TXN_bak O,TBL_STATIC_EWM_THREE_CODE_INFO T
+ 	WHERE  1=1
+ 	AND O.EWM_DATA=T.EWM_DATA
+ 	#if ($channel)
+ 		AND O.TXN_CHANNEL='${channel}'
+ 	#end
+ 	#if	($wxAccess||$alipayAccess)
+ 		AND(#if ($wxAccess)
+ 			 	O.PAY_ACCESS_TYPE = '${wxAccess}'
+ 			#end
+ 			#if ($alipayAccess)
+ 				OR  O.PAY_ACCESS_TYPE = '${alipayAccess}'
+ 			#end )
+ 	#end
+ 	#if ($type)
+ 		AND O.TXN_TYPE='${txnType}'
+ 	#end
+ 	#if ($txnSta)
+ 		AND O.TXN_STA='${txnSta}'
+ 	#end
+ 	#if ($txnDt)
+ 		AND TXN_DT = '${txnDt}'
+ 	#end
+ 	#if ($startSettleDate)
+ 		AND SETTLE_DATE >= '${startSettleDate}'
+ 	#end	
+ 	#if ($endSettleDate)
+ 		AND SETTLE_DATE <= '${endSettleDate}'
+ 	#end	
+ #end
+ 
+ #if($sqlName=='queryThreeCodeOrderNumber')
+ 	SELECT 
+ 	COUNT(1)
+ 	FROM  TBL_ORDER_TXN O,TBL_STATIC_EWM_THREE_CODE_INFO T
+ 	WHERE  1=1
+ 	AND O.EWM_DATA=T.EWM_DATA
+ 	#if ($channel)
+ 		AND O.TXN_CHANNEL='${channel}'
+ 	#end
+ 	#if	($wxAccess||$alipayAccess)
+ 		AND(#if ($wxAccess)
+ 			 	O.PAY_ACCESS_TYPE = '${wxAccess}'
+ 			#end
+ 			#if ($alipayAccess)
+ 				OR  O.PAY_ACCESS_TYPE = '${alipayAccess}'
+ 			#end )
+ 	#end
+ 	#if ($type)
+ 		AND O.TXN_TYPE='${txnType}'
+ 	#end
+ 	#if ($txnSta)
+ 		AND O.TXN_STA='${txnSta}'
+ 	#end
+ 	#if ($txnDt)
+ 		AND TXN_DT = '${txnDt}'
+ 	#end
+ 	#if ($accountedFlag)
+ 		AND ACCOUNTED_FLAG = '${accountedFlag}'
+ 	#end
+ 	#if ($startSettleDate)
+ 		AND SETTLE_DATE >= '${startSettleDate}'
+ 	#end	
+ 	#if ($endSettleDate)
+ 		AND SETTLE_DATE <= '${endSettleDate}'
+ 	#end	
+ #end

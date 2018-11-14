@@ -1,0 +1,27 @@
+#if($sqlName=='queryTxnSeqId')
+	SELECT NEXTVAL FOR SEQ_TXN_REG FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='queryEwmSeq')
+	SELECT NEXTVAL FOR SEQ_EWM_REG FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='queryStaticEwmSeq')
+	SELECT NEXTVAL FOR SEQ_STATIC_EWM_REG FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='queryStaticEwmtxn')
+	SELECT NEXTVAL FOR SEQ_STATIC_TXN_REG FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='queryLimitEwmtxn')
+	SELECT NEXTVAL FOR SEQ_LIMIT_REG FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='queryTimingTask')
+	SELECT NEXTVAL FOR SEQ_EWM_TIMINGTASK FROM SYSIBM.SYSDUMMY1
+#end
+
+#if($sqlName=='querySubmerChannelRate')
+	SELECT NEXTVAL FOR SEQ_MERCHANT FROM SYSIBM.SYSDUMMY1
+#end

@@ -1,0 +1,219 @@
+package com.huateng.pay.services.weixin;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+
+/**
+ * 微信支付接口定义（收单Webserver）
+ * 
+ * @author guohuan
+ * 
+ */
+public interface WxPayService {
+
+	/**
+	 * 微信支付统一下单入口
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam wxUnifiedConsume(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信支付统一下单入口
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam wxUnifiedConsumeYL(InputParam input) throws FrameException;
+
+	/**
+	 * 微信被扫支付(刷卡)入口
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam wxMicroPay(InputParam input) throws FrameException;
+	
+	public OutputParam wxMicroPayYL(InputParam input) throws FrameException;
+
+	/**
+	 * 微信被扫支付撤销交易入口
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam wxMicroRevoke(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信断直连撤销交易入口
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam wxMicroRevokeYL(InputParam input) throws FrameException;
+
+	/**
+	 * 微信扫码关闭订单交易入口
+	 */
+	public OutputParam wxCloseOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信断直连扫码关闭订单交易入口
+	 */
+	public OutputParam wxCloseOrderYL(InputParam input) throws FrameException;
+
+	/**
+	 * 统一下单
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam unifiedOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 微信退款
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam refundOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 微信退款查询
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam queryRefundOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 微信后台通知
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam recvWxNotifyReq(InputParam input) throws FrameException;
+	
+	/**
+	 * 银联微信后台通知
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam recvWxNotifyReqYL(InputParam input) throws FrameException;
+
+	/**
+	 * 下载微信对账单
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam downloadWxBill(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信下载单个对账单
+	 * @param billDate
+	 * @param rate
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam downloadSingleWxBill(InputParam input) throws FrameException;
+
+	/**
+	 * 微信对账单合成
+	 * @param billDate
+	 * @return
+	 */
+	public OutputParam sumWxBill(InputParam input);
+	
+	/**
+	 * 查询微信订单信息
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam queryWxOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 查询微信订单信息
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam queryWxOrderYL(InputParam input) throws FrameException;
+
+	/**
+	 * 微信撤销
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam reverseOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信断直连撤销
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam reverseOrderYL(InputParam input) throws FrameException;
+
+	/**
+	 * 微信关闭订单
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam closeOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 银联微信关闭订单
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam closeOrderYL(InputParam input) throws FrameException;
+	
+	/**
+	 * 获取微信授权码
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam getWxAuthCode(InputParam input) throws FrameException;
+	
+	/**
+	 * 微信支付线上统一下单入口
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam wxUnifiedConsumeOnLine(InputParam input) throws FrameException;
+	
+	/**
+	 * 向核心发送微信交易的对账交易
+	 * @param settleInput
+	 * @throws FrameException
+	 */
+	public void toCoreForSettle(InputParam settleInput) throws FrameException;
+    
+}

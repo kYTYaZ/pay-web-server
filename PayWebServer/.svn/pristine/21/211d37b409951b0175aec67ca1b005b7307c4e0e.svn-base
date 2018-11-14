@@ -1,0 +1,755 @@
+/*
+ * Copyright (C), 2012-2015, 上海华腾软件系统有限公司
+ * FileName: WxMerchantSynchServiceImpl.java
+ * Author:   Feihong247
+ * Date:     2015-9-21 下午2:54:04
+ * Description: //模块目的、功能描述      
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.services.weixin.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.common.date.DateUtil;
+import com.huateng.frame.common.json.JsonUtil;
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.huateng.pay.common.constants.Dict;
+import com.huateng.pay.common.constants.StringConstans;
+import com.huateng.pay.common.http.HttpRequestClient;
+import com.huateng.pay.common.util.Constants;
+import com.huateng.pay.common.util.StringUtil;
+import com.huateng.pay.common.validate.YlWXValidation;
+import com.huateng.pay.common.validate.vali.Validation;
+import com.huateng.pay.dao.inter.ISequenceDao;
+import com.huateng.pay.po.weixin.AddWxMerData;
+import com.huateng.pay.po.weixin.DeleteWxMerData;
+import com.huateng.pay.po.weixin.ModifyWxMerData;
+import com.huateng.pay.po.weixin.QueryWxMerData;
+import com.huateng.pay.services.db.IMerchantChannelService;
+import com.huateng.pay.services.weixin.WxMerchantSynchService;
+import com.huateng.pay.services.weixin.YLWXPayService;
+import com.huateng.utils.Util;
+import com.wldk.framework.utils.MappingUtils;
+
+/**
+ * 微信同步商户处理
+ * 
+ * @author guohuan
+ */
+public class WxMerchantSynchServiceImpl implements WxMerchantSynchService {
+
+	private Logger logger = LoggerFactory.getLogger(WxMerchantSynchServiceImpl.class);
+
+	private IMerchantChannelService merchantChannelService;
+	private ISequenceDao sequenceDao;
+	private YLWXPayService ylwxPayService;
+
+	/**
+	 * 
+	 * 新增微信商户
+	 * 
+	 * @param input
+	 */
+	public OutputParam addWxMer(InputParam input) throws FrameException {
+
+		logger.info("[微信新增商户流程 ]   addWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		// 请求报文非空字段验证
+		List<String> list = new ArrayList<String>();
+		list.add("mchtName");
+		list.add("mchtShortName");
+		list.add("servicePhone");
+		list.add("business");
+		list.add("mchtRemark");
+		list.add("orgCode");
+		list.add("rateChannel");
+		list.add("merId");
+
+		String nullStr = Util.validateIsNull(list, input);
+		if (!StringUtil.isEmpty(nullStr)) {
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("[新增微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "[新增微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			return outputParam;
+		}
+
+		String orgCode = String.format("%s", input.getValue("orgCode"));
+		// 根据机构号前三位进行查询渠道
+		String orgCodeBelong = orgCode.substring(0, 3);
+		InputParam queryInput = new InputParam();
+		queryInput.putparamString("orgCode", orgCodeBelong);
+		queryInput.putparamString("status", StringConstans.QRCodeStatus.ENABLE);
+
+		logger.debug("[微信新增商户]  查询机构号对应的渠道    START：" + queryInput.toString());
+
+		OutputParam queryOutput = merchantChannelService.queryMerchantChannel(queryInput);
+
+		logger.debug("[微信新增商户]  查询机构号对应的渠道    END：" + queryOutput.toString());
+
+		String wxChannel = String.format("%s", queryOutput.getValue("wxChannel"));
+
+		logger.debug("[微信新增商户]  机构号对应的wxChannel=" + wxChannel);
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		// 商户名称
+		dataMap.put("merchant_name", input.getValue("mchtName").toString());
+		// 商户简称
+		dataMap.put("merchant_shortname", input.getValue("mchtShortName").toString());
+		// 客服电话
+		dataMap.put("service_phone", input.getValue("servicePhone").toString());
+		// 渠道号
+		dataMap.put("channel_id", wxChannel);
+		// 联系人，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactName"))) {
+			dataMap.put("contact", input.getValue("contactName").toString());
+		}
+		// 联系电话，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactPhone"))) {
+			dataMap.put("contact_phone", input.getValue("contactPhone").toString());
+		}
+		// 联系邮箱，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactEmail"))) {
+			dataMap.put("contact_email", input.getValue("contactEmail").toString());
+		}
+		// 经营类目
+		dataMap.put("business", input.getValue("business").toString());
+		// 商户备注
+		String mchtRemark = input.getValue("mchtRemark").toString();
+		dataMap.put("merchant_remark", mchtRemark);
+
+		String merId = input.getValue("merId").toString();
+
+		// 费率通道
+		String rateChannel = ObjectUtils.toString(input.getValue("rateChannel"));
+		if (StringUtil.isEmpty(rateChannel)) {
+			rateChannel = "20";
+		}
+
+		String cacheKey = StringConstans.PAY_ChANNEL.WX + "_" + rateChannel;
+		Map<String, String> configMap = MappingUtils.getChannelConfig(cacheKey);
+		String key = configMap.get(Dict.WX_KEY);
+		String appid = configMap.get(Dict.WX_APPID);
+		String mch_id = configMap.get(Dict.WX_MERID);
+		String wxChannelId = configMap.get(Dict.WX_CHANNEL_ID);
+		String pfxPath = configMap.get(Dict.WX_PFX_PATH);
+		String pwd = configMap.get(Dict.WX_PWD);
+
+		dataMap.put("appid", appid);
+		dataMap.put("mch_id", mch_id);
+		dataMap.put("wxChannelId", wxChannelId);
+
+		AddWxMerData addWxMerData = new AddWxMerData(dataMap, key);
+
+		Map<String, String> requestMap = new HashMap<String, String>();
+		requestMap.put(Dict.requestUrl, Constants.getParam("wx_addMer_url"));
+		requestMap.put(Dict.pfxPath, pfxPath);
+		requestMap.put(Dict.pfxPwd, pwd);
+
+		// 向微信发送请求并得到返回报文
+		String resp = HttpRequestClient.sendWxHttpsReq(requestMap, addWxMerData);
+		try {
+			Map<String, Object> respMap = Util.getMapFromXML(resp);
+			String returnCode = String.format("%s", respMap.get("return_code"));
+			if (!"SUCCESS".equals(returnCode)) {
+				logger.debug("[微信新增商户]  微信新增商户失败");
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "新增微信商户失败");
+				outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+				outputParam.setReturnMsg("新增微信商户失败");
+				return outputParam;
+			} else {
+				String resultCode = String.format("%s", respMap.get("result_code"));
+				String errCodeDes = getResultMsg(respMap);
+				String resultMsg = getResultMsg(respMap);
+				if (!"SUCCESS".equals(resultCode)) {
+					logger.debug("[微信新增商户]  微信新增商户失败");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+					outputParam.putValue("respDesc", errCodeDes);
+					outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+					outputParam.setReturnMsg(errCodeDes);
+					return outputParam;
+				} else {
+					logger.debug("[微信新增商户]  微信新增商户成功");
+
+					String subMchId = StringUtil.toString(respMap.get("sub_mch_id"));
+
+					InputParam queryInputSub = new InputParam();
+					queryInputSub.putparamString("subMerchant", subMchId);
+					queryInputSub.putparamString("rate", rateChannel);
+					queryInputSub.putparamString("channel", StringConstans.PAY_ChANNEL.WX);
+					logger.debug("验证子商户是否存在:" + queryInputSub.toString());
+					OutputParam queryOut = merchantChannelService.querySubmerIsExist(queryInputSub);
+					logger.debug("验证子商户是否存在,返回报文:" + queryOut.toString());
+					if (StringConstans.returnCode.SUCCESS.equals(queryOut.getReturnCode())) {
+						// 子商户、渠道、费率确定的唯一数据不存在
+						InputParam insertInput = new InputParam();
+						insertInput.putparamString("seqMerchant", sequenceDao.getSubmerChannelRate());
+						insertInput.putparamString("subMerchant", subMchId);
+						insertInput.putparamString("channel", StringConstans.PAY_ChANNEL.WX);
+						insertInput.putparamString("merId", merId);
+						insertInput.putparamString("rate", rateChannel);
+						insertInput.putparamString("reserve1",
+								DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater));
+						insertInput.putparamString("reserve2", mchtRemark);
+						OutputParam inertOut = merchantChannelService.insertSubmerChannelRate(insertInput);
+
+						if (!(StringConstans.returnCode.SUCCESS.equals(inertOut.getReturnCode()))) {
+							logger.debug("保存微信[子商户渠道费率信息关联表]失败");
+							outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+							outputParam.putValue("respDesc", "保存微信[子商户渠道费率信息关联表]失败");
+							outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+							outputParam.setReturnMsg("保存微信[子商户渠道费率信息关联表]失败");
+							return outputParam;
+						}
+					}
+
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					outputParam.putValue("respDesc", resultMsg);
+					outputParam.putValue("mchId", respMap.get("mch_id"));
+					outputParam.putValue("subMchId", subMchId);
+					outputParam.setReturnCode(StringConstans.returnCode.SUCCESS);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("新增微信同步商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "保存微信[子商户渠道费率信息关联表]失败");
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("保存微信[子商户渠道费率信息关联表]失败:" + e.getMessage());
+		}
+		logger.info("[微信新增商户流程 ]   addWxMer END:" + outputParam.toString());
+		return outputParam;
+	}
+
+	/**
+	 * 
+	 * 新增微信商户
+	 * 
+	 * @param input
+	 */
+	@Override
+	public OutputParam addWxMerYL(InputParam input) throws FrameException {
+
+		logger.info("[微信银联新增商户流程 ]   addWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		outputParam = Validation.validate(input, YlWXValidation.vali_YlWXCreateMer, "微信银联新增商户");
+		if (!StringConstans.returnCode.SUCCESS.equals(outputParam.getReturnCode())) {
+			return outputParam;
+		}
+
+		Map<String, String> dataMap = new HashMap<String, String>();
+		// 商户名称
+		dataMap.put("merchant_name", input.getValue("mchtName").toString());
+		// 商户简称
+		dataMap.put("merchant_shortname", input.getValue("mchtShortName").toString());
+		// 客服电话
+		dataMap.put("service_phone", input.getValue("servicePhone").toString());
+
+		// 联系人，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactName"))) {
+			dataMap.put("contact", input.getValue("contactName").toString());
+		}
+		// 联系电话，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactPhone"))) {
+			dataMap.put("contact_phone", input.getValue("contactPhone").toString());
+		}
+		// 联系邮箱，非必输
+		if (!StringUtil.isEmpty(input.getValue("contactEmail"))) {
+			dataMap.put("contact_email", input.getValue("contactEmail").toString());
+		}
+		// 经营类目
+		dataMap.put("business", input.getValue("business").toString());
+		// 商户备注
+		String mchtRemark = input.getValue("mchtRemark").toString();
+		dataMap.put("merchant_remark", mchtRemark);
+
+		String merId = input.getValue("merId").toString();
+
+		// 费率通道
+		String rateChannel = ObjectUtils.toString(input.getValue("rateChannel"));
+		if (StringUtil.isEmpty(rateChannel)) {
+			rateChannel = "20";
+		}
+
+		String cacheKey = StringConstans.PAY_ChANNEL.YLWX + "_" + rateChannel;
+		String url = Constants.getParam("tsdk.frontTransUrl") + Constants.getParam("tsdk.submchaddUrlSuffix");
+
+		Map<String, String> map;
+		try {
+			map = ylwxPayService.wxSend(dataMap, cacheKey, url);
+			if (map == null) {
+				logger.debug("[银联微信新增商户]  银联微信新增商户失败 请求异常");
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "新增微信商户失败");
+				outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+				outputParam.setReturnMsg("新增微信商户失败");
+				return outputParam;
+			} else {
+				String errCodeDes = getResultMsg(map);
+				if (StringConstans.WxTradeStatus.SUCCESS.equals(map.get("return_code"))
+						&& StringConstans.WxTradeStatus.SUCCESS.equals(map.get("result_code"))) {
+					logger.debug("[银联微信新增商户]  银联微信新增商户成功");
+
+					String subMchId = StringUtil.toString(map.get("sub_mch_id"));
+
+					InputParam queryInputSub = new InputParam();
+					queryInputSub.putparamString("subMerchant", subMchId);
+					queryInputSub.putparamString("rate", rateChannel);
+					queryInputSub.putparamString("channel", StringConstans.PAY_ChANNEL.WX);
+					logger.debug("验证子商户是否存在:" + queryInputSub.toString());
+					OutputParam queryOut = merchantChannelService.querySubmerIsExist(queryInputSub);
+					logger.debug("验证子商户是否存在,返回报文:" + queryOut.toString());
+					if (StringConstans.returnCode.SUCCESS.equals(queryOut.getReturnCode())) {
+						// 子商户、渠道、费率确定的唯一数据不存在
+						InputParam insertInput = new InputParam();
+						insertInput.putparamString("seqMerchant", sequenceDao.getSubmerChannelRate());
+						insertInput.putparamString("subMerchant", subMchId);
+						insertInput.putparamString("channel", StringConstans.PAY_ChANNEL.WX);
+						insertInput.putparamString("merId", merId);
+						insertInput.putparamString("rate", rateChannel);
+						insertInput.putparamString("reserve1",
+								DateUtil.getCurrentDateTimeFormat(DateUtil.defaultSimpleFormater));
+						insertInput.putparamString("reserve2", mchtRemark);
+					    insertInput.putparamString("connectMethod", "1");
+					    insertInput.putparamString("reserveType", "1");
+						OutputParam inertOut = merchantChannelService.insertSubmerChannelRate(insertInput);
+
+						if (!(StringConstans.returnCode.SUCCESS.equals(inertOut.getReturnCode()))) {
+							logger.debug("保存微信[子商户渠道费率信息关联表]失败");
+							outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+							outputParam.putValue("respDesc", "保存微信[子商户渠道费率信息关联表]失败");
+							outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+							outputParam.setReturnMsg("保存微信[子商户渠道费率信息关联表]失败");
+							return outputParam;
+						}
+					}
+
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					outputParam.putValue("respDesc", "银联微信新增商户成功");
+					outputParam.putValue("mchId", map.get("mch_id"));
+					outputParam.putValue("subMchId", subMchId);
+					outputParam.setReturnCode(StringConstans.returnCode.SUCCESS);
+				} else {
+					logger.debug("[微信新增商户]  银联微信新增商户失败");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+					outputParam.putValue("respDesc", errCodeDes);
+					outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+					outputParam.setReturnMsg(errCodeDes);
+					return outputParam;
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error("新增银联微信商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "新增银联微信商户处理异常");
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("新增银联微信商户处理异常:" + e.getMessage());
+		}
+
+		logger.info("[微信新增商户流程 ]   addWxMer END:" + outputParam.toString());
+		return outputParam;
+	}
+
+	private String getResultMsg(Map respMap) {
+		String resultMsg = ObjectUtils.toString(respMap.get("result_msg"));
+		String errCodeDesc = ObjectUtils.toString(respMap.get("err_code_des"));
+		if (!StringUtil.isEmpty(resultMsg)) {
+			return resultMsg;
+		}
+		if (!StringUtil.isEmpty(errCodeDesc)) {
+			return errCodeDesc;
+		}
+		return "微信新增商户失败";
+	}
+
+	/**
+	 * 
+	 * 修改微信商户
+	 * 
+	 * @param input
+	 */
+	public OutputParam modifyWxMer(InputParam input) throws FrameException {
+
+		logger.info("[微信修改商户流程 ]  modifyWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		// 请求报文非空字段验证
+		List<String> list = new ArrayList<String>();
+		list.add("subMchId");
+		list.add("mchtShortName");
+		list.add("servicePhone");
+		String nullStr = Util.validateIsNull(list, input);
+		if (!StringUtil.isEmpty(nullStr)) {
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("[修改微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "[修改微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			return outputParam;
+		}
+
+		Map<String, Object> datamap = new HashMap<String, Object>();
+		// 商户识别码
+		datamap.put("sub_mch_id", input.getValue("subMchId").toString());
+
+		// 商户简称
+		datamap.put("merchant_shortname", input.getValue("mchtShortName").toString());
+
+		// 客服电话
+		datamap.put("service_phone", input.getValue("servicePhone").toString());
+
+		// 联系人，暂时接口中没有，如果做公众号支付，则此字段必输
+		if (!StringUtil.isEmpty(input.getValue("contact"))) {
+			datamap.put("contact", input.getValue("contact").toString());
+		}
+
+		Map<String, String> requestMap = new HashMap<String, String>();
+		requestMap.put(Dict.requestUrl, Constants.getParam("wx_modifyMer_url"));
+//		requestMap.put(Dict.pfxPath, pfxPath);
+//		requestMap.put(Dict.pfxPwd, pwd);
+
+		ModifyWxMerData modifyWxMerData = new ModifyWxMerData(datamap, Constants.getParam("jg_key"));
+
+		String resp = HttpRequestClient.sendWxHttpsReq(requestMap, modifyWxMerData);
+		try {
+			Map<String, Object> respMap = Util.getMapFromXML(resp);
+			String returnCode = String.format("%s", respMap.get("return_code"));
+			if (!"SUCCESS".equals(returnCode)) {
+				logger.debug("[微信修改商户]  微信修改商户失败");
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "修改微信商户失败");
+			} else {
+				String resultCode = String.format("%s", respMap.get("result_code"));
+				String resultMsg = String.format("%s", respMap.get("result_msg"));
+				if (!"SUCCESS".equals(resultCode)) {
+					logger.debug("[微信修改商户]  微信修改商户失败");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+					outputParam.putValue("respDesc", resultMsg);
+				} else {
+					logger.debug("[微信修改商户]  微信修改商户成功");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					outputParam.putValue("respDesc", resultMsg);
+					outputParam.putValue("mchId", Constants.getParam("jg_merId"));
+					outputParam.putValue("subMchId", input.getValue("subMchId"));
+				}
+			}
+
+			logger.debug("----------------  微信修改商户流程         END ------------");
+
+		} catch (Exception e) {
+			logger.error("修改微信同步商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "修改微信同步商户处理异常:" + e.getMessage());
+		}
+		logger.info("[微信修改商户流程 ]  modifyWxMer END:" + outputParam.toString());
+		return outputParam;
+	}
+
+	/**
+	 * 
+	 * 删除微信商户
+	 * 
+	 * @param input
+	 */
+	public OutputParam deleteWxMer(InputParam input) throws FrameException {
+
+		logger.info("[微信删除商户流程 ] deleteWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		// 请求报文非空字段验证
+		List<String> list = new ArrayList<String>();
+		list.add("subMchId");
+
+		String nullStr = Util.validateIsNull(list, input);
+		if (!StringUtil.isEmpty(nullStr)) {
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("[删除微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "[删除微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			return outputParam;
+		}
+
+		Map<String, Object> datamap = new HashMap<String, Object>();
+		// 商户识别码
+		datamap.put("sub_mch_id", input.getValue("subMchId").toString());
+
+		DeleteWxMerData deleteWxMerData = new DeleteWxMerData(datamap, Constants.getParam("jg_key"));
+
+		Map<String, String> requestMap = new HashMap<String, String>();
+		requestMap.put(Dict.requestUrl, Constants.getParam("wx_delMer_url"));
+//		requestMap.put(Dict.pfxPath, pfxPath);
+//		requestMap.put(Dict.pfxPwd, pwd);
+
+		String resp = HttpRequestClient.sendWxHttpsReq(requestMap, deleteWxMerData);
+		try {
+			Map<String, Object> respMap = Util.getMapFromXML(resp);
+			String returnCode = String.format("%s", respMap.get("return_code"));
+			if (!"SUCCESS".equals(returnCode)) {
+				logger.debug("[微信删除商户] 微信删除商户失败");
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "删除微信商户失败");
+			} else {
+				String resultCode = respMap.get("result_code").toString();
+				if ("SUCCESS".equals(resultCode)) {
+					logger.debug("[微信删除商户] 微信删除商户成功");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					outputParam.putValue("respDesc", "删除微信商户成功");
+				} else {
+					logger.debug("[微信删除商户] 微信删除商户失败");
+					outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+					outputParam.putValue("respDesc", respMap.get("result_msg"));
+				}
+			}
+
+			logger.debug("----------------  微信删除商户流程         END ------------");
+
+		} catch (Exception e) {
+			logger.error("删除微信同步商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "删除微信同步商户处理异常:" + e.getMessage());
+		}
+		logger.info("[微信删除商户流程 ] deleteWxMer END:" + outputParam.toString());
+		return outputParam;
+	}
+
+	/**
+	 * 
+	 * 查询微信商户
+	 * 
+	 * @param input
+	 */
+	public OutputParam queryWxMer(InputParam input) throws FrameException {
+
+		logger.info("[微信查询商户流程 ]  queryWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		// 请求报文非空字段验证
+		List<String> list = new ArrayList<String>();
+		list.add("merId");
+		list.add("subMchId");
+		list.add("mchtName");
+		list.add("pageIndex");
+		list.add("pageSize");
+		String nullStr = Util.validateIsNull(list, input);
+		if (!StringUtil.isEmpty(nullStr)) {
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg("[查询微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "[查询微信商户] 请求报文字段[" + nullStr + "]不能为空");
+			logger.info("[微信查询商户流程 ]  queryWxMer END:" + outputParam.toString());
+			return outputParam;
+		}
+
+		try {
+
+			String merId = input.getValue("merId").toString();
+			String subMchId = input.getValue("subMchId").toString();
+			Map<String, Object> datamap = new HashMap<String, Object>();
+
+			// 商户识别码
+			datamap.put("sub_mch_id", subMchId);
+
+			// 商户名称
+			datamap.put("merchant_name", input.getValue("mchtName").toString());
+
+			// 页码
+			datamap.put("page_index", input.getValue("pageIndex").toString());
+
+			// 展示资料个数
+			datamap.put("page_size", input.getValue("pageSize").toString());
+
+			InputParam inputQuery = new InputParam();
+			inputQuery.putparamString(Dict.merId, merId);
+			inputQuery.putparamString(Dict.subMerchant, subMchId);
+			inputQuery.putparamString(Dict.channel, StringConstans.PAY_ChANNEL.WX);
+			logger.info("查询[子商户渠道费率信息关联表]:" + inputQuery.toString());
+			OutputParam outQuery = merchantChannelService.querySubmerChannelRateInfo(inputQuery);
+			logger.info("查询[子商户渠道费率信息关联表]返回信息:" + outQuery.toString());
+			if (!StringConstans.returnCode.SUCCESS.equals(outQuery.getReturnCode())) {
+				outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+				outputParam.setReturnMsg("未查询到该商户信息");
+				logger.info("[微信查询商户流程 ]  queryWxMer END:" + outputParam.toString());
+				return outputParam;
+			}
+			String rateChannel = StringUtil.toString(outQuery.getValue(Dict.rate));
+
+			String cacheKey = StringConstans.PAY_ChANNEL.WX + "_" + rateChannel;
+			Map<String, String> configMap = MappingUtils.getChannelConfig(cacheKey);
+			String key = configMap.get(Dict.WX_KEY);
+			String appid = configMap.get(Dict.WX_APPID);
+			String mch_id = configMap.get(Dict.WX_MERID);
+			String pfxPath = configMap.get(Dict.WX_PFX_PATH);
+			String pwd = configMap.get(Dict.WX_PWD);
+
+			datamap.put("appid", appid);
+			datamap.put("mch_id", mch_id);
+
+			QueryWxMerData queryWxMerData = new QueryWxMerData(datamap, key);
+
+			Map<String, String> requestMap = new HashMap<String, String>();
+			requestMap.put(Dict.requestUrl, Constants.getParam("wx_queryMer_url"));
+			requestMap.put(Dict.pfxPath, pfxPath);
+			requestMap.put(Dict.pfxPwd, pwd);
+
+			String resp = HttpRequestClient.sendWxHttpsReq(requestMap, queryWxMerData);
+
+			Map<String, Object> respMap = Util.getMapFromXML(resp);
+			String returnCode = String.format("%s", respMap.get("return_code"));
+			if (!"SUCCESS".equals(returnCode)) {
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "查询微信商户失败");
+			} else {
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+				outputParam.putValue("respDesc", "查询微信商户成功");
+				outputParam.putValue("mchtName", respMap.get("merchant_name"));
+				outputParam.putValue("mchtShortName", respMap.get("merchant_shortname"));
+				outputParam.putValue("servicePhone", respMap.get("service_phone"));
+				outputParam.putValue("contactName", respMap.get("contact"));
+				outputParam.putValue("contactPhone", respMap.get("contact_phone"));
+				outputParam.putValue("contactEmail", respMap.get("contact_email"));
+				outputParam.putValue("business", respMap.get("business"));
+				outputParam.putValue("total", respMap.get("total"));
+			}
+
+			logger.debug("----------------  微信查询商户流程         END ------------");
+
+		} catch (Exception e) {
+			logger.error("查询微信同步商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "查询微信同步商户处理异常:" + e.getMessage());
+		}
+		logger.info("[微信查询商户流程 ]  queryWxMer END:" + outputParam.toString());
+		return outputParam;
+
+	}
+	
+	/**
+	 * 
+	 * 查询间连微信商户
+	 * 
+	 * @param input
+	 */
+	public OutputParam queryWxMerYL(InputParam input) throws FrameException {
+
+		logger.info("[微信查询间连商户流程 ]  queryWxMer START:" + input.toString());
+
+		OutputParam outputParam = new OutputParam();
+
+		try {
+
+			String merId = input.getValue("merId").toString();
+			String subMchId = input.getValue("subMchId").toString();
+			
+			if (subMchId==null || "".equals(subMchId)) {
+				outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+				outputParam.setReturnMsg("[查询间连微信商户] 请求报文字段[" + subMchId + "]不能为空");
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "[查询间连微信商户] 请求报文字段[" + subMchId + "]不能为空");
+				logger.info("[微信查询间连商户流程 ]  queryWxMer END:" + outputParam.toString());
+				return outputParam;
+			}
+			
+			InputParam inputQuery = new InputParam();
+			inputQuery.putparamString(Dict.merId, merId);
+			inputQuery.putparamString(Dict.subMerchant, subMchId);
+			inputQuery.putparamString(Dict.channel, StringConstans.PAY_ChANNEL.WX);
+			logger.info("查询[子商户渠道费率信息关联表]:" + inputQuery.toString());
+			OutputParam outQuery = merchantChannelService.querySubmerChannelRateInfo(inputQuery);
+			logger.info("查询[子商户渠道费率信息关联表]返回信息:" + outQuery.toString());
+			if (!StringConstans.returnCode.SUCCESS.equals(outQuery.getReturnCode())) {
+				outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+				outputParam.setReturnMsg("未查询到该商户信息");
+				logger.info("[微信查询间连商户流程 ]  queryWxMer END:" + outputParam.toString());
+				return outputParam;
+			}
+			String rateChannel = StringUtil.toString(outQuery.getValue(Dict.rate));
+
+			String cacheKey = StringConstans.PAY_ChANNEL.YLWX + "_" + rateChannel;
+			
+			
+			//组装查询报文并发送
+			Map<String, String> reqData = new HashMap<String, String>();
+			
+			reqData.put(Dict.subWxMerId, subMchId);
+			
+			String url = Constants.getParam("tsdk.frontTransUrl") + Constants.getParam("tsdk.submchqryUrlSuffix");
+			
+			Map<String, String> respMap = ylwxPayService.wxSend(reqData, cacheKey, url);
+			
+			String returnCode = String.format("%s", respMap.get("return_code"));
+			if (!"SUCCESS".equals(returnCode)) {
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "查询微信商户失败");
+			} else {
+				Map<String, Object> mchinfoMap =JsonUtil.parseJSON2Map(respMap.get("mchinfo"),200);
+				
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+				outputParam.putValue("respDesc", "查询微信商户成功");
+				outputParam.putValue("mchtName", mchinfoMap.get("merchant_name"));
+				outputParam.putValue("mchtShortName", mchinfoMap.get("merchant_shortname"));
+				outputParam.putValue("servicePhone", mchinfoMap.get("service_phone"));
+				outputParam.putValue("contactName", mchinfoMap.get("contact"));
+				outputParam.putValue("contactPhone", mchinfoMap.get("contact_phone"));
+				outputParam.putValue("contactEmail", mchinfoMap.get("contact_email"));
+				outputParam.putValue("business", mchinfoMap.get("business"));
+				
+				outputParam.putValue("total", respMap.get("total"));
+			}
+
+			logger.debug("----------------  微信查询间连商户流程         END ------------");
+
+		} catch (Exception e) {
+			logger.error("查询微信间连同步商户处理异常:" + e.getMessage(), e);
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "查询微信间连同步商户处理异常:" + e.getMessage());
+		}
+		logger.info("[微信查询间连商户流程 ]  queryWxMer END:" + outputParam.toString());
+		return outputParam;
+
+	}
+
+	public IMerchantChannelService getMerchantChannelService() {
+		return merchantChannelService;
+	}
+
+	public void setMerchantChannelService(IMerchantChannelService merchantChannelService) {
+		this.merchantChannelService = merchantChannelService;
+	}
+
+	public ISequenceDao getSequenceDao() {
+		return sequenceDao;
+	}
+
+	public void setSequenceDao(ISequenceDao sequenceDao) {
+		this.sequenceDao = sequenceDao;
+	}
+
+	public YLWXPayService getYlwxPayService() {
+		return ylwxPayService;
+	}
+
+	public void setYlwxPayService(YLWXPayService ylwxPayService) {
+		this.ylwxPayService = ylwxPayService;
+	}
+	
+}

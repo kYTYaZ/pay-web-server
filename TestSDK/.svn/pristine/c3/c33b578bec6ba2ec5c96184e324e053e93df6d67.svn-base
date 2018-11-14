@@ -1,0 +1,25 @@
+package com.trade.ali.test;
+
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.trade.ali.trading.AliQuery;
+import com.util.CommonUtil;
+import com.util.SocketUtil;
+import com.util.TransUtil;
+
+public class AliQueryTest {
+	@Test
+	public void SocketReq() {
+		Map<String,String> map = AliQuery.getData();
+		map.put("merId", "20180913152307152307");
+		map.put("payAccessType", "03");
+		map.put("orderNumber", "100020180921142611");
+		map.put("orderTime", "20180921142611");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data)+data;
+		SocketUtil.socketConnect(reqData);
+		
+	}
+}

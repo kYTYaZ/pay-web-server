@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+			<!--
+				<ref bean="downloadBillSchedulerTrigger" />
+
+				<ref bean="timingCopyTblEwmInfoToHis" /> 
+				<ref bean="timingCopyTblOrderInfoToHis" /> 
+				<ref bean="timingDelteTblEwmInfo" /> 
+				<ref bean="timingDelteTblOrderInfo" /> 
+
+				<ref bean="downloadAliPayBillSchedulerTrigger" /> 
+				<ref bean="timingQueryIndefiniteOrderAli" /> 
+				<ref bean="timingQueryIndefiniteOrderWx" /> 
+				<ref bean="timingPackLogByZip" />
+				<ref bean="timingQuerySettleUnknowStauts" />  
+				<ref bean="timingCreatThreeCodeWxAndAlipayBills" /> 
+				<ref bean="timingDownLoadThreeCodeBillsQuartz" /> -->
+				<ref bean="timingQueryRefundOrderQuartz" />
+				</list>
+		</property>
+	</bean>
+	
+    <!-- 每天上午10点下载微信对账单 -->
+     <bean id="downloadBillSchedulerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+ 		<property name="jobDetail"> 
+ 			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+ 				<property name="targetObject" ref="downloadBillQuartz"/> 
+ 				<property name="targetMethod" value="execute"/> 
+ 			</bean> 
+ 		</property> 
+ 		<property name="cronExpression" value="0 10 10 * * ?"/> 
+ 	</bean> 
+	
+	 <!-- 每天上午9:20点下载支付宝对账单 -->
+     <bean id="downloadAliPayBillSchedulerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+ 		<property name="jobDetail"> 
+ 			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> 
+ 				<property name="targetObject" ref="downLoadAliPayBillQuartz"/> 
+ 				<property name="targetMethod" value="execute"/> 
+ 			</bean> 
+ 		</property> 
+ 		<property name="cronExpression" value="0 30 10 * * ?"/> 
+ 	</bean> 
+	
+	 <!-- 每天00:10开始将二维码信息表的数据复制到历史表中去，只在一台机器上运行这个定时任务 -->
+    <bean id="timingCopyTblEwmInfoToHis" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="cpEwmInfoToHisQuartz"/>
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 10 0 * * ?"/>
+	</bean>
+	
+	   <!-- 每天00:30开始将订单信息表的数据复制到历史表中去，只在一台机器上运行这个定时任务 -->
+    <bean id="timingCopyTblOrderInfoToHis" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="cpOrderInfoToHisQuartz"/>
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 40 0 * * ?"/>
+
+	</bean>
+	
+	 <!-- 每天1:00开始删除二维码历史表中的数据，只在一台机器上运行这个定时任务 -->
+    <bean id="timingDelteTblEwmInfo" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="deleteHisEwmInfoQuartz"/>
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 10 1 * * ?"/>
+	</bean>
+	
+	 <!-- 每天1:40开始删除订单表中的数据，只在一台机器上运行这个定时任务 -->
+    <bean id="timingDelteTblOrderInfo" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="deleteHisOrderInfoQuartz"/>
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 40 1 * *  ?"/>
+	</bean>
+	
+	<!-- 每个整点查询前一小时订单状态为01,06的订单(支付宝) -->
+    <bean id="timingQueryIndefiniteOrderAli" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail">
+    		<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    			<property name="targetObject" ref="queryIndefiniteOrderQuartzAli"/>
+				<property name="targetMethod" value="execute"/>
+    		</bean>
+    	</property>
+    	<property name="cronExpression" value="0 0 0/1 * * ?"/>
+<!--    	<property name="cronExpression" value="0 0/1 * * * ?"/>-->
+    </bean>
+	
+	<!-- 每个整点的第30分钟查询前一小时订单状态为01,06的订单(微信) -->
+    <bean id="timingQueryIndefiniteOrderWx" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail">
+    		<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    			<property name="targetObject" ref="queryIndefiniteOrderQuartzWx"/>
+				<property name="targetMethod" value="execute"/>
+    		</bean>
+    	</property>
+    	<property name="cronExpression" value="0 30 0/1 * * ?"/>
+<!--    	<property name="cronExpression" value="0 0/1 * * * ?"/>-->
+    </bean>
+    
+    <!-- 每天3:00开始执行日志文件压缩程序，只在一台机器上运行这个定时任务 -->
+    <bean id="timingPackLogByZip" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="packLogByZipQuartz"/>
+				<property name="targetMethod" value="execute"/>
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 0 03 * * ?"/>
+	</bean>
+    
+    <!-- 每个整点查询前一小时入账状态未知的交易，重新发起入账交易 -->
+    <bean id="timingQuerySettleUnknowStauts" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail">
+    		<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    			<property name="targetObject" ref="querySettleUnknowStautsQuartz"/>
+				<property name="targetMethod" value="execute"/>
+    		</bean>
+    	</property>
+    	<property name="cronExpression" value="0 0 0/1 * * ?"/>
+    </bean>
+    
+    <!-- 每天04:30分生成三码合一支付宝微信对账单 -->
+    <bean id="timingCreatThreeCodeWxAndAlipayBills" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail">
+    		<bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    			<property name="targetObject" ref="creatThreeCodeBillsQuartz"/>
+				<property name="targetMethod" value="execute"/>
+    		</bean>
+    	</property>
+    	<property name="cronExpression" value="0 30 4 * * ?"/>
+    </bean>
+
+	<!-- 每天05:30分下载三码合一流水账单 -->
+	<bean id="timingDownLoadThreeCodeBillsQuartz" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="downLoadThreeCodeBillsQuartz" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 30 5 * * ?" />
+	</bean>
+	
+	<!-- 每一个小时的45分查询01状态的退款订单 -->
+	<bean id="timingQueryRefundOrderQuartz" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<bean
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="queryRefundOrderQuartz" />
+				<property name="targetMethod" value="execute" />
+			</bean>
+		</property>
+		<property name="cronExpression" value="0 45 * * * ?" />
+	</bean>
+    
+    
+     <bean id="cpEwmInfoToHisQuartz" class="com.huateng.pay.handler.quartz.CpEwmInfoToHisQuartz">
+        <property name="schedulerService" ref="schedulerService"/>
+    </bean>
+    
+    <bean id="cpOrderInfoToHisQuartz" class="com.huateng.pay.handler.quartz.CpOrderInfoToHisQuartz">
+        <property name="schedulerService" ref="schedulerService"/>
+    </bean>
+
+    <bean id="deleteHisOrderInfoQuartz" class="com.huateng.pay.handler.quartz.DeleteOrderInfoQuartz">
+        <property name="schedulerService" ref="schedulerService"/>
+    </bean>
+
+     <bean id="deleteHisEwmInfoQuartz" class="com.huateng.pay.handler.quartz.DeleteEwmInfoQuartz">
+        <property name="schedulerService" ref="schedulerService"/>
+    </bean>
+    
+     <bean id="downloadBillQuartz" class="com.huateng.pay.handler.quartz.DownloadBillQuartz"> 
+      	<property name="schedulerService" ref="schedulerService"/> 
+     </bean> 
+     
+     <bean id="downLoadAliPayBillQuartz" class="com.huateng.pay.handler.quartz.DownLoadAliPayBillQuartz"> 
+      	<property name="schedulerService" ref="schedulerService"/> 
+     </bean> 
+     
+     <bean id="queryIndefiniteOrderQuartzAli" class="com.huateng.pay.handler.quartz.QueryIndefiniteOrderQuartzAli">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+     <bean id="queryIndefiniteOrderQuartzWx" class="com.huateng.pay.handler.quartz.QueryIndefiniteOrderQuartzWx">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+     <bean id="packLogByZipQuartz" class="com.huateng.pay.handler.quartz.PackLogByZipQuartz">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+      <bean id="creatThreeCodeBillsQuartz" class="com.huateng.pay.handler.quartz.CreatThreeCodeWxAndAlipayBills">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+      <bean id="downLoadThreeCodeBillsQuartz" class="com.huateng.pay.handler.quartz.DownLoadThreeCodeBillQuartz">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+     <bean id="querySettleUnknowStautsQuartz" class="com.huateng.pay.handler.quartz.QuerySettleUnknowStautsQuartz">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+     
+     <bean id="queryRefundOrderQuartz" class="com.huateng.pay.handler.quartz.QueryRefundOrderQuartz">
+     	<property name="schedulerService" ref="schedulerService"/>
+     </bean>
+    
+</beans>

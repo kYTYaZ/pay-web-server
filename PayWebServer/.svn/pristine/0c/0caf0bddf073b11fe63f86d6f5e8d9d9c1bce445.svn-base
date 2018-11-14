@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd" default-autowire="byName">
+     
+     <bean id="orderService" class="com.huateng.pay.services.db.impl.OrderServiceImpl">
+         <property name="orderDao" ref="orderDao"/>
+         <property name="sequenceDao" ref="sequenceDao"/>
+     </bean>
+
+     <bean id="qrCodeService" class="com.huateng.pay.services.db.impl.QRCodeServiceImpl">
+         <property name="sequenceDao" ref="sequenceDao"/>
+         <property name="qrCodeDao" ref="qrCodeDao"/>
+     </bean>
+     
+      <bean id="timingTaskService" class="com.huateng.pay.services.db.impl.TimingTaskServiceImpl">
+	 	<property name="timingTaskDao" ref="timingTaskDao"/>
+	 </bean>
+	 
+	  <bean id="takeTimingTaskResultService" class="com.huateng.pay.services.db.impl.TakeTimingTaskResultServiceImpl">
+	 	<property name="takeTimingTaskResultDao" ref="takeTimingTaskResultDao"/>
+	 </bean>
+     
+     <bean id="localBankService" class="com.huateng.pay.services.local.impl.LocalBankServiceImpl">
+	 	<property name="orderService" ref="orderService"/>
+        <property name="qrCodeService" ref="qrCodeService"/>
+        <property name="wxPayService" ref="wxPayService"></property>
+        <property name="aliPayPayService" ref="alipayPayService"></property>
+         <property name="staticQRCodeDataService" ref="staticQRCodeDataService"></property>
+		<property name="threeCodeStaticQRCodeDataService" ref="threeCodeStaticQRCodeDataService"/>
+		<property name="cupsPayService" ref="cupsPayService"/>
+		<property name="tblMerTradeLimitService" ref="tblMerTradeLimitService"/>
+		<property name="wxMerchantSynchService" ref="wxMerchantSynchService"/>
+	 </bean>
+	 
+
+	<bean id="schedulerService" class="com.huateng.pay.services.scheduler.impl.SchedulerServiceImpl">
+		<property name="wxPayService" ref="wxPayService"></property>
+		<property name="orderService" ref="orderService"></property>
+		<property name="timingTaskService" ref="timingTaskService"></property>
+		<property name="takeTimingTaskResultService" ref="takeTimingTaskResultService"></property>
+		<property name="aliPayPayService" ref="alipayPayService"></property>
+		<property name="threeCodeService" ref="threeCodeService"></property>
+	</bean>
+	
+	<!-- 微信支付业务处理 -->
+	<bean id="wxPayService" class="com.huateng.pay.services.weixin.impl.WxPayServiceImpl">
+	    <property name="orderDao" ref="orderDao"/>
+	    <property name="orderService" ref="orderService"/>
+	    <property name="wxManager" ref="wxManager"/>
+	    <property name="threeCodeStaticQRCodeDataService" ref="threeCodeStaticQRCodeDataService"/>
+	    <property name="merchantChannelService" ref="merChantChannelService"/>
+	    <property name="ylwxPayService" ref="ylwxPayService"/>
+	    <property name="orderQueryManager" ref="orderQueryManager"/>
+	</bean>
+	
+	<!-- 微信支付业务处理 -->
+	<bean id="wxManager" class="com.huateng.pay.manager.weixin.impl.WxManagerImpl">
+	    <property name="orderDao" ref="orderDao"/>
+	    <property name="orderService" ref="orderService"/>
+	    <property name="sequenceDao" ref="sequenceDao"/>
+	    <property name="merchantChannelService" ref="merChantChannelService"/>
+	</bean>
+	
+	    <!-- 银标微信任务 -->
+    <bean name="ylwxPayService" class="com.huateng.pay.services.weixin.impl.YLWXPayServiceImpl">
+    </bean>
+	
+	<!-- 微信二级商户同步接口 -->
+	<bean id="wxMerchantSynchService" class="com.huateng.pay.services.weixin.impl.WxMerchantSynchServiceImpl">
+		<property name="merchantChannelService" ref="merChantChannelService" />
+		<property name="ylwxPayService" ref="ylwxPayService" />
+    </bean>
+    
+    <!-- 支付宝商户同步接口 -->
+    <bean id="antMerchantExpandIndirectSummerchantService" class="com.alipay.demo.trade.service.impl.AntMerchantExpandIndirectSummerchantServiceImp"></bean>
+    
+    <bean id="yLAliPayService" class="com.huateng.pay.services.alipay.impl.YLAliPayServiceImpl"></bean>
+    
+    <!-- 支付宝商户-->
+    <bean id="aliPayMerchantSynchService" class="com.huateng.pay.services.alipay.impl.AliPayMerchantSynchServiceImpl">
+    	<property name="antMerchantExpandIndirectSummerchantService" ref="antMerchantExpandIndirectSummerchantService"></property>
+    	<property name="merchantChannelService" ref="merChantChannelService"/>
+        <property name="yLAliPayService" ref="yLAliPayService"/>
+    </bean>
+    
+    <bean id="alipayTradeService" class="com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl"></bean>
+    
+    <!-- 支付宝业务处理-->
+    <bean id="aliPayManager" class="com.huateng.pay.manager.alipay.impl.AliPayManagerImpl">
+    	<property name="alipayTradeService"  ref="alipayTradeService"/>
+    	<property name="orderService" ref="orderService"/>
+    	<property name="merchantChannelService" ref="merChantChannelService"/>
+    </bean>
+    
+    <!-- 支付宝交易接口-->
+    <bean id="alipayPayService" class="com.huateng.pay.services.alipay.impl.AliPayPayServiceImpl">
+       <property name="orderService" ref="orderService"></property>
+       <property name="aliPayManager" ref="aliPayManager"></property>
+       <property name="threeCodeStaticQRCodeDataService" ref="threeCodeStaticQRCodeDataService"/>
+       <property name="merchantChannelService" ref="merChantChannelService"/>
+    </bean>
+    
+     <!--静态二维码处理-->
+    <bean id="staticQRCodeDataService" class="com.huateng.pay.services.db.impl.StaticQRCodeDataService">
+    	<property name="staticQRCodeDao" ref="staticQRCodeDao"></property>
+    	<property name="sequenceDao" ref="sequenceDao"></property>
+    </bean>
+    
+     <!--三码合一静态二维码处理-->
+    <bean id="threeCodeStaticQRCodeDataService" class="com.huateng.pay.services.db.impl.ThreeCodeStaticQRCodeDataService">
+    	<property name="threeCodeStaticQRCodeDao" ref="threeCodeStaticQRCodeDao"></property>
+    	<property name="sequenceDao" ref="sequenceDao"></property>
+    </bean>
+    
+    <bean id="handlerMobile" class="com.huateng.pay.services.statics.handler.HandlerMobileStaticQRCodeRequest">
+    	<property name="staticQRCodeDataService"  ref="staticQRCodeDataService"></property>
+    </bean>
+   
+    <bean id="handlerPosp" class="com.huateng.pay.services.statics.handler.HandlerPospStaticQRCodeRequest">
+  	  	<property name="staticQRCodeDataService"  ref="staticQRCodeDataService"></property>
+    </bean>
+    
+    <bean id="staticQRCodeService" class="com.huateng.pay.services.statics.imple.StaticQRCodeServiceImpl">
+   		 <property name="handlerPosp"  ref="handlerPosp"></property>
+   		 <property name="handlerMobile"  ref="handlerMobile"></property>
+   		 <property name="staticQRCodeDataService"  ref="staticQRCodeDataService"></property>
+    </bean>
+    
+    <bean id="threeCodeStaticQRCodeService" class="com.huateng.pay.services.statics.imple.ThreeCodeStaticQRCodeServiceImpl">
+   		 <property name="threeCodeStaticQRCodeDataService"  ref="threeCodeStaticQRCodeDataService"></property>
+    </bean>
+    
+    <bean id="remoteService" class="com.huateng.pay.services.base.imple.RemoteServiceImple">
+		<property name="wxPayService" ref="wxPayService"></property>
+		<property name="localBankService" ref="localBankService"></property>
+		<property name="aliPayPayService" ref="alipayPayService"></property>
+		<property name="orderService" ref="orderService"></property>
+		<property name="threeCodeStaticQRCodeService" ref="threeCodeStaticQRCodeService"></property>
+		
+    </bean>
+    
+    <bean name="springHttpInvoke" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+        <property name="service" ref="remoteService"/> 
+        <property name="serviceInterface" value="com.huateng.pay.services.base.IRemoteService"/>
+    </bean>  
+    
+    <!-- 三码合一任务 -->
+    <bean name="threeCodeService" class="com.huateng.pay.services.threecode.impl.ThreeCodeServiceImpl">
+    	<property name="timingTaskService" ref="timingTaskService"/>
+    	<property name="orderService" ref="orderService"/>
+    	<property name="aliPayPayService" ref="alipayPayService"/>
+    	<property name="wxPayService" ref="wxPayService"/>
+    </bean>
+    
+    <!-- 同步商户使用的渠道号 -->
+    <bean id="merChantChannelService" class="com.huateng.pay.services.db.impl.MerchantChannelServiceImpl">
+    	<property name="merchantChannelDao" ref="merchantChannelDao"/>
+    </bean>
+    
+    <!-- 银标二维码任务 -->
+    <bean name="cupsPayService" class="com.huateng.pay.services.cups.impl.CupsPayServiceImpl">
+    	<property name="orderService" ref="orderService"/>
+    	<property name="qrCodeService" ref="qrCodeService"/>
+    	<property name="localBankService" ref="localBankService"/>
+    </bean>
+    
+    <!-- 银标二维码任务 -->
+    <bean name="tblMerTradeLimitService" class="com.huateng.pay.services.tradelimit.impl.TblMerTradeLimitServiceImpl">
+    	<property name="tblMerTradeLimitDao" ref="tblMerTradeLimitDao"/>
+    	<property name="sequenceDao" ref="sequenceDao"/>
+    </bean>
+    
+
+    
+</beans> 

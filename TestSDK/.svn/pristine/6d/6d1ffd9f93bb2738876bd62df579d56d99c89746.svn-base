@@ -1,0 +1,26 @@
+package com.trade.ali.test;
+
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.trade.ali.trading.AliMicroPay;
+import com.util.CommonUtil;
+import com.util.SocketUtil;
+import com.util.TransUtil;
+
+public class AliMicroPayTest {
+	
+	@Test
+	public void SocketReq() {
+		
+		Map<String,String> map = AliMicroPay.getData();
+//		map.put("authCode", "282214131959148859");
+//		map.put("alipayMerchantId", "17151371978");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data)+data;
+		SocketUtil.socketConnect(reqData);
+		
+	}
+
+}

@@ -1,0 +1,865 @@
+package com.huateng.pay.services.statics.imple;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.common.date.DateUtil;
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.huateng.pay.common.constants.Dict;
+import com.huateng.pay.common.constants.StringConstans;
+import com.huateng.pay.common.util.Constants;
+import com.huateng.pay.common.util.StringUtil;
+import com.huateng.pay.services.alipay.AliPayMerchantSynchService;
+import com.huateng.pay.services.db.IThreeCodeStaticQRCodeDataService;
+import com.huateng.pay.services.statics.IThreeCodeStaticQRCodeService;
+import com.huateng.utils.QRCodeTypeEnum;
+import com.huateng.utils.QRCodeUtil;
+import com.huateng.utils.QRUtil;
+import com.huateng.utils.Util;
+
+/**
+ * @author Administrator
+ * 静态二维码接口实现类
+ */
+public class ThreeCodeStaticQRCodeServiceImpl implements IThreeCodeStaticQRCodeService{
+	private Logger logger = LoggerFactory.getLogger(ThreeCodeStaticQRCodeServiceImpl.class); 
+	private IThreeCodeStaticQRCodeDataService  threeCodeStaticQRCodeDataService;
+	private AliPayMerchantSynchService aliPayMerchantSynchService;
+	/**
+	 * 创建三码合一静态二维码
+	 * @param inputParam
+	 * @return
+	 */
+	@Override
+	public OutputParam createThreeCodeStaticQRCode(InputParam input) throws FrameException {
+		
+		logger.info("--------------- 获取三码合一静态二维码流程        START ------------------");
+		
+		OutputParam out = new OutputParam();
+
+		try {
+			
+			/**************** 1.请求报文非空字段验证 ***********************/
+			List<String> list = new ArrayList<String>();
+			list.add("merId");
+			list.add("merName");
+			list.add("subAlipayMerId");
+			list.add("subWxMerId");
+			list.add("storeId");
+			
+			// 客户号，改为非必输 20170630上线
+//			list.add("customerNo");  
+			
+			list.add("orgId");
+			list.add("orgCode");
+			list.add("channel");
+			list.add("currencyType");
+			list.add("acctNo");
+			list.add("localQrType");
+			list.add("settleMethod");   //清算方式   0：T+0 1：T+1   
+			
+
+			String nullStr = Util.validateIsNull(list, input);
+			if (!StringUtil.isEmpty(nullStr)) {
+				logger.error("[获取三码合一静态二维码] 请求报文字段[" + nullStr + "]不能为空");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return out;
+			}
+			
+			//账号
+			String acctNo = ObjectUtils.toString(input.getValue("acctNo"));
+			
+			if (acctNo.length() > 22) {
+				logger.error("[获取三码合一静态二维码] 请求报文字段[" + acctNo + "]长度超长");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + acctNo + "]长度超长");
+				return out;
+			}
+			
+			//清算方式
+			String settleMethod = ObjectUtils.toString(input.getValue("settleMethod"));
+			if (!StringConstans.SettleMethod.SETTLEMETHOD0.equals(settleMethod) 
+					&& !StringConstans.SettleMethod.SETTLEMETHOD1.equals(settleMethod)) {
+				logger.error("[获取三码合一静态二维码] 请求报文字段[" + settleMethod + "]值非法");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + settleMethod + "]值非法:" + settleMethod);
+				return out;
+			}
+			
+			
+			//服务码
+			String txnServiceCode = ObjectUtils.toString(input.getValue("serviceCode"));
+			//商户号
+			String merId = ObjectUtils.toString(input.getValue("merId"));
+			//商户名称
+			String merName = ObjectUtils.toString(input.getValue("merName"));
+			//支付宝子商户号
+			String subAlipayMerId = ObjectUtils.toString(input.getValue("subAlipayMerId"));
+			//微信子商户号
+			String subWxMerId = ObjectUtils.toString(input.getValue("subWxMerId"));
+			//商店门户编码
+			String storeId = ObjectUtils.toString(input.getValue("storeId"));
+			//客户号
+			String customerNo = ObjectUtils.toString(input.getValue("customerNo"));
+			//客户名称
+			String customerName = ObjectUtils.toString(input.getValue("customerName"));
+			//机构号
+			String orgId = ObjectUtils.toString(input.getValue("orgId"));
+			//机构编码
+			String orgCode = ObjectUtils.toString(input.getValue("orgCode"));
+			//渠道编号
+			String channel = ObjectUtils.toString(input.getValue("channel"));
+			//币种
+			String currencyType = ObjectUtils.toString(input.getValue("currencyType"));
+			
+			//银行手续费    目前该字段为空 将来会加
+			String bankFeeRate = ObjectUtils.toString(input.getValue("bankFeeRate"));
+			//银行手续费上限
+			String bankFeeUpperLimit = ObjectUtils.toString(input.getValue("bankFeeUpperLimit"));
+			//银行手续费下限
+			String bankFeeLowerLimit = ObjectUtils.toString(input.getValue("bankFeeLowerLimit"));
+			
+			//微信手续费率,如果空取默认的
+			String wxFeeRate = ObjectUtils.toString(input.getValue("wxFeeRate"), 
+					StringConstans.DefaultFeeRate.WX_FEE_RATE);
+			
+			//支付宝手续费率,如果空取默认的
+			String alipayFeeRate = ObjectUtils.toString(input.getValue("alipayFeeRate"),
+					StringConstans.DefaultFeeRate.ALIPAY_FEE_RATE);
+			//二维码类型
+			String localQrType = ObjectUtils.toString(input.getValue("localQrType"));
+
+			// 判断静态二维码类型
+			logger.info("[获取三码合一静态二维码] 二维码前缀类型校验   localQrType=" + localQrType);
+			if (!QRCodeTypeEnum.STATIC_QR_CODE_THREE_CODE.getType().equals(localQrType)) {
+				logger.error("[获取三码合一静态二维码] 二维码前缀类型不正确");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "二维码前缀类型不正确");
+				return out;
+			}
+
+			// 判断渠道类型
+			logger.info("[获取三码合一静态二维码] 渠道类型校验   channel=" + channel);
+			
+			//渠道增加丰收家，20170630上线
+			if (!StringConstans.CHANNEL.CHANNEL_POSP.equals(channel) 
+//					&& !StringConstans.CHANNEL.CHANNEL_FSJ.equals(channel)   //暂停丰收家自主进件一码通商户 20180402
+					) { 
+				logger.error("[获取三码合一静态二维码] 渠道类型不正确");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "此渠道不允许进行商户进件");
+				return out;
+			}
+			
+			// 丰收家商户清算方式为T+1
+			if (StringConstans.CHANNEL.CHANNEL_FSJ.equals(channel)) {
+				settleMethod = StringConstans.SettleMethod.SETTLEMETHOD1;
+			}
+			
+			InputParam  queryParam = new InputParam();
+			queryParam.putparamString("acctNo", acctNo);
+			queryParam.putparamString("ewmStatue",	StringConstans.QRCodeStatus.ENABLE);
+			
+			logger.info("[获取三码合一静态二维码]  查询是否存在该账号的有效静态二维码   开始");
+			
+			OutputParam queryOutput = threeCodeStaticQRCodeDataService.queryThreeCodeStaticQRCodeInfo(queryParam);
+			
+			logger.info("[获取三码合一静态二维码]  查询该账号是否拥有有效静态二维码    完成");
+			
+			if(StringConstans.returnCode.SUCCESS.equals(queryOutput.getReturnCode())){
+				
+				logger.info("[获取三码合一静态二维码]  该账号已拥有有效静态二维码 ");
+				
+//---------------- 获取三码合一静态二维码时，如果已有二维码状态为正常，则返回已有的二维码串码，不重新生成  20170718  start--------------
+				//如果该卡号已经生成三码合一二维码，判断是否是当前渠道生成：如果是，返回二维码串；如果不是，返回失败；
+				if (channel.equals(queryOutput.getValue("channel"))) {
+				
+					out.putValue("threeCodePrefix", Constants.getParam("zjrc_external_network_ip"));
+					out.putValue("codeUrl", ObjectUtils.toString(queryOutput.getValue("ewmCiphertext")));
+					out.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					out.putValue("respDesc", "原三码合一静态二维码状态可用");
+					logger.info("[获取三码合一静态二维码]  返回已有三码合一信息");
+					return out;
+					
+				} else {
+					
+					logger.info("[获取三码合一静态二维码] 三码合一静态二维码已在其他渠道生成");
+					out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+					out.putValue("respDesc", "该卡号已在其他渠道生成三码合一静态二维码");
+					return out;
+				}
+				
+				
+				
+/*				
+				//如果渠道是丰收家，则直接返回已有的三码合一信息
+				if (StringConstans.CHANNEL.CHANNEL_FSJ.equals(channel)) {
+					out.putValue("threeCodePrefix", Constants.getParam("zjrc_external_network_ip"));
+					out.putValue("codeUrl", ObjectUtils.toString(queryOutput.getValue("ewmCiphertext")));
+					out.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+					out.putValue("respDesc", "增加三码合一静态二维码成功");
+					logger.info("[获取三码合一静态二维码]  返回丰收家渠道已有三码合一信息");
+					return out;
+				} else {  //如果渠道是POSP，则先修改已有三码合一记录为失效状态，然后重新生成一个
+				
+					//静态二维码流水号
+					String ewmSeq = String.format("%s", queryOutput.getValue("ewmSeq"));
+					
+	 				InputParam  updateInput =  new InputParam(); 
+					updateInput.putparamString("ewmSeq", ewmSeq);
+					updateInput.putparamString("updateDt", DateUtil.getCurrentDateTime());
+					updateInput.putparamString("ewmStatue", StringConstans.QRCodeStatus.DISABLE);
+						
+					logger.info("[获取三码合一静态二维码]  更新该静态二维码失效            开始");
+					
+					OutputParam updateOutput = threeCodeStaticQRCodeDataService.updateThreeCodeStaticQRCodeStatus(updateInput);
+					
+					logger.info("[获取三码合一静态二维码]  更新该静态二维码失效            完成");
+					
+					if(!StringConstans.returnCode.SUCCESS.equals(updateOutput.getReturnCode())){
+						logger.error("[获取三码合一静态二维码]  更新该静态二维码失效失败");
+						out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+						out.putValue("respDesc", "更新该静态二维码失效失败");
+						return out;
+					}
+				}*/
+//---------------- 获取三码合一静态二维码时，如果已有二维码状态为正常，则返回已有的二维码串码，不重新生成  20170718  end--------------			
+				
+			}
+			
+			//获取二维码序列号
+			String staticQRSeqNo = threeCodeStaticQRCodeDataService.getThreeCodeStaticQRSeqNo();
+			
+			logger.info("[获取三码合一静态二维码] 获取三码合一静态二维码的序列号完成,qrSeqNo:[" + staticQRSeqNo +"]");
+			
+			InputParam  qrInput  = new InputParam();
+			qrInput.putParams("txnServiceCode", txnServiceCode);
+			qrInput.putParams("qrSeqNo",staticQRSeqNo);
+			qrInput.putParams("localQrType",localQrType);
+			
+			logger.info("-------[获取三码合一静态二维码] 生成三码合一静态二维码串码  开始---------");
+			
+			OutputParam qrOutputParam = QRCodeUtil.encryptQRCodeCode(qrInput);
+			
+			logger.info("-------[获取三码合一静态二维码] 生成三码合一静态二维码串码  完成---------");
+			
+			if(!StringConstans.returnCode.SUCCESS.equals(qrOutputParam.getReturnCode())){
+				logger.error("[获取三码合一静态二维码] 生成三码合一静态二维码串码失败");
+				out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "二维码前置异常,获取三码合一静态二维码串码失败");
+				return out;
+			}
+			
+			logger.info("-------[获取三码合一静态二维码] 生成三码合一静态二维码串码  成功---------");
+			
+			//二维码明文
+			String qrCodeProClaimed = String.format("%s", qrOutputParam.getValue("qrCodeProClaimed"));
+			//二维码密文
+			String qrCodecipherText = String.format("%s", qrOutputParam.getValue("qrCodecipherText"));
+			//二维码状态
+			String qrCodeStatus = String.format("%s", qrOutputParam.getValue("qrCodeStatus"));
+			//二维码有效期
+			String qrCodeExpire = String.format("%s", qrOutputParam.getValue("qrCodeExpire"));	
+			//生成时间
+			String generatDt = String.format("%s", qrOutputParam.getValue("generatDt"));	
+			
+			/*************************增加静态二维码流程************************************/
+			
+			logger.info("[获取三码合一静态二维码] 开始获取三码合一静态二维码的流水号");
+			
+			//获取二维码流水
+			String ewmSeq = threeCodeStaticQRCodeDataService.getThreeCodeStaticQRCodeTxnNo();
+			
+			logger.info("[获取三码合一静态二维码] 获取三码合一静态二维码的流水号完成,ewmSeq:[" + ewmSeq +"]");
+			
+			InputParam  saveInput =  new InputParam(); 
+			saveInput.putparamString("ewmSeq", ewmSeq);
+			saveInput.putparamString("ewmData", qrCodeProClaimed);
+			saveInput.putparamString("ewmCipherText", qrCodecipherText);
+			saveInput.putparamString("merId", merId);
+			saveInput.putparamString("merName", merName);
+			saveInput.putparamString("subAlipayMerId", subAlipayMerId);
+			saveInput.putparamString("subWxMerId", subWxMerId);
+			saveInput.putparamString("storeId", storeId);
+			saveInput.putparamString("customerNo", customerNo);
+			saveInput.putparamString("orgId", orgId);
+			saveInput.putparamString("orgCode", orgCode);
+			saveInput.putparamString("channel", channel);
+			saveInput.putparamString("currencyType", currencyType);
+			saveInput.putparamString("acctNo", acctNo);
+			saveInput.putparamString("bankFeeRate", bankFeeRate);
+			saveInput.putparamString("bankFeeUpperLimit", bankFeeUpperLimit);
+			saveInput.putparamString("bankFeeLowerLimit", bankFeeLowerLimit);
+			saveInput.putparamString("wxFeeRate", wxFeeRate);
+			saveInput.putparamString("alipayFeeRate", alipayFeeRate);
+			saveInput.putparamString("createDt", generatDt);
+			saveInput.putparamString("ewmType", localQrType);
+			saveInput.putparamString("ewmStatue", qrCodeStatus);
+			saveInput.putparamString("validateDay", qrCodeExpire);
+			saveInput.putparamString("settleMethod", settleMethod);
+			//判断客户名
+			if(!StringUtil.isEmpty(customerName)){
+				saveInput.putparamString("customName", customerName);
+			} 		
+			
+			logger.info("[获取三码合一静态二维码]  开始增加三码合一静态二维码");
+			
+			OutputParam  saveOutput = threeCodeStaticQRCodeDataService.saveThreeCodeStaticQRCodeInfo(saveInput);
+			
+			logger.info("[获取三码合一静态二维码]  完成增加三码合一静态二维码");
+			
+			if(!StringConstans.returnCode.SUCCESS.equals(saveOutput.getReturnCode())){
+				logger.info("[获取三码合一静态二维码]  增加三码合一静态二维码失败");
+				out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "二维码前置异常,增加三码合一静态二维码失败");
+				return out;
+			}
+			
+			logger.info("[获取三码合一静态二维码]  增加三码合一静态二维码成功");
+			
+			out.putValue("threeCodePrefix", Constants.getParam("zjrc_external_network_ip"));
+			out.putValue("codeUrl", qrCodecipherText);
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+			out.putValue("respDesc", "增加三码合一静态二维码成功");
+			
+			logger.info("---------------获取三码合一静态二维码流程        END ------------------");
+
+		} catch (Exception e) {
+			logger.error("[获取三码合一静态二维码] 获取三码合一静态二维码异常" + e.getMessage(),e);
+			out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+			out.putValue("respDesc", "获取三码合一静态二维码异常");
+			logger.info("---------------获取三码合一静态二维码流程出现异常        END ------------------");
+		}
+
+		return out;
+	}
+	
+	@Override
+	public OutputParam parseThreeCodeStaticQRCode(InputParam input) throws FrameException {
+		
+		OutputParam out = new OutputParam();
+		
+		logger.info("------------  解析三码合一静态二维码流程    START-------------input("+input.toString()+")");
+		
+		try {
+			List<String> list = new ArrayList<String>();
+			list.add("codeUrl");
+			list.add("channel");
+
+			String nullStr = Util.validateIsNull(list, input);
+			if (!StringUtil.isEmpty(nullStr)) {
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return out;
+			}
+			
+			//二维码密文
+			String qrCodecipherText = String.format("%s", input.getValue("codeUrl"));
+			//判断渠道类型
+			String channel = String.format("%s", input.getValue("channel"));
+			
+			if (!StringConstans.CHANNEL.CHANNEL_POSP.equals(channel)
+					&& !StringConstans.CHANNEL.CHANNEL_SELF.equals(channel)) {
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "渠道类型不正确");
+				return out;
+			}
+			
+			
+			OutputParam  qrOutput = QRCodeUtil.decryptQRCodeCode(qrCodecipherText);
+			
+			if(!StringConstans.returnCode.SUCCESS.equals(qrOutput.getReturnCode())){
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc",qrOutput.getReturnMsg());
+				return out;
+			}
+			
+			//二维码明文
+			String qrCodeProClaimed = String.format("%s", qrOutput.getValue("qrCodeProClaimed"));
+			
+			
+			InputParam  queryInput = new InputParam();
+			queryInput.putparamString("ewmData", qrCodeProClaimed);
+
+			
+			OutputParam queryOutput = threeCodeStaticQRCodeDataService.queryThreeCodeStaticQRCodeInfo(queryInput);
+			
+			if(!StringConstans.returnCode.SUCCESS.equals(queryOutput.getReturnCode())){
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc","没有查询到二维码相关信息");
+				return out;
+			}
+			
+			//静态二维码状态
+			String ewmStatue = ObjectUtils.toString(queryOutput.getValue("ewmStatue"));
+			if(!StringConstans.QRCodeStatus.ENABLE.equals(ewmStatue)){
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc","该静态二维码已失效");
+				return out;
+			}
+			
+			this.setQueryThreeCodeOut(out, queryOutput);
+			
+			//二维码明文
+			out.putValue("ewmData", qrCodeProClaimed);
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+			out.putValue("respDesc", "解析三码合一静态二维码成功");
+			
+			OutputParam routing = aliPayMerchantSynchService.routing(input);
+			out.putValue(Dict.connectMethod, routing.getValue(Dict.connectMethod));
+			
+		} catch (Exception e) {
+			logger.error("[解析三码合一静态二维码] 解析三码合一静态二维码异常" + e.getMessage(),e);
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			out.putValue("respDesc", "二维码前置异常,解析三码合一静态二维码异常");
+		}
+		logger.info("------------  解析三码合一静态二维码流程    END---------------out("+out.toString()+")");
+		return out;
+	}
+
+	@Override
+	public OutputParam queryThreeCodeStaticQRCode(InputParam input) throws FrameException {
+		
+		OutputParam out = new OutputParam();
+		
+		logger.info("------------  查询三码合一静态二维码流程    START-------------"+input.toString());
+		
+		try {
+			List<String> list = new ArrayList<String>();
+			list.add("acctNo");
+			list.add("channel");
+
+			String nullStr = Util.validateIsNull(list, input);
+			if (!StringUtil.isEmpty(nullStr)) {
+				logger.debug("[查询三码合一静态二维码] 请求报文字段[" + nullStr + "]不能为空");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return out;
+			}
+			//二维码密文
+			String acctNo = String.format("%s", input.getValue("acctNo"));
+		
+			//判断渠道类型
+			String channel = String.format("%s", input.getValue("channel"));
+			
+			if (!StringConstans.CHANNEL.CHANNEL_POSP.equals(channel)
+					&& !StringConstans.CHANNEL.CHANNEL_SELF.equals(channel)
+					&& !StringConstans.CHANNEL.CHANNEL_FSJ.equals(channel)) {
+				logger.debug("[查询三码合一静态二维码] 渠道类型不正确");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "渠道类型不正确");
+				return out;
+			}
+			
+			
+			InputParam  queryInput = new InputParam();
+			queryInput.putparamString("acctNo", acctNo);
+			queryInput.putparamString("ewmStatue", StringConstans.QRCodeStatus.ENABLE);
+
+			logger.debug("[查询三码合一静态二维码]  查询静态二维码 是否存在   开始");
+			
+			OutputParam queryOutput = threeCodeStaticQRCodeDataService.queryThreeCodeStaticQRCodeInfo(queryInput);
+			
+			logger.debug("[查询三码合一静态二维码]  查询静态二维码 是否存在    完成");
+			
+			if(!StringConstans.returnCode.SUCCESS.equals(queryOutput.getReturnCode())){
+				logger.debug("[查询三码合一静态二维码] 没有查询到二维码相关信息");
+				out.setReturnCode(StringConstans.returnCode.FAIL);
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc","没有查询到二维码相关信息");
+				return out;
+			}
+			
+			logger.debug("[查询三码合一静态二维码]  查询静态二维码成功");
+			
+			this.setQueryThreeCodeOut(out, queryOutput);
+			
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+			out.putValue("respDesc", "查询三码合一静态二维码成功");
+			
+			logger.debug("------------  查询三码合一静态二维码流程    END---------------");
+			
+		} catch (Exception e) {
+			logger.error("[查询三码合一静态二维码] 查询三码合一静态二维码异常" + e.getMessage(),e);
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			out.putValue("respDesc", "二维码前置异常,查询三码合一静态二维码异常");
+		}finally {
+			logger.info("------------  查询三码合一静态二维码流程    END-------------"+out.toString());
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public OutputParam stopThreeCodeStaticQRCode(InputParam inputParam) throws FrameException {
+		
+		OutputParam out = new OutputParam();
+		
+		logger.info("[停用三码合一静态二维码流程 ]   START"+inputParam.toString());
+		
+		try {
+			
+			//需要校验的字段
+			List<String> validateParamList = new ArrayList<String>();
+			validateParamList.add("codeUrl");
+			validateParamList.add("channel");
+			
+			//校验字段
+			String nullStr = Util.validateIsNull(validateParamList, inputParam);
+			if (!StringUtil.isEmpty(nullStr)) {
+				logger.debug("[停用三码合一静态二维码] 请求报文字段[" + nullStr + "]不能为空");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return out;
+			}
+			
+			//二维码串码
+			String codeUrl = String.format("%s", inputParam.getValue("codeUrl"));
+			//渠道
+			String channel = String.format("%s", inputParam.getValue("channel"));
+			
+			//判断渠道类型
+			logger.info("[停用三码合一静态二维码] 渠道类型校验   channel=" + channel);
+			if (!StringConstans.CHANNEL.CHANNEL_POSP.equals(channel)
+					&&!StringConstans.CHANNEL.CHANNEL_FSJ.equals(channel)) {
+				logger.debug("[停用三码合一静态二维码] 渠道类型不正确");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "渠道类型不正确"+channel);
+				return out;
+			}
+			
+			InputParam  queryParam = new InputParam();
+			queryParam.putparamString("ewmCipherText", codeUrl);
+			queryParam.putparamString("channel", channel);
+			queryParam.putparamString("ewmStatue", StringConstans.QRCodeStatus.ENABLE);
+			
+			logger.debug("[停用三码合一静态二维码]  查询三码合一静态二维码是否存在    开始");
+			
+			OutputParam queryOutput = threeCodeStaticQRCodeDataService.queryThreeCodeStaticQRCodeInfo(queryParam);
+			
+			logger.debug("[停用三码合一静态二维码]  查询三码合一静态二维码是否存在    结束");
+			
+			if (!StringConstans.returnCode.SUCCESS.equals(queryOutput.getReturnCode())) {
+				logger.debug("[停用三码合一静态二维码]  停用三码合一静态二维码失败,没有找到三码合一静态二维码");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "停用三码合一静态二维码失败,没有找到三码合一静态二维码" );
+				return out;
+			}
+			
+			logger.debug("[停用三码合一静态二维码]  查询三码合一静态二维码存在  ");
+			
+			//二维码序列号
+			String  ewmSeq = String.format("%s", queryOutput.getReturnObj().get("ewmSeq"));
+				
+			InputParam updateInput = new InputParam();
+			updateInput.putparamString("ewmSeq", ewmSeq);
+			updateInput.putparamString("ewmStatue", StringConstans.QRCodeStatus.DISABLE);
+			updateInput.putparamString("updateDt", DateUtil.getCurrentDateTime());
+			
+			logger.debug("[停用三码合一静态二维码]  停用三码合一静态二维码    开始");
+			
+			OutputParam updateOutput = threeCodeStaticQRCodeDataService.updateThreeCodeStaticQRCodeStatus(updateInput);
+			
+			logger.debug("[停用三码合一静态二维码]  停用三码合一静态二维码    完成");
+			
+			if (!StringConstans.returnCode.SUCCESS.equals(updateOutput.getReturnCode())) {
+				logger.debug("[停用三码合一静态二维码]  停用三码合一静态二维码失败");
+				out.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				out.putValue("respDesc", "二维码前置异常,停用三码合一静态二维码失败");
+				return out;
+			}
+			
+			out.putValue("respCode",StringConstans.RespCode.RESP_CODE_02);
+			out.putValue("respDesc", "停用三码合一静态二维码成功");
+			out.putValue("codeUrl", codeUrl);
+			
+			logger.debug("------------  停用三码合一静态二维码流程    END-----------------");
+			
+		} catch (Exception e) {
+			logger.error("[停用三码合一静态二维码] 停用三码合一静态二维码异常" + e.getMessage(),e);
+			out.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			out.putValue("respDesc", "二维码前置异常,停用三码合一静态二维码异常");
+		}
+		logger.info("[停用三码合一静态二维码流程 ]   END"+out.toString());
+		return out;
+	}
+	
+	@Override
+	public OutputParam createThreeCodeStaticQRCodeImage(InputParam inputParam)
+			throws FrameException {
+		
+		OutputParam outputParam = new OutputParam();
+		
+		logger.info("[生成三码合一静态二维码图片流程  ]  START"+inputParam.toString());
+		
+		try {
+			//需要校验的字段
+			List<String> validateParamList = new ArrayList<String>();
+			validateParamList.add("channel");
+			validateParamList.add("codeUrl");
+			
+			//校验字段
+			String nullStr = Util.validateIsNull(validateParamList, inputParam);
+			if (!StringUtil.isEmpty(nullStr)) {
+				logger.debug("[生成三码合一静态二维码图片] 请求报文字段[" + nullStr + "]不能为空");
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return outputParam;
+			}
+			
+			//判断渠道类型
+			String channel = String.format("%s", inputParam.getValue("channel"));
+			
+			//二维码串码
+			String codeUrl = String.format("%s", inputParam.getValue("codeUrl"));
+					
+			//渠道校验
+			if (!StringConstans.CHANNEL.CHANNEL_POSP.equals(channel)) {
+				logger.debug("[生成三码合一静态二维码图片] 渠道类型不正确");
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "渠道类型不正确");
+				return outputParam;
+			}
+			
+			logger.debug("[生成三码合一静态二维码图片] 查询三码合一静态二维码是否存在        开始");
+			
+			OutputParam queryOut = this.parseThreeCodeStaticQRCode(inputParam);
+			
+			logger.debug("[生成三码合一静态二维码图片] 查询三码合一静态二维码是否存在        完成");
+			
+			//返回码 02成功
+			String respCode = ObjectUtils.toString(queryOut.getValue("respCode"));
+			logger.debug("[生成三码合一静态二维码图片] 查询三码合一静态二维码 响应码  respCode=" + respCode);
+			
+			// 返回描述
+			String respDesc = ObjectUtils.toString(queryOut.getValue("respDesc"));
+			logger.debug("[生成三码合一静态二维码图片] 查询三码合一静态二维码 响应码描述  respDesc=" + respDesc);
+			
+			if (!StringConstans.RespCode.RESP_CODE_02.equals(respCode)) {
+				logger.debug("[生成三码合一静态二维码图片] 生成三码合一静态二维码图片失败 : " + respDesc);
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "生成三码合一静态二维码图片失败 : " + respDesc);
+				return outputParam;
+			}
+			
+			
+			String ewmPrefix = Constants.getParam("zjrc_external_network_ip");
+			logger.debug("[生成三码合一静态二维码图片]  二维码地址前缀ewmPrefix=" + ewmPrefix);
+			
+			//图片源
+			String imageSource = ewmPrefix + codeUrl;
+			logger.debug("[生成三码合一静态二维码图片]  二维码地址链接imageSource=" + imageSource);			
+			
+			logger.debug("[生成三码合一静态二维码图片]  开始  生成二维码图片");
+
+			
+			String imageBase64 = QRUtil.createQRImage(imageSource);
+			
+			logger.debug("[生成三码合一静态二维码图片]  完成  生成二维码图片");
+			
+			if (StringUtil.isEmpty(imageBase64)) {
+				logger.error(" [生成三码合一静态二维码图片] 生成三码合一静态二维码图片失败");
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "生成三码合一静态二维码图片失败");
+				return outputParam;
+			}
+			
+			logger.debug(" [生成三码合一静态二维码图片] 生成三码合一静态二维码图片成功 ");
+			
+			String acctNo = String.format("%s", queryOut.getValue("acctNo"));
+			
+			outputParam.putValue("imageContent", imageBase64);
+			outputParam.putValue("imageType", QRUtil.IMAGE_TYPE);
+			outputParam.putValue("imageName", acctNo);
+			outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_02);
+			outputParam.putValue("respDesc", "生成三码合一静态二维码图片成功");
+			
+			logger.debug("------------  生成三码合一静态二维码图片流程    END---------------");
+			
+		} catch (Exception e) {
+			logger.error("[生成静态二位图片] 生成三码合一静态二维码图片异常" + e.getMessage(),e);
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg(" 生成三码合一静态二维码图片异常");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "二维码前置异常,生成三码合一静态二维码图片异常");
+		}finally {
+			logger.info("[生成三码合一静态二维码图片流程  ]  END"+outputParam.toString());
+		}
+		return outputParam;
+	}
+	
+	private OutputParam setQueryThreeCodeOut(OutputParam  out ,OutputParam queryOutput){
+		//商户号
+		out.putValue("merId", queryOutput.getValue("merId"));
+		//商户名称
+		out.putValue("merName", queryOutput.getValue("merName"));
+		//支付宝子商户号
+		out.putValue("subAlipayMerId", queryOutput.getValue("subAlipayMerId"));
+		//微信子商户号
+		out.putValue("subWxMerId", queryOutput.getValue("subWxMerId"));
+		//商店门户编码
+		out.putValue("storeId", queryOutput.getValue("storeId"));
+		//客户号
+		out.putValue("customerNo", queryOutput.getValue("customerNo"));
+		//客户名称
+		out.putValue("customerName", queryOutput.getValue("customerName"));
+		//机构号
+		out.putValue("orgId", queryOutput.getValue("orgId"));
+		//机构编码
+		out.putValue("orgCode", queryOutput.getValue("orgCode"));
+		//渠道编号
+		out.putValue("channel", queryOutput.getValue("channel"));
+		//币种
+		out.putValue("currencyType", queryOutput.getValue("currencyType"));
+		//账号
+		out.putValue("acctNo", queryOutput.getValue("acctNo"));
+		//本行手续费率
+		out.putValue("bankFeeRate", queryOutput.getValue("bankFeeRate"));
+		//微信手续费率
+		out.putValue("wxFeeRate", queryOutput.getValue("wxFeeRate"));
+		//支付宝手续费率
+		out.putValue("alipayFeeRate", queryOutput.getValue("alipayFeeRate"));
+		//二维码类型
+		out.putValue("localQrType", queryOutput.getValue("ewmType"));
+		//二维码串码
+		out.putValue("codeUrl", queryOutput.getValue("ewmCiphertext"));
+		
+		return out;
+	}
+	
+	@Override
+	public OutputParam updateThreeCodeStaticQRCode(InputParam inputParam)
+			throws FrameException {
+		OutputParam outputParam = new OutputParam();
+		
+		logger.info("[更新三码合一静态二维码流程 ]   START"+inputParam.toString());
+		
+		try {
+			//需要校验的字段
+			List<String> validateParamList = new ArrayList<String>();
+//			validateParamList.add("acctNo");
+//			validateParamList.add("bankFeeRate");
+			validateParamList.add("channel");
+			
+			//校验字段
+			String nullStr = Util.validateIsNull(validateParamList, inputParam);
+			if (!StringUtil.isEmpty(nullStr)) {
+				logger.debug("[更新三码合一静态二维码] 请求报文字段[" + nullStr + "]不能为空");
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "请求报文字段[" + nullStr + "]不能为空");
+				return outputParam;
+			}
+			
+			String channel = String.format("%s", inputParam.getValue("channel"));
+			String acctNo = String.format("%s", inputParam.getValue("acctNo"));
+			String bankFeeRate = String.format("%s", inputParam.getValue("bankFeeRate"));
+			String settleMethod = String.format("%s", inputParam.getValue("settleMethod"));
+			String orgCode = String.format("%s", inputParam.getValue("orgCode"));
+			
+			if (StringUtil.isEmpty(acctNo) && StringUtil.isEmpty(orgCode)) {
+				logger.debug("[更新三码合一静态二维码] 请求报文字段[acctNo],[orgCode]不能同时为空");
+				outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "请求报文字段[acctNo],[orgCode]不能同时为空");
+				return outputParam;
+			}
+			
+			if (StringUtil.isEmpty(settleMethod)) {
+				if (channel.equals(StringConstans.CHANNEL.CHANNEL_FSJ)
+						&& settleMethod.equals(StringConstans.SettleMethod.SETTLEMETHOD0)) {
+					logger.debug("[更新三码合一静态二维码] 丰收家商户暂不支持T+0清算");
+					outputParam.putValue("respCode",StringConstans.RespCode.RESP_CODE_03);
+					outputParam.putValue("respDesc", "丰收家商户暂不支持T+0清算");
+					return outputParam;
+				}
+			}
+			
+			//非必填字段
+			String bankFeeUpperLimit = String.format("%s", inputParam.getValue("bankFeeUpperLimit"));
+			String bankFeeLowerLimit = String.format("%s", inputParam.getValue("bankFeeLowerLimit"));
+			
+			InputParam  updateInput =  new InputParam(); 
+			List<Map<String, String>> paramStrings = new ArrayList<Map<String, String>>();
+			
+			if (!StringUtil.isEmpty(acctNo)) {
+				updateInput.putparamString("acctNo", acctNo);
+			}
+			if (!StringUtil.isEmpty(orgCode)) {
+				updateInput.putparamString("orgCode", orgCode.substring(0, 3));
+			}
+			if (!StringUtil.isEmpty(bankFeeRate)) {
+				updateInput.putparamString("bankFeeRate", bankFeeRate);
+			}
+			if (!StringUtil.isEmpty(settleMethod)) {
+				updateInput.putparamString("settleMethod", settleMethod);
+			}
+			
+			updateInput.putparamString("channel", channel);
+			updateInput.putparamString("ewmStatue", StringConstans.QRCodeStatus.ENABLE);
+			if(!StringUtil.isEmpty(bankFeeUpperLimit)){
+				updateInput.putparamString("bankFeeUpperLimit", bankFeeUpperLimit);
+			}
+			if(!StringUtil.isEmpty(bankFeeLowerLimit)){
+				updateInput.putparamString("bankFeeLowerLimit", bankFeeLowerLimit);
+			}
+			
+			updateInput.putparamString("updateDt", DateUtil.getCurrentDateTime());
+			
+			paramStrings.add(updateInput.getParamString());
+			
+			updateInput.setParamStrings(paramStrings);
+				
+			logger.debug("[更新三码合一静态二维码]  更新该静态二维码            开始");
+			OutputParam updateOutput = threeCodeStaticQRCodeDataService.updateBatchThreeCodeStaticQRCode(updateInput);
+			logger.debug("[更新三码合一静态二维码]  更新该静态二维码            完成");
+			
+			if(updateOutput.getReturnCode().equals(StringConstans.returnCode.SUCCESS)){
+				outputParam.putValue("acctNo", acctNo);
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_02);
+				outputParam.putValue("respDesc", "更新静态二维码成功");
+			}else{
+				outputParam.putValue("acctNo", acctNo);
+				outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+				outputParam.putValue("respDesc", "更新静态二维码失败");
+			}
+			
+		} catch (Exception e) {
+			logger.error("[更新静态二维码] 单笔更新静态二维码异常" + e.getMessage(),e);
+			outputParam.setReturnCode(StringConstans.returnCode.FAIL);
+			outputParam.setReturnMsg(" 更新静态二维码异常");
+			outputParam.putValue("respCode", StringConstans.RespCode.RESP_CODE_03);
+			outputParam.putValue("respDesc", "二维码前置异常,更新静态二维码");
+		}finally {
+			logger.info("[更新三码合一静态二维码流程 ]   END"+outputParam.toString());
+		}
+		
+		return outputParam;
+	}
+	
+	public IThreeCodeStaticQRCodeDataService getThreeCodeStaticQRCodeDataService() {
+		return threeCodeStaticQRCodeDataService;
+	}
+
+	public void setThreeCodeStaticQRCodeDataService(
+			IThreeCodeStaticQRCodeDataService threeCodeStaticQRCodeDataService) {
+		this.threeCodeStaticQRCodeDataService = threeCodeStaticQRCodeDataService;
+	}
+
+	public AliPayMerchantSynchService getAliPayMerchantSynchService() {
+		return aliPayMerchantSynchService;
+	}
+
+	public void setAliPayMerchantSynchService(AliPayMerchantSynchService aliPayMerchantSynchService) {
+		this.aliPayMerchantSynchService = aliPayMerchantSynchService;
+	}
+
+	
+
+}

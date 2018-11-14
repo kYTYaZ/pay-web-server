@@ -1,0 +1,36 @@
+##########################SDK\u914d\u7f6e\u6587\u4ef6################################
+##1\u3001\u63a5\u53e3\u516c\u7528\u53c2\u6570
+# \u652f\u4ed8\u5b9d\u670d\u52a1\u5668\u4e3b\u52a8\u901a\u77e5\u5546\u6237\u670d\u52a1\u5668\u91cc\u6307\u5b9a\u7684\u9875\u9762 http/https\u8def\u5f84\u3002
+asdk.notifyUrl = http://api.test.alipay.net/atinterface/receive _notify.htm
+# \u652f\u4ed8\u5b9d\u5206\u914d\u7ed9\u5f00\u53d1\u8005\u7684\u5e94\u7528ID
+asdk.appId = 2017040606571877
+
+##2\u3001\u63a5\u53e3\u5730\u5740
+# \u63a5\u53e3\u5730\u5740
+asdk.frontTransUrl = https://apay.test.95516.com/ali/aligateway
+
+##3\u3001\u63a5\u53e3\u540d\u79f0
+# \u5546\u6237\u5165\u9a7b---\u95f4\u8fde\u5546\u6237\u5206\u7ea7\u5165\u9a7b\u63a5\u53e3
+asdk.indirectCreate = ant.merchant.expand.indirect.create
+# \u5546\u6237\u4fe1\u606f\u67e5\u8be2---\u95f4\u8fde\u5546\u6237\u5206\u7ea7\u4fe1\u606f\u67e5\u8be2
+asdk.indirectQuery = ant.merchant.expand.indirect.query
+# \u5546\u6237\u4fe1\u606f\u4fee\u6539---\u5546\u6237\u5206\u7ea7\u4e0e\u4fe1\u606f\u4fee\u6539
+asdk.indirectModify = ant.merchant.expand.indirect.modify
+# \u626b\u7801\u652f\u4ed8---\u7edf\u4e00\u6536\u5355\u7ebf\u4e0b\u4ea4\u6613\u9884\u521b\u5efa
+asdk.tradePrecreate = alipay.trade.precreate
+# \u6761\u7801\u652f\u4ed8---\u7edf\u4e00\u6536\u5355\u4ea4\u6613\u652f\u4ed8\u63a5\u53e3
+asdk.tradePay = alipay.trade.pay
+# \u7edf\u4e00\u4e0b\u5355---\u7edf\u4e00\u6536\u5355\u4ea4\u6613\u521b\u5efa\u63a5\u53e3
+asdk.tradeCreate = alipay.trade.create
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u64a4\u9500
+asdk.tradeCancel = alipay.trade.cancel
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u9000\u6b3e\u67e5\u8be2
+asdk.tradeRefundQuery = alipay.trade.fastpay.refund.query
+# \u7edf\u4e00\u6536\u5355\u4ea4\u6613\u9000\u6b3e\u63a5\u53e3
+asdk.tradeRefund = alipay.trade.refund
+# \u7edf\u4e00\u6536\u5355\u7ebf\u4e0b\u4ea4\u6613\u67e5\u8be2
+asdk.tradeQuery = alipay.trade.query
+
+##4\u3001\u516c\u79c1\u94a5\u4fe1\u606f
+asdk.publicKey = MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwyFjugBEq4Pt+B4G1PZkqYHn9LJemr69XWw/yI42WDOt0qEItwmR2VMqMswSqHUc6MCa8F5nfoQpnXCH2r3b38IusfqbSTafXRLaXxAJyZPuKrq4kBY9XTYr+rj/AEYJ9O1DIYHWAew/GgNY++2JNUTse/ixXqO62Q3XXtlNaKT8YyKjj6oj56O/CTF6RZ+y4hj17u+W8GNq2CBhBCJp8qYImLltb6PVDhuOzTFk57CHcuvBarj0sORSqeX6C/NuRjV96CUmbovHdlA5DCwWrH9Oic9CSs+QFW5WiPrNuP4gn6PK/ulmgrPHugQ5GooyZEf270QkHkKW191fFqEy1QIDAQAB
+asdk.privateKey = MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDA7HglcvDgABHnUWxjkzme9AuyKBc2N30XLthZfYsX8dfl816mBpF3O9RgFfezC8Rlbkl6mwtfYOuqMVL5p9C8vcwPJOsQhjM3Am2xKiqA5O6JYqt4H1z9hkiXmazegzqo1F964skuLF0vlrWZXmo496VMHOTDncEx24+/q85g199ofJCH1X60c4LbUKvyjhR6I9rNF1dHLBW9nzyJj/uc2VQeYZiVR4yTBRjS9EaenVG+jLx/TXyRmxKeMRCxgL5sGzVWef4Y/tfrMgvkInQKe1xfwpI/CqoKrEWPMb4VQt33y12wpbaQgf9q1hpgQWOTvd0HvnsQGzrJJ5KZ/4otAgMBAAECggEAWZMx8cldd9PwfCO9HLq17UzIxW6B4IWBCiuQ/nQhCfwbT0RhdNrl3aOk5vwsJzDWfnXnngqxDBb3NO1z5kD51TiWr41nqyN0Uh1JixHV7ETfUGDE1qBRT9FykRkkP6hUqyD4OBlmaY7lsXvbU5uX3F13nVBpEz6C/kBAjTEbQLEMPRUAqx2ApdFz8kGsoO/9vTCfERxhPAXhvKUEZH2j0N3goyaYhCWHLM+Y8G3dz4EHwAoG60H5xDN2xuBBDUZ/nJI0vMPPlBGIQFY5jcS8YClWpV16gxxRkKwu9pS633bDA05JVaAdFV+D4fx0A5/pSOoJN7IbYoPbWU5X0JTHwQKBgQDiTbe1+oGS/eps3uJQSUsyIfrqIOXmKgVh2M1apZA0D6TqywvBL82Y2Qqcd63Hcj4jVXJiLf0tvMqAcv4KmjketD+o8o8vGooLkqTRGl5XQlRD84LktuNo6Jwer5BUbG1wYLqzMi4fa0l3b13krfLK4fWhKEnElYP5ZCAa6e71nQKBgQDaPWlqJQWMB2rgbmFcY1GNAEhnFpbD9ByIi6TSaAhs7jwYwPSBZo2I7bzAybKvsCnIG4lljhcdsHfwnnL4yRWgUJ91wEd7zG5zvbKPJUfRMRDJIe94FlwzSQjLI8/w/WVnlScfllbs0c8dIfTS0Ur2eddcASW441+A4up3gNiJ0QKBgFAIHiUsT3C1fZc9B5pPIVm8bKkqM0O/rqGY857QGHxg3/jtD94lUrdwYnFNXdbADzudt1MDYpsvPgpJIJCNVBAIvM654WtOHm3TUZhlk+GWIojZcHwENc5fHP85JXjF07o/ayd+YpNX9OZZK0J5Rfj8CksRHW15Vu/2uefqvUh9AoGAWQt9m2WHod7U6MWgzAVqHNHkuMsqsMFFcyEnGwJ/jZKWyrLQEIw7a4c04KRrV+vU4GT75ofXPrHl/jNoTcIeJM9AgNb3U7fRyT+5P1bCusP+SVKjVqgo7nP6NohiK734Rg9Ba034IaBplUVpkyr6Hx8Pk+aT8aA0M25ipGfZ8kECgYBoiT8JbQnJ7iNvPln8robXkh6T3tqKAEKpkkw571LHlyvR9TB3f9e9HFGCnGSSZ0y3PBbvg78dk3JKtqykIIl9zduY5mXVRq/TSdPQqCPS1adjYgBtcRbI6E/nAEwK9uT4KH1x8V4y/o1VNvxYmI9CAc2QeOPFCYtFk6zdkOOpjw==

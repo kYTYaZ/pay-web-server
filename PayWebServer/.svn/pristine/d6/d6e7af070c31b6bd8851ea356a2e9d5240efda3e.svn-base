@@ -1,0 +1,84 @@
+package com.huateng.pay.services.cups;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+
+/**
+ * 银联接口定义
+ * @author ghl
+ *
+ */
+public interface ICupsPayService {
+
+	/**
+	 * 银联c2b码申请接口
+	 * @param input
+	 * @return
+	 */
+	public OutputParam unionPayApplyQrNo(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 被扫附加处理请求
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BScanedAttachHandler(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 被扫附加处理结果通知
+	 * @param intPutParam
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BScanedAttachHandlerNotify(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 他行二维码被扫消费交易（本行终端扫他行银标二维码）
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BEWMScanedConsume(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 银联二维码被扫交易查询
+	 * @param intPutParam
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BEWMScanedConsumeQuery(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 银联二维码被扫消费冲正
+	 * @param intPutParam
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BEWMScanedConsumeReverse(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * 银联二维码消费结果通知处理
+	 * @param intPutParam
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam C2BEWMConsumeResultNotifyHandler(InputParam intPutParam) throws FrameException;
+	
+	/**
+	 * C2B交易通知,二维码前置通知额度中心
+	 */
+	public OutputParam C2BEWMNotifyToLimitCenter(InputParam intPutParam) throws FrameException;
+
+	/**
+	 * 支付平台查询交易状态
+	 */
+	public OutputParam payCenterQuery(InputParam intPutParam) throws FrameException;
+	
+	
+	
+	
+	
+}
+

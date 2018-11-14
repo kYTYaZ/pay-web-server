@@ -1,0 +1,40 @@
+#if($sqlName=='insertTakeTimingTaskResult')
+	INSERT INTO TBL_TIMING_TASK_RESULT (
+		EXEC_DATE,
+		EXEC_OVER_DATE,
+		TASK_NAME,
+		FAILURE_REASON,
+		EXCE_RESULT
+	) VALUES(
+		'${exceDate}',
+		#if ($execOverDate)'${execOverDate}',#end
+		#if ($taskName)'${taskName}',#end
+		#if ($failureReason)'${failureReason}',#end
+		'${exceResult}'
+	)
+#end
+
+
+#if($sqlName=='insertTimingTaskHandler')
+	INSERT INTO TBL_TIMING_TASK_HANDLER (
+		HANDLER_DATE,
+		HANDLER_TASK_NAME,
+		HANDLER_FLAG
+	) VALUES(
+		'${handlerDate}',
+		'${handlerTaskName}',
+		'${handlerFlag}'
+	)	
+#end
+
+#if($sqlName=='queryTimingTaskHandler')
+	SELECT * FROM  TBL_TIMING_TASK_HANDLER 
+	WHERE 1=1
+	#if ($handlerDate)  
+		AND HANDLER_DATE= '${handlerDate}'
+	#end
+	#if ($handlerTaskName)  
+		AND	HANDLER_TASK_NAME= '${handlerTaskName}'
+	#end	
+	FOR UPDATE WITH RR
+#end

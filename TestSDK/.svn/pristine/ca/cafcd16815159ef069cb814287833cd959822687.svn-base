@@ -1,0 +1,18 @@
+#socket ip
+#socket_ip=158.222.72.110
+#socket_ip=158.222.68.209
+socket_ip=127.0.0.1
+#socket_ip=192.168.137.222
+#socket_ip=158.222.68.110
+#socket_ip=158.222.164.253
+#socket_ip=158.222.164.161
+
+#socket \u7aef\u53e3
+socket_host=8888
+
+#\u652f\u4ed8\u5b9d\u901a\u77e5\u8def\u5f84
+#ali_notify_url=http://127.0.0.1:8080/PayWebServer/pay/alipay/recvAlipayNotifyReq.do
+ali_notify_url=http://158.222.68.110:8080/PayWebServer/pay/alipay/recvAlipayNotifyReq.do
+
+#\u4e8c\u7ef4\u7801\u751f\u6210\u8def\u5f84
+ewmpath=D:/home/ewmpath

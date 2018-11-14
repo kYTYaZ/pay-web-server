@@ -1,0 +1,176 @@
+#if($sqlName=='saveStaticQRCodeInfo')
+	INSERT INTO TBL_STATIC_EWM_INFO (
+		EWM_SEQ,
+		EWM_DATA,
+		EWM_CIPHERTEXT,
+		#if ($merId)MER_ID,#end
+		#if ($merName)MER_NAME,#end
+		#if ($acctNo)ACCTNO,#end
+		#if ($goodsName)GOODS_NAME,#end
+		#if ($mobileNumber)MOBILE_NUMBER,#end
+		#if ($deviceNumber)DEVICE_NUMBER,#end
+		#if ($contactName)CONTACT_NAME,#end
+		#if ($goodsAmount)GOODS_AMOUNT,#end
+		#if ($currencyType)CURRENCY_TYPE,#end
+		#if ($googsDiscount)GOOGS_DISCOUNT,#end
+		#if ($discountBeginDate)DISCOUNT_BEGIN_DATE,#end
+		#if ($discountEndDate)DISCOUNT_END_DATE,#end
+		#if ($createDt)CREATE_DT,#end
+		#if ($ewmType)EWM_TYPE,#end
+		#if ($validateDay)VALIDATE_DAY,#end
+		#if ($updateDt)UPDATE_DT,#end
+		#if ($customerNo)CUSTOMER_NO,#end
+		#if ($channel)CHANNEL,#end
+		#if ($remark)REMARK,#end
+		#if ($reserve1)RESERVE1,#end
+		#if ($reserve2)RESERVE2,#end
+		#if ($reserve3)RESERVE3,#end
+		#if ($ewmStatue)EWM_STATUE#end
+	) VALUES(
+		'${ewmSeq}',
+		'${ewmData}',
+		'${ewmCipherText}',
+		#if ($merId)'${merId}',#end
+		#if ($merName)'${merName}',#end
+		#if ($acctNo)'${acctNo}',#end
+		#if ($goodsName)'${goodsName}',#end
+		#if ($mobileNumber)'${mobileNumber}',#end
+		#if ($deviceNumber)'${deviceNumber}',#end
+		#if ($contactName)'${contactName}',#end
+		#if ($goodsAmount)'${goodsAmount}',#end
+		#if ($currencyType)'${currencyType}',#end
+		#if ($googsDiscount)'${googsDiscount}',#end
+		#if ($discountBeginDate)'${discountBeginDate}',#end
+		#if ($discountEndDate)'${discountEndDate}',#end
+		#if ($createDt)'${createDt}',#end
+		#if ($ewmType)'${ewmType}',#end
+		#if ($validateDay)'${validateDay}',#end
+		#if ($updateDt)'${updateDt}',#end
+		#if ($customerNo)'${customerNo}',#end
+		#if ($channel)'${channel}',#end
+		#if ($remark)'${remark}',#end
+		#if ($reserve1)'${reserve1}',#end
+		#if ($reserve2)'${reserve2}',#end
+		#if ($reserve3)'${reserve3}',#end
+		#if ($ewmStatue)'${ewmStatue}'#end
+	)
+#end
+
+#if($sqlName=='queryStaticQRCodeInfo')
+	SELECT 
+		EWM_SEQ,
+		EWM_DATA,
+		EWM_CIPHERTEXT,
+		MER_ID,
+		MER_NAME,
+		ACCTNO,
+		GOODS_NAME,
+		MOBILE_NUMBER,
+		DEVICE_NUMBER,
+		CONTACT_NAME,
+		GOODS_AMOUNT,
+		CURRENCY_TYPE,
+		GOOGS_DISCOUNT,
+		DISCOUNT_BEGIN_DATE,
+		DISCOUNT_END_DATE,
+		CREATE_DT,
+		EWM_TYPE,
+		EWM_STATUE,
+		VALIDATE_DAY,
+		UPDATE_DT,
+		CUSTOMER_NO,
+		CHANNEL,
+		REMARK,
+		RESERVE1,
+		RESERVE2,
+		RESERVE3
+	   FROM  TBL_STATIC_EWM_INFO 
+	   WHERE 1=1 	
+	   #if ($ewmSeq)
+			AND EWM_SEQ ='${ewmSeq}'
+	   #end
+	   #if ($ewmData)
+			AND EWM_DATA ='${ewmData}'
+	   #end
+	   #if ($acctNo)
+			AND ACCTNO ='${acctNo}'
+	   #end
+	   #if ($ewmType)
+			AND EWM_TYPE ='${ewmType}'
+	   #end
+	   #if ($ewmStatue)
+			AND EWM_STATUE ='${ewmStatue}'
+	   #end		
+	   #if ($customerNo)
+			AND CUSTOMER_NO ='${customerNo}'
+	   #end		
+	   #if ($channel)
+			AND CHANNEL ='${channel}'
+	   #end	
+	   
+	   ORDER BY CREATE_DT DESC
+	   
+#end
+
+
+#if($sqlName=='updateStaticQRCodeInfo')
+	UPDATE TBL_STATIC_EWM_INFO   SET
+		#if ($ewmData)EWM_DATA='${ewmData}',#end
+		#if ($ewmCipherText)EWM_CIPHERTEXT='${ewmCipherText}',#end
+		#if ($merId)MER_ID='${merId}',#end
+		#if ($merName)MER_NAME='${merName}',#end
+		#if ($acctNo)ACCTNO='${acctNo}',#end
+		#if ($goodsName)GOODS_NAME='${goodsName}',#end
+		#if ($mobileNumber)MOBILE_NUMBER='${mobileNumber}',#end
+		#if ($deviceNumber)DEVICE_NUMBER='${deviceNumber}',#end
+		#if ($contactName)CONTACT_NAME='${contactName}',#end
+		#if ($goodsAmount)GOODS_AMOUNT='${goodsAmount}',#end
+		#if ($currencyType)CURRENCY_TYPE='${currencyType}',#end
+		#if ($googsDiscount)GOOGS_DISCOUNT='${googsDiscount}',#end
+		#if ($discountBeginDate)DISCOUNT_BEGIN_DATE='${discountBeginDate}',#end
+		#if ($discountEndDate)DISCOUNT_END_DATE='${discountEndDate}',#end
+		#if ($createDt)CREATE_DT='${createDt}',#end
+		#if ($ewmType)EWM_TYPE='${ewmType}',#end
+		#if ($validateDay)VALIDATE_DAY='${validateDay}',#end
+		#if ($ewmStatue)EWM_STATUE='${ewmStatue}',#end
+		#if ($channel)CHANNEL='${channel}',#end
+		#if ($customerNo)CUSTOM_NO='${customerNo}',#end
+		#if ($remark)REMARK='${remark}',#end
+		#if ($reserve1)RESERVE1='${reserve1}',#end
+		#if ($reserve2)RESERVE2='${reserve2}',#end
+		#if ($reserve3)RESERVE3='${reserve3}',#end
+		#if ($updateDt)UPDATE_DT='${updateDt}'#end
+	WHERE 1=1
+	   #if ($ewmSeq)
+			AND EWM_SEQ ='${ewmSeq}'
+	   #end
+	   #if ($acctNo)
+			AND ACCTNO ='${acctNo}'
+	   #end
+	   #if ($ewmType)
+			AND EWM_TYPE ='${ewmType}'
+	   #end	
+	   #if ($channel)
+			AND CHANNEL ='${channel}'
+	   #end	
+#end
+
+#if($sqlName=='deleteStaticQRCodeInfo')
+	
+	DELETE FROM TBL_STATIC_EWM_INFO WHERE 1=1 	
+	   #if ($ewmSeq)
+			AND EWM_SEQ ='${ewmSeq}'
+	   #end
+	   #if ($acctNo)
+			AND ACCTNO ='${acctNo}'
+	   #end
+	   #if ($ewmType)
+			AND EWM_TYPE ='${ewmType}'
+	   #end
+	   #if ($ewmStatue)
+			AND EWM_STATUE ='${ewmStatue}'
+	   #end		
+	   #if ($channel)
+			AND CHANNEL ='${channel}'
+	   #end		
+#end

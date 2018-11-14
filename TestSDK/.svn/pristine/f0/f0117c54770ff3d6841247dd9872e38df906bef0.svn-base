@@ -1,0 +1,26 @@
+package com.trade.ali.test;
+
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.trade.ali.trading.AliQueryMer;
+import com.util.CommonUtil;
+import com.util.SocketUtil;
+import com.util.TransUtil;
+
+public class AliQueryMerTest {
+
+	@Test
+	public void SocketReq() {
+		
+		Map<String,String> map = AliQueryMer.getData();
+//		map.put("merId", "20180713111015111015");
+		map.put("alipayMerchantId", "2088131944076999");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data)+data;
+		SocketUtil.socketConnect(reqData);
+		
+	}
+	
+}

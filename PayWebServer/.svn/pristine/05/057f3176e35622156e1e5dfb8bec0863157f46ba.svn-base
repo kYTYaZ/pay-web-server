@@ -1,0 +1,121 @@
+package com.huateng.pay.services.alipay;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+
+/**
+ * 支付宝支付接口定义
+ * 
+ * @author zhaoyuanxiang
+ * 
+ */
+public interface AliPayPayService {
+
+	/**
+	 * 支付宝交易欲创建（获取支付宝二维码）
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam aLiPayPreCreate(InputParam input) throws FrameException;
+
+	/**
+	 * 支付宝交易创建（获取支付宝二维码）
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam aLiPayCreate(InputParam input) throws FrameException;
+	
+	/**
+	 * 支付宝被扫支付入口
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam aLiPayMicroPay(InputParam input) throws FrameException;
+
+	/**
+	 * 支付宝关闭订单交易入口
+	 */
+	public OutputParam aLiPayCloseOrder(InputParam input) throws FrameException;
+	
+	/**
+	 * 支付宝支付撤销交易入口
+	 * 
+	 * @param inputParam
+	 * @return
+	 * @throws Exception
+	 */
+	public OutputParam aLiPayRevoke(InputParam input) throws FrameException;
+	
+	/**
+	 * 支付宝退款
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam refundOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 支付宝退款状态查询
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam queryRefundOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 下载支付宝对账单
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam downloadALiPayBill(InputParam input) throws FrameException;
+
+	/**
+	 * 查询支付宝交易
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam queryALipayOrder(InputParam input) throws FrameException;
+
+	/**
+	 * 接受支付宝后台通知
+	 * 
+	 * @param input
+	 * @return
+	 * @throws FrameException
+	 */
+	public OutputParam recvALiPayNotifyReq(InputParam input) throws FrameException;
+
+    /**
+     * 获取令牌
+     * @param input
+     * @return
+     * @throws FrameException
+     */
+    public OutputParam getAuthToken(InputParam input) throws FrameException;
+    
+    
+    
+    /**
+     * 向核心发送支付宝交易的入账交易
+     * @param input
+     * @throws FrameException
+     */
+    public void toCoreForSettleHandler(InputParam input) throws FrameException;
+
+	public OutputParam aLiPayPreCreateYL(InputParam input);
+
+	public OutputParam aLiPayMicroPayYL(InputParam input);
+
+}

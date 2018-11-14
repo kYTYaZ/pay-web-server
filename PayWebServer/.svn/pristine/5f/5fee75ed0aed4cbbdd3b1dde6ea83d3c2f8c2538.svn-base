@@ -1,0 +1,432 @@
+#if($sqlName=='queryC2BOrder')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		QR_NO,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		MER_CAT_CODE,
+		AREA_INFO,
+		TERM_ID,
+		SETTLE_KEY,
+		SETTLE_DATE,
+		VOUCHER_NUM,
+		ACC_NO,
+		CARD_ATTR,
+		TXN_STA,
+		ACCOUNT_ID_HASH,
+		DEVICE_ID,
+		DEVICE_TYPE,
+		ENCRYPT_CER_ID,
+		ISS_CODE,
+		MER_NAME,
+		MOBILE,
+		ORDER_NUMBER,
+		REALITY_MONEY,
+		SOURCE_IP,
+		TXN_NO,
+		RES_DESC
+	FROM EWM.TBL_C2B_ORDER_TXN 
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	    #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	    #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($qrNo)
+			AND QRNO = '${qrNo}'
+	    #end	
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end	
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+#end
+
+#if($sqlName=='queryC2BOrderForUpdate')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		QR_NO,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		MER_CAT_CODE,
+		AREA_INFO,
+		TERM_ID,
+		SETTLE_KEY,
+		SETTLE_DATE,
+		VOUCHER_NUM,
+		ACC_NO,
+		CARD_ATTR,
+		TXN_STA,
+		RES_DESC
+	FROM EWM.TBL_C2B_ORDER_TXN  
+	WHERE 1 = 1
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($qrNo)
+			AND QRNO = '${qrNo}'
+	    #end	
+	 FOR UPDATE
+#end
+
+#if($sqlName=='queryC2BOrderByTxnSeqIdForUpdate')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		QR_NO,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		MER_CAT_CODE,
+		AREA_INFO,
+		TERM_ID,
+		SETTLE_KEY,
+		SETTLE_DATE,
+		VOUCHER_NUM,
+		ACC_NO,
+		CARD_ATTR,
+		TXN_STA,
+		RES_DESC
+	FROM EWM.TBL_C2B_ORDER_TXN  
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+#end
+
+
+#if($sqlName=='queryC2BOrderByTxnSeqId')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		QRNO,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		MER_CAT_CODE,
+		AREA_INFO,
+		TERM_ID,
+		SETTLE_KEY,
+		SETTLE_DATE,
+		VOUCHER_NUM,
+		ACC_NO,
+		CARD_ATTR,
+		TXN_STA,
+		RES_DESC
+	FROM EWM.TBL_C2B_ORDER_TXN  
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+	#if ($txnDt)
+		AND TXN_DT = '${txnDt}'
+	#end
+	#if ($txnTm)
+		AND TXN_TM = '${txnTm}'
+	#end
+#end
+
+#if($sqlName=='insertC2BOrder')
+	INSERT INTO EWM.TBL_C2B_ORDER_TXN	
+	(
+		#if($txnSeqId)TXN_SEQ_ID,#end
+		#if($qrNo)QR_NO,#end
+		#if($txnDt)TXN_DT,#end
+		#if($merOrderId)MER_ORDER_ID,#end
+		#if($merOrDt)MER_OR_DT,#end
+		#if($merOrTm)MER_OR_TM,#end
+		#if($oglOrdId)OGL_ORD_ID,#end
+		#if($oglOrdDate)OGL_ORD_DATE,#end
+		#if($txnType)TXN_TYPE,#end
+		#if($txnChannel)TXN_CHANNEL,#end
+		#if($payAccessType)PAY_ACCESS_TYPE,#end
+		#if($payType)PAY_TYPE,#end
+		#if($tradeMoney)TRADE_MONEY,#end
+		#if($currencyCode)CURRENCY_CODE,#end
+		#if($merId)MER_ID,#end
+		#if($merCatCode)MER_CAT_CODE,#end
+		#if($areaInfo)AREA_INFO,#end
+		#if($termId)TERM_ID,#end
+		#if($settleKey)SETTLE_KEY,#end
+		#if($settleDate)SETTLE_DATE,#end
+		#if($voucherNum)VOUCHER_NUM,#end
+		#if($accNo)ACC_NO,#end
+		#if($cardAttr)CARD_ATTR,#end
+		#if($txnSta)TXN_STA,#end
+		#if($resDesc)RES_DESC,#end
+		#if($accountIdHash)ACCOUNT_ID_HASH,#end
+		#if($deviceId)DEVICE_ID,#end
+		#if($deviceType)DEVICE_TYPE,#end
+		#if($encryptCerId)ENCRYPT_CER_ID,#end
+		#if($issCode)ISS_CODE,#end
+		#if($merName)MER_NAME,#end
+		#if($mobile)MOBILE,#end
+		#if($orderNumber)ORDER_NUMBER,#end
+		#if($realityMoney)REALITY_MONEY,#end
+		#if($sourceIp)SOURCE_IP,#end
+		#if($txnNo)TXN_NO,#end
+		TXN_TM
+	)
+	VALUES(
+		#if($txnSeqId)'${txnSeqId}',#end
+		#if($qrNo)'${qrNo}',#end
+		#if($txnDt)'${txnDt}',#end
+		#if($merOrderId)'${merOrderId}',#end
+		#if($merOrDt)'${merOrDt}',#end
+		#if($merOrTm)'${merOrTm}',#end
+		#if($oglOrdId)'${oglOrdId}',#end
+		#if($oglOrdDate)'${oglOrdDate}',#end
+		#if($txnType)'${txnType}',#end
+		#if($txnChannel)'${txnChannel}',#end
+		#if($payAccessType)'${payAccessType}',#end
+		#if($payType)'${payType}',#end
+		#if($tradeMoney)'${tradeMoney}',#end
+		#if($currencyCode)'${currencyCode}',#end
+		#if($merId)'${merId}',#end
+		#if($merCatCode)'${merCatCode}',#end
+		#if($areaInfo)'${areaInfo}',#end
+		#if($termId)'${termId}',#end
+		#if($settleKey)'${settleKey}',#end
+		#if($settleDate)'${settleDate}',#end
+		#if($voucherNum)'${voucherNum}',#end
+		#if($accNo)'${accNo}',#end
+		#if($cardAttr)'${cardAttr}',#end
+		#if($txnSta)'${txnSta}',#end
+		#if($resDesc)'${resDesc}',#end
+		#if($accountIdHash)'${accountIdHash}',#end
+		#if($deviceId)'${deviceId}',#end
+		#if($deviceType)'${deviceType}',#end
+		#if($encryptCerId)'${encryptCerId}',#end
+		#if($issCode)'${issCode}',#end
+		#if($merName)'${merName}',#end
+		#if($mobile)'${mobile}',#end
+		#if($orderNumber)'${orderNumber}',#end
+		#if($realityMoney)'${realityMoney}',#end
+		#if($sourceIp)'${sourceIp}',#end
+		#if($txnNo)'${txnNo}',#end
+		'${txnTm}'
+	)
+#end
+
+#if($sqlName=='updateC2BOrder')
+	UPDATE  EWM.TBL_C2B_ORDER_TXN SET
+		#if ($txnSeqId)TXN_SEQ_ID='${txnSeqId}',#end
+		#if ($txnDt)TXN_DT='${txnDt}',#end
+		#if ($txnTm)TXN_TM='${txnTm}',#end
+		#if ($qrNo)QR_NO='${qrNo}',#end
+		#if ($merOrderId)MER_ORDER_ID='${merOrderId}',#end
+		#if ($merOrDt)MER_OR_DT='${merOrDt}',#end
+		#if ($merOrTm)MER_OR_TM='${merOrTm}',#end
+		#if ($oglOrdId)OGL_ORD_ID='${oglOrdId}',#end
+		#if ($oglOrdDate)OGL_ORD_DATE='${oglOrdDate}',#end
+		#if ($txnType)TXN_TYPE='${txnType}',#end
+		#if ($txnChannel)TXN_CHANNEL='${txnChannel}',#end
+		#if ($payAccessType)PAY_ACCESS_TYPE='${payAccessType}',#end
+		#if ($payType)PAY_TYPE='${payType}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($currencyCode)CURRENCY_CODE='${currencyCode}',#end
+		#if ($merId)MER_ID='${merId}',#end
+		#if ($merCatCode)MER_CAT_CODE='${merCatCode}',#end
+		#if ($areaInfo)AREA_INFO='${areaInfo}',#end
+		#if ($termId)TERM_ID='${termId}',#end
+		#if ($settleKey)SETTLE_KEY='${settleKey}',#end
+		#if ($settleDate)SETTLE_DATE='${settleDate}',#end
+		#if ($voucherNum)VOUCHER_NUM='${voucherNum}',#end
+		#if ($accNo)ACC_NO='${accNo}',#end
+		#if ($cardAttr)CARD_ATTR='${cardAttr}',#end
+		#if ($resDesc)RES_DESC='${resDesc}',#end
+		#if ($issCode)ISS_CODE='${issCode}',#end
+		#if ($txnSta)TXN_STA='${txnSta}'#end
+		#if ($discountType)DISCOUNT_TYPE='${discountType}'#end
+		#if ($offstAmt)OFFST_AMT='${offstAmt}'#end
+		#if ($discountId)DISCOUNT_ID='${discountId}'#end
+		#if ($discountDesc)DISCOUNT_DESC='${discountDesc}'#end
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+            #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+#end
+
+#if($sqlName=='updateC2BOrderByTxnSeqId')
+	UPDATE  EWM.TBL_C2B_ORDER_TXN SET
+		#if ($txnSeqId)TXN_SEQ_ID='${txnSeqId}',#end
+		#if ($txnDt)TXN_DT='${txnDt}',#end
+		#if ($txnTm)TXN_TM='${txnTm}',#end
+		#if ($qrNo)QR_NO='${qrNo}',#end
+		#if ($merOrderId)MER_ORDER_ID='${merOrderId}',#end
+		#if ($merOrDt)MER_OR_DT='${merOrDt}',#end
+		#if ($merOrTm)MER_OR_TM='${merOrTm}',#end
+		#if ($oglOrdId)OGL_ORD_ID='${oglOrdId}',#end
+		#if ($oglOrdDate)OGL_ORD_DATE='${oglOrdDate}',#end
+		#if ($txnType)TXN_TYPE='${txnType}',#end
+		#if ($txnChannel)TXN_CHANNEL='${txnChannel}',#end
+		#if ($payAccessType)PAY_ACCESS_TYPE='${payAccessType}',#end
+		#if ($payType)PAY_TYPE='${payType}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($currencyCode)CURRENCY_CODE='${currencyCode}',#end
+		#if ($merId)MER_ID='${merId}',#end
+		#if ($merCatCode)MER_CAT_CODE='${merCatCode}',#end
+		#if ($areaInfo)AREA_INFO='${areaInfo}',#end
+		#if ($termId)TERM_ID='${termId}',#end
+		#if ($settleKey)SETTLE_KEY'${settleKey}',#end
+		#if ($settleDate)SETTLE_DATE'${settleDate}',#end
+		#if ($voucherNum)VOUCHER_NUM='${voucherNum}',#end
+		#if ($accNo)ACC_NO='${accNo}',#end
+		#if ($cardAttr)CARD_ATTR='${cardAttr}',#end
+		#if ($resDesc)'${resDesc}',#end
+		#if ($txnSta)TXN_STA='${txnSta}'#end
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+	 #if ($txnDt)
+		AND TXN_DT = '${txnDt}'
+	 #end
+	 #if ($txnTm)
+		AND TXN_TM = '${txnTm}'
+	 #end
+#end
+
+
+
+
+#if($sqlName=='queryC2BOrderTxnByMer')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		QRNO,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		MER_CAT_CODE,
+		AREA_INFO,
+		TERM_ID,
+		SETTLE_KEY,
+		SETTLE_DATE,
+		VOUCHER_NUM,
+		ACC_NO,
+		CARD_ATTR,
+		TXN_STA,
+		RES_DESC
+	FROM EWM.TBL_C2B_ORDER_TXN 
+	WHERE 1 = 1
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+            #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($transType)
+			AND TXN_TYPE = '${transType}'
+	    #end
+#end

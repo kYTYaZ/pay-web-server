@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	id="WebApp_ID" version="2.5">
+  	<display-name>PayWebServer</display-name>
+   	<resource-ref>
+		<description>DatasourcePay</description>
+		<res-ref-name>jdbc/datasourcPayWebService</res-ref-name> 
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	<context-param>
+		<param-name>webAppRootKeyPayWebServer</param-name>
+		<param-value>webApp.path</param-value>
+	</context-param> 
+ 	<!-- 缓存区数据库类型配置 -->
+	<context-param>
+		<param-name>dsConfigLocation</param-name>
+		<param-value>classpath:framework/datasource/ds-config.xml</param-value>
+	</context-param>
+	<!-- 加载系统缓存区数据配置 -->
+	<context-param>
+		<param-name>mappingConfigLocation</param-name>
+		<param-value>classpath:framework/mapping/mapping-config.xml</param-value>
+	</context-param>
+  	<context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring-context.xml</param-value>
+    </context-param>
+	<listener>
+	    <description>支付宝参数加载</description>
+	    <listener-class>
+	        com.huateng.pay.listener.AlipayParamListner
+	    </listener-class>
+	</listener>
+    <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    <listener> 
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener> 	 
+	<!-- 初始化全局的变量，以及设置Spring的ApplicationContext -->
+	<listener>
+		<listener-class>com.wldk.framework.system.web.util.GlobalParameterListener</listener-class>
+	</listener>
+<!-- 	<listener> -->
+<!-- 		<listener-class> -->
+<!-- 			com.wldk.framework.db.web.util.DataSourceConfigListener</listener-class> -->
+<!-- 	</listener> -->
+
+	<!-- 初始化Velocity以及 启动加载mapping-config.xml中的元数据-->
+	<listener>
+		<listener-class>
+			com.wldk.framework.mapping.web.util.MappingConfigListener</listener-class>
+	</listener>
+	
+	<listener>
+	    <description>Socket服务随应用启动</description>
+	    <listener-class>
+	        com.huateng.pay.listener.QRCodeSocketServerListener
+	    </listener-class>
+	</listener>
+	
+	<!-- webservice配置 -->
+	<servlet>
+		<servlet-name>XFireServlet</servlet-name>
+		<servlet-class>org.codehaus.xfire.spring.XFireSpringServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>XFireServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>EncodeFilter</filter-name>
+		<filter-class>
+			com.huateng.pay.filter.EncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ignore</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>EncodeFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>struts</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts</filter-name>
+		<url-pattern>/pay/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>struts</filter-name>
+		<url-pattern>/query/*</url-pattern>
+	</filter-mapping>
+	<servlet>
+        <servlet-name>springHttpInvoke</servlet-name>
+        <servlet-class>
+            org.springframework.web.context.support.HttpRequestHandlerServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springHttpInvoke</servlet-name>
+        <url-pattern>/springHttpInvokeService</url-pattern>
+    </servlet-mapping>
+
+	<servlet>
+		<servlet-name>autoLoadServlet</servlet-name>
+		<servlet-class>com.huateng.web.AutoLoadServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>autoLoadServlet</servlet-name>
+		<url-pattern>/autoLoadServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>*.mvc</url-pattern>
+	</servlet-mapping>
+     
+ <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

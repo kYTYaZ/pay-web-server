@@ -1,0 +1,12 @@
+package com.huateng.pay.common.validate;
+
+import com.huateng.pay.common.constants.Dict;
+
+public class POSPValidation {
+	
+	// posp订单查询
+	public static String[] vali_POSPQuery = {Dict.orderTime,Dict.orderNumber,Dict.merId,
+			Dict.transType,Dict.channel,Dict.payAccessType};
+
+
+}

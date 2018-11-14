@@ -1,0 +1,799 @@
+/*
+ * Copyright (C), 2012-2014, 上海华腾软件系统有限公司
+ * FileName: IOrderServiceImpl.java
+ * Author:   justin
+ * Date:     2014-8-6 下午12:34:51
+ * Description: //模块目的、功能描述
+ * History: //修改记录
+ * <author>      <time>      <version>    <desc>
+ * 修改人姓名             修改时间            版本号                  描述
+ */
+package com.huateng.pay.services.db.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.huateng.frame.exception.FrameException;
+import com.huateng.frame.param.InputParam;
+import com.huateng.frame.param.OutputParam;
+import com.huateng.pay.common.constants.Dict;
+import com.huateng.pay.common.constants.StringConstans;
+import com.huateng.pay.common.util.StringUtil;
+import com.huateng.pay.dao.inter.IOrderDao;
+import com.huateng.pay.dao.inter.ISequenceDao;
+import com.huateng.pay.services.db.IOrderService;
+import com.wldk.framework.db.PageVariable;
+
+/**
+ * 订单处理
+ * 
+ */
+public class OrderServiceImpl implements IOrderService {
+    private Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+    private IOrderDao orderDao;
+    private ISequenceDao sequenceDao;    
+    
+    /**
+	 * 获取订单号
+	 * @return
+	 */
+    @Override
+	public String getOrderNo() {
+    	try {
+			return sequenceDao.getTxnSeqId();
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e);
+		}
+	}
+    
+    /**
+	 * 获取订单号
+	 * @return
+	 */
+    @Override
+	public String getOrderNo(String channel) {
+    	try {
+			String txnSeqId = sequenceDao.getTxnSeqId();
+    		if(StringConstans.CHANNEL.CHANNEL_SELF.equals(channel)){
+    			txnSeqId = StringConstans.PrefixOrder.THREE_CODE +  txnSeqId;
+    		} 
+    		logger.info("获取交易序列号："+txnSeqId);
+    		return txnSeqId;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e);
+		}
+	}
+  
+    /**
+     * 插入订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author tpf
+     */
+	@Override
+	public OutputParam insertOrder(InputParam inputParam) throws FrameException {
+		
+		OutputParam  saveOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean saveFlag = orderDao.insertOrder(inputParam.getParamString());
+			if(saveFlag){
+				saveOrderOut.setReturnMsg("新增订单成功");
+				saveOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				saveOrderOut.setReturnMsg("新增订单失败");
+				saveOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e);
+		}
+		
+		return saveOrderOut;
+	}
+
+	/**
+	 * 插入C2B订单
+	 */
+	@Override
+	public OutputParam insertC2BOrder(InputParam input) throws FrameException {
+		OutputParam  saveOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean saveFlag = orderDao.insertC2BOrder(input.getParamString());
+			if(saveFlag){
+				saveOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				saveOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw new FrameException(e);
+		}
+		
+		return saveOrderOut;
+	}
+
+	@Override
+	public OutputParam insertC2BOtherOrder(InputParam input) throws FrameException {
+		OutputParam  saveOrderOut = new OutputParam();
+		try {
+			
+			boolean saveFlag = orderDao.insertC2BOtherOrder(input.getParamString());
+			if(saveFlag){
+				saveOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				saveOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("银标二维码——插入他行交易流水表失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return saveOrderOut;
+	}
+	
+    /**
+     * 查询订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author tpf
+     */
+	@Override
+	public OutputParam queryOrder(InputParam inputParam) throws FrameException {
+		logger.info("查询订单信息请求报文:"+inputParam.toString());
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryOrder(inputParam.getParamString());
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询无此订单");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("查询二维码订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		logger.info("查询订单信息返回报文:"+queryOrderOut.toString());
+		return  queryOrderOut;
+	}
+	
+	/**
+     * 查询C2B订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+	@Override
+	public OutputParam queryC2BOrder(InputParam inputParam) throws FrameException {
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryC2BOrder(inputParam.getParamString());
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询订单信息失败");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("查询二维码订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return  queryOrderOut;
+	}
+	
+	/**
+     * 查询他行扫本行C2B订单
+     * @param input
+     * @return
+     * @see 1.0
+     * @since 1.0
+     * @author ghl
+     */
+	@Override
+	public OutputParam queryC2BOtherOrder(InputParam inputParam) throws FrameException {
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryC2BOtherOrder(inputParam.getParamString());
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询订单信息失败");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("银标二维码——查询他行交易流水表信息异常" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return  queryOrderOut;
+	}
+	/**
+	 * 根据订单号查询订单信息	 
+	  * @param inputParam
+	  * @return
+	  * @throws FrameException
+	  * @author tpf
+	  */
+	@Override
+	public OutputParam queryOrderByTxnSeqId(String txnSeqId)	throws FrameException {
+		
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryOrderByTxnSeqId(txnSeqId);
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询订单信息失败");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("查询二维码订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return  queryOrderOut;
+	}
+
+	 /**
+	  * 查询订单并且锁定记录
+	  * @param txnSeqId 流水号
+	  * @return
+	  * @throws FrameException
+	  * @author tpf
+	  */	 	
+	@Override
+	public OutputParam queryOrderByTxnSeqIdForUpdate(String txnSeqId) throws FrameException {
+		
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryOrderByTxnSeqIdForUpdate(txnSeqId);
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询订单信息失败");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("查询二维码订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return  queryOrderOut;
+	}
+	 /**
+	  * 查询订单并且锁定记录
+	  * @param inputParam
+	  * @return
+	  * @throws FrameException
+	  * @author tpf
+	  */
+	@Override
+	public OutputParam queryOrderForUpate(InputParam inputParam)	throws FrameException {
+		
+		OutputParam queryOrderOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryOrderForUpdate(inputParam.getParamString());
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOrderOut.setReturnMsg("查询订单信息失败");
+				return queryOrderOut;
+			}
+
+			queryOrderOut.setReturnObj(orderList.get(0));
+			queryOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+
+		} catch (Exception e) {
+			logger.error("查询二维码订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return  queryOrderOut;
+	}
+
+	/**
+	 * 更新订单表
+	 * @param orderParam
+	 * @return
+	 * @throws FrameException
+	 * @author tpf
+	 */
+	@Override
+	public OutputParam updateOrder(InputParam inputParam) throws FrameException {
+		logger.info("更新订单start请求报文:"+inputParam.toString());
+		OutputParam  updateOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean updateFlag = orderDao.updateOrder(inputParam.getParamString());
+			
+			if(updateFlag){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("更新订单订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		logger.info("更新订单end返回报文:"+updateOrderOut.toString());
+		
+		return updateOrderOut;
+	}
+
+	/**
+	 * 更新C2B订单表  ghl
+	 */
+	@Override
+	public OutputParam updateC2BOrder(InputParam inputParam) throws FrameException {
+		OutputParam  updateOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean updateFlag = orderDao.updateC2BOrder(inputParam.getParamString());
+			
+			if(updateFlag){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("更新订单订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return updateOrderOut;
+	}
+
+	@Override
+	public OutputParam updateC2BOtherOrder(InputParam inputParam) throws FrameException {
+		OutputParam  updateOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean updateFlag = orderDao.updateC2BOtherOrder(inputParam.getParamString());
+			
+			if(updateFlag){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("更新他行交易信息表失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return updateOrderOut;
+	}
+	
+	/**
+	 * 根据订单号更新订单
+	 * @param params
+	 * @return
+	 * @throws FrameException
+	 * @author tpf
+	 */
+	@Override
+	public OutputParam updateOrderByTxnSeqId(String txnSeqId) throws FrameException {
+		
+		OutputParam  updateOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean updateFlag = orderDao.updateOrderByTxnSeqId(txnSeqId);
+			
+			if(updateFlag){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("更新订单订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+		return updateOrderOut;	
+	}
+
+	 /**
+	  * 更行订单状态锁定记录
+	  * @param orderParam
+	  * @return
+	  * @throws FrameException
+	  */
+	@Override
+	public OutputParam updateOrderState(InputParam inputParam) throws FrameException {
+		logger.info("更新订单请求报文:"+inputParam.toString());
+		OutputParam  updateOrderOut = new OutputParam();
+		
+		try {
+			
+			boolean updateFlag = orderDao.updateOrderState(inputParam.getParamString());
+			
+			if(updateFlag){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}	
+			
+		} catch (Exception e) {
+			logger.error("更新订单订单信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		logger.info("更新订单返回报文:"+updateOrderOut.toString());
+		return updateOrderOut;
+	}
+
+    /**
+     * 更新微信支付订单信息
+     */
+    @Override
+    public OutputParam updateWxOrderInfo(InputParam input) throws FrameException {
+        OutputParam out = new OutputParam();
+        try {
+       
+            Map<String, String> orderParam = new HashMap<String, String>();
+            orderParam.put("txnSeqId", input.getValue("txnSeqId").toString().trim());
+            
+            if (!StringUtil.isNull(input.getValue("txnSta"))) {
+                orderParam.put("txnSta", input.getValue("txnSta").toString().trim());
+            }
+            
+            if (!StringUtil.isNull(input.getValue("txnDt"))) {
+                orderParam.put("txnDt", input.getValue("txnDt").toString().trim());
+            }
+            
+            if (!StringUtil.isNull(input.getValue("txnTm"))) {
+                orderParam.put("txnTm", input.getValue("txnTm").toString().trim());
+            }
+
+            // 支付类型
+            if (!StringUtil.isNull(input.getValue("payType"))) {
+                orderParam.put("payType", input.getValue("payType").toString().trim());
+            }
+            // 响应信息
+            if (!StringUtil.isNull(input.getValue("resDesc"))) {
+            	orderParam.put("resDesc", input.getValue("resDesc").toString().trim());
+            }
+            // 微信订单号
+            if (!StringUtil.isNull(input.getValue("wxOrderNo"))) {
+            	orderParam.put("wxOrderNo", input.getValue("wxOrderNo").toString().trim());
+            }
+            // 微信二维码
+            if (!StringUtil.isNull(input.getValue("codeUrl"))) {
+                orderParam.put("codeUrl", input.getValue("codeUrl").toString().trim());
+            }
+            // 微信预支付订单号
+            if (!StringUtil.isNull(input.getValue("wxPrepayId"))) {
+                orderParam.put("wxPrepayId", input.getValue("wxPrepayId").toString().trim());
+            }
+            // 微信随机字符串
+            if (!StringUtil.isNull(input.getValue("randomStr"))) {
+                orderParam.put("randomStr", input.getValue("randomStr").toString().trim());
+            }
+            // 微信商户号
+            if (!StringUtil.isNull(input.getValue("wxMerId"))) {
+            	orderParam.put("wxMerId", input.getValue("wxMerId").toString().trim());
+            }
+            // 微信商户号
+            if (!StringUtil.isNull(input.getValue("subWxMerId"))) {
+            	orderParam.put("subWxMerId", input.getValue("subWxMerId").toString().trim());
+            }
+            // 微信支付完成时间
+            if (!StringUtil.isNull(input.getValue("settleDate"))) {
+            	orderParam.put("settleDate", input.getValue("settleDate").toString().trim());
+            }
+            //微信用户标识
+            if (!StringUtil.isNull(input.getValue("payerid"))) {
+            	orderParam.put("payerid", input.getValue("payerid").toString().trim());
+            }
+            //付款银行
+            if (!StringUtil.isNull(input.getValue("bankType"))) {
+            	orderParam.put("bankType", input.getValue("bankType").toString().trim());
+            }
+            
+            //已退款金额
+            if (!StringUtil.isNull(input.getValue(Dict.totalRefundFee))) {
+            	orderParam.put(Dict.totalRefundFee, input.getValue(Dict.totalRefundFee).toString().trim());
+            }
+            
+            if (!StringUtil.isNull(input.getValue(Dict.totalRefundFee))) {
+            	orderParam.put(Dict.totalRefundFee, input.getValue(Dict.totalRefundFee).toString().trim());
+            }
+            
+            if (!StringUtil.isNull(input.getValue(Dict.initTotalRefundFee))) {
+            	orderParam.put(Dict.initTotalRefundFee, input.getValue(Dict.initTotalRefundFee).toString().trim());
+            }
+            
+            boolean result = orderDao.UpdateWxOrder(orderParam);
+            if (result) {
+                out.setReturnCode(StringConstans.returnCode.SUCCESS);
+            } else {
+                out.setReturnCode(StringConstans.returnCode.FAIL);
+                out.setReturnMsg("更新订单表失败");
+            }
+            return out;
+        } catch (Exception e) {
+            logger.error("更新微信支付订单表异常:" + e.getMessage(), e);
+            throw new FrameException(e);
+        }
+    }
+    
+    /**
+     * 查询微信支付订单状态是否支付成功
+     */
+    @Override
+    public OutputParam queryWxOrderSta(InputParam input) throws FrameException {
+        OutputParam out = new OutputParam();
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("txnSeqId", input.getValue("txnSeqId").toString().trim());
+            params.put("txnDt", input.getValue("txnDt").toString().trim());
+            List<Map<String, Object>> orderSeqL = orderDao.queryWxOrderSta(params);
+            //TODO
+            if (!StringUtil.listIsEmpty(orderSeqL)) {
+                Map<String, Object> orderSeq = orderSeqL.get(0);
+                String txnSta = orderSeq.get("txnSta").toString();
+                if(StringConstans.OrderState.STATE_02.equals(txnSta)){
+                	out.setReturnCode(StringConstans.returnCode.SUCCESS);
+                }else if(StringConstans.OrderState.STATE_03.equals(txnSta)){
+                	out.setReturnCode(StringConstans.returnCode.FAIL);
+                }
+            }
+            return out;
+        } catch (FrameException e) {
+			logger.error("查询微信支付订单异常:" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+
+	}
+
+	/**
+	 * 更新AddMoney
+	 * @param txnSeqId
+	 * @param txnDtTm
+	 * @param addMoney
+	 * @return
+	 * @throws FrameException
+	 */
+	@Override
+	public OutputParam updateRefundTotalAmount(String txnSeqId, String txnDt,String txnTm, String totalRefundFee) throws FrameException {
+		
+		OutputParam updateOrderOut = new OutputParam();
+	    
+		try {
+	 
+			boolean result = orderDao.updateRefundTotalAmount(txnSeqId, txnDt, txnTm, totalRefundFee);
+	     
+			if(result){
+				updateOrderOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			}else{
+				updateOrderOut.setReturnCode(StringConstans.returnCode.FAIL);
+			}
+	            
+			return updateOrderOut;
+	            
+	     } catch (Exception e) {
+			logger.error("更新支付宝累计退货总金额异常" + e.getMessage(), e);
+	         throw new FrameException(e);
+	     }
+	}
+	
+	/**
+	 * 分页查询订单信息
+	 */
+	@Override
+	public OutputParam queryOrderByPage(Map<String, String> queryMap,PageVariable page) throws FrameException {
+		OutputParam queryOut = new OutputParam();
+		
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryOrderByPage(queryMap, page);
+
+			if (StringUtil.listIsEmpty(orderList)) {
+				queryOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOut.setReturnMsg("查询订单信息失败");
+				return queryOut;
+			}
+			queryOut.putReturnList(orderList);
+			queryOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			return queryOut;
+		} catch (Exception e) {
+			logger.error("查询三码合一订单出现异常：" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+
+	}
+	
+	/**
+	 * 查询订单总数
+	 */
+	@Override
+	public int queryOrderNumber(Map<String, String> queryMap) throws FrameException {
+		
+		  return orderDao.queryOrderNumber(queryMap);
+	}
+	
+	 /**
+     * 查询三码合一流水信息
+     * @param inputParam
+     * @return
+     * @throws FrameException
+     */
+	@Override
+	public List<Map<String, Object>> queryThreadCodeStatement(InputParam input,PageVariable page) throws FrameException {
+		
+		try {
+			
+			return orderDao.queryThreadCodeStatement(input.getParamString(),page);
+			
+		} catch (Exception e){ 
+			logger.error("查询三码合一流水信息失败" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+	}
+
+	/**
+	 * 分页查询三码合一流水明细
+	 */
+	@Override
+	public List<Map<String,Object>> queryThreeCodeBillDetail(InputParam input,PageVariable page) throws FrameException {
+		Map<String,String> queryMap = input.getParamString();
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryThreeCodeBillDetail(queryMap, page);
+
+			return orderList;
+		} catch (Exception e) {
+			logger.error("查询三码合一订单明细出现异常：" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+	}
+
+	/**
+	 * 查询三码合一流水汇总
+	 */
+	@Override
+	public List<Map<String,Object>> queryThreeCodeBillSummary(InputParam input)throws FrameException {
+		
+		Map<String,String> queryMap = input.getParamString();
+		try {
+			
+			List<Map<String, Object>> orderList = orderDao.queryThreeCodeBillSummary(queryMap);
+			return orderList;
+		
+		} catch (Exception e){ 
+			logger.error("查询三码合一流水汇总出现异常:" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+		
+	}
+
+	/**
+	 * 查询T+0入账标识为未知的交易总数
+	 */
+	@Override
+	public int queryUnknowSettleNumber(Map<String, String> queryMap) throws FrameException {
+		try {
+			logger.info("查询T+0入账标识为未知的交易总数	开始");
+			
+			int totalNumber = orderDao.queryUnknowSettleNumber(queryMap);
+			
+			logger.info("查询T+0入账标识为未知的交易总数	结束");
+			
+			return totalNumber;
+		} catch (Exception e) {
+			logger.error("查询T+0入账标识为未知的交易总数时出现异常" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+	}
+	
+	/**
+	 * 查询T+0入账标识为未知的交易明细
+	 */
+	@Override
+	public OutputParam queryUnknowSettleOrders(Map<String, String> queryMap) throws FrameException {
+		
+		OutputParam queryOut = new OutputParam();
+		try {
+
+			logger.debug("开始查询T+0入账标识为未知的交易明细");
+
+			List<Map<String, Object>> queryList = orderDao.queryUnknowSettleOrders(queryMap);
+
+			logger.debug("查询T+0入账标识为未知的交易明细结束");
+			if (StringUtil.listIsEmpty(queryList)) {
+				queryOut.setReturnCode(StringConstans.returnCode.FAIL);
+				queryOut.setReturnMsg("未查询到T+0入账标识为未知的交易明细");
+				return queryOut;
+			}
+
+			queryOut.putReturnList(queryList);
+			queryOut.setReturnCode(StringConstans.returnCode.SUCCESS);
+			return queryOut;
+
+		} catch (Exception e) {
+			logger.error("查询三码合一支付宝和微信订单出现异常：" + e.getMessage(), e);
+			throw new FrameException(e);
+		}
+	}
+	
+    public IOrderDao getOrderDao() {
+        return orderDao;
+    }
+
+    public void setOrderDao(IOrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
+	public ISequenceDao getSequenceDao() {
+		return sequenceDao;
+	}
+	public void setSequenceDao(ISequenceDao sequenceDao) {
+		this.sequenceDao = sequenceDao;
+	}
+
+	
+
+	
+
+
+	
+
+	
+
+	
+
+	
+	
+
+}

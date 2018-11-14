@@ -1,0 +1,64 @@
+
+package com.huateng.pay.services.base;
+
+import java.util.Map;
+
+
+
+public interface IRemoteService {
+	
+	/**
+	 * 获取支付宝授权并下单
+	 */
+	public Map<String, Object> getAlipayUserIdAndCreatOrder(Map<String, Object> paramMap);
+	
+	/**
+	 * 获取支付宝授权
+	 * @return
+	 */
+	public Map<String, Object>  getAlipayAccessToken(Map<String, Object> paramMap);
+	
+	/**
+	 * 创建支付宝订单
+	 * @return
+	 */
+	public Map<String, Object>  createAlipayOrder(Map<String, Object> paramMap);
+	
+	/**
+	 * 获取微信授权并下单
+	 */
+	public Map<String, Object> getWxpayAccessTokenAndCreatOrder(Map<String, Object> paramMap);
+	
+	/**
+	 * 获取微信授权
+	 * @return
+	 */
+	public Map<String, Object>  getWxAccessToken(Map<String, Object> paramMap);
+	
+	/**
+	 * 解析串码并且创建微信订单
+	 * @return
+	 */
+	public Map<String, Object>  createWxOrder(Map<String, Object> paramMap);
+	
+	/**
+	 * 解密二维码
+	 * @param qrCode
+	 * @return
+	 */
+	public Map<String, Object> decryptQRCode(Map<String, Object> paramMap);
+	
+	/**
+	 * 创建本行订单并通知手机银行付款
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String, Object> createLocalOrderAndNotifyMobileBankPay(Map<String, Object> paramMap);
+	
+	/**
+	 * 解码创建订单通知丰收互联
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String, Object> createOrderAndNotifyMobileFrontPay(Map<String, Object> paramMap);
+}

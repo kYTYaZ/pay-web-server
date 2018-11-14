@@ -1,0 +1,77 @@
+#if($sqlName=='queryMerchantChannel')
+	SELECT
+		ORG_CODE,
+		ORG_NAME,
+		WX_CHANNEL,
+		ALI_CHANNEL,
+		STATUS,
+		CREATE_TIME,
+		UPDATE_TIME,
+		RESERVED1,
+		RESERVED2,
+		RESERVED3
+	FROM TBL_ORG_CHANNEL_INFO
+	WHERE 1 = 1
+		#if ($orgCode)
+			AND ORG_CODE LIKE '${orgCode}%'
+	    #end
+            #if ($status)
+			AND STATUS = '${status}'
+	    #end
+#end
+
+
+#if($sqlName=='querySubmerChannelRateInfo')
+	SELECT
+		SEQ_MERCHANT,SUB_MERCHANT,MER_ID,CHANNEL,RATE,RESERVE1,RESERVE2,CONNECT_METHOD,RESERVE_TYPE 
+	FROM TBL_SUBMER_CHANNEL_RATE_INFO
+	WHERE 1 = 1
+        #if ($channel)
+			AND CHANNEL = '${channel}'
+	    #end
+        #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+		#if ($subMerchant)
+			AND SUB_MERCHANT = '${subMerchant}'
+	    #end
+#end
+
+#if($sqlName=='insertSubmerChannelRate')
+	INSERT INTO EWM.TBL_SUBMER_CHANNEL_RATE_INFO
+	(
+		#if($seqMerchant)SEQ_MERCHANT,#end
+		#if($subMerchant)SUB_MERCHANT,#end
+		#if($merId)MER_ID,#end
+		#if($channel)CHANNEL,#end
+		#if($reserve1)RESERVE1,#end
+		#if($reserve2)RESERVE2,#end
+		#if($connectMethod)CONNECT_METHOD,#end
+		#if($reserveType)RESERVE_TYPE,#end
+		#if($rate)RATE#end
+	)
+	VALUES(
+		#if ($seqMerchant)'${seqMerchant}',#end
+		#if ($subMerchant)'${subMerchant}',#end
+		#if ($merId)'${merId}',#end
+		#if ($channel)'${channel}',#end
+		#if ($reserve1)'${reserve1}',#end
+		#if ($reserve2)'${reserve2}',#end
+		#if ($connectMethod)'${connectMethod}',#end
+		#if ($reserveType)'${reserveType}',#end
+		#if ($rate)'${rate}'#end
+	)
+#end
+
+
+#if($sqlName=='querySubmerIsExist')
+	SELECT
+		SEQ_MERCHANT,SUB_MERCHANT,MER_ID,CHANNEL,RATE
+	FROM TBL_SUBMER_CHANNEL_RATE_INFO
+	WHERE 1 = 1
+			AND CHANNEL = '${channel}'
+			AND RATE = '${rate}'
+			AND SUB_MERCHANT = '${subMerchant}'
+#end
+		
+	

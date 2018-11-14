@@ -1,0 +1,346 @@
+package com.huateng.pay.common.constants;
+
+public class Dict {
+
+	/** 渠道 ALI-支付宝 WX-微信 */
+	public final static String CHANNEL = "CHANNEL";
+	/** 费率 */
+	public final static String RATE = "RATE";
+	/** 支付宝PID */
+	public final static String ALI_PID = "ALI_PID";
+	/** 支付宝APPID */
+	public final static String ALI_APPID = "ALI_APPID";
+	/** 支付宝机构商户号 */
+	public final static String ALI_MERID = "ALI_MERID";
+	/** 支付宝机构私钥 */
+	public final static String ALI_PRIVATE_KEY = "ALI_PRIVATE_KEY";
+	/** 支付宝机构公钥 */
+	public final static String ALI_PUBLIC_KEY = "ALI_PUBLIC_KEY";
+	/** 支付宝网关名 */
+	public final static String ALI_OPEN_API_DOMAIN = "ALI_OPEN_API_DOMAIN";
+	/** 微信APPID */
+	public final static String WX_APPID = "WX_APPID";
+	/** 微信机构商户号 */
+	public final static String WX_MERID = "WX_MERID";
+	/** 微信KEY */
+	public final static String WX_KEY = "WX_KEY";
+	/** 微信证书路径 */
+	public final static String WX_PFX_PATH = "WX_PFX_PATH";
+	/** 微信密码 */
+	public final static String WX_PWD = "WX_PWD";
+	/** 微信公众号秘钥 */
+	public final static String WX_JSAPI_SECRET = "WX_JSAPI_SECRET";
+	/** 微信商户渠道号 */
+	public final static String WX_CHANNEL_ID = "WX_CHANNEL_ID";
+	/** 费率 */
+	public final static String rate = "rate";
+	/** 子商户号 */
+	public static final String subMerchant = "subMerchant";
+	/** 商户号 */
+	public static final String merId = "merId";
+	/** 渠道 */
+	public static final String channel = "channel";
+	/** 支付宝网关名 */
+	public static final String open_api_domain = "open_api_domain";
+	/** 接口请求地址 */
+	public static final String requestUrl = "requestUrl";
+	/** 证书路径 */
+	public static final String pfxPath = "pfxPath";
+	/** 证书密码 */
+	public static final String pfxPwd = "pfxPwd";
+	/** 名称 */
+	public static final String name = "name";
+	/** 支付宝商户别名 */
+	public static final String aliasName = "aliasName";
+	/** 商户客服电话 */
+	public static final String servicePhone = "servicePhone";
+	/** 联系人姓名 */
+	public static final String contactName = "contactName";
+	/** 联系人类型 */
+	public static final String contactType = "contactType";
+	/** 身份证号 */
+	public static final String idCardNo = "idCardNo";
+	/** 商户经营类目 */
+	public static final String categoryId = "categoryId";
+	/** 电话 */
+	public static final String contactPhone = "contactPhone";
+	/** 手机号 */
+	public static final String contactMobile = "contactMobile";
+	/** 电子邮箱 */
+	public static final String contactEmail = "contactEmail";
+	/** 商户备注信息 */
+	public static final String memo = "memo";
+	/** 省份编码 */
+	public static final String provinceCode = "provinceCode";
+	/** 城市编码 */
+	public static final String cityCode = "cityCode";
+	/** 区县编码 */
+	public static final String districtCode = "districtCode";
+	/** 地址 */
+	public static final String address = "address";
+	/** 经度 */
+	public static final String longitude = "longitude";
+	/** 纬度 */
+	public static final String latitude = "latitude";
+	/** 地址类型 */
+	public static final String addType = "addType";
+	/** 银行卡持卡人姓名 */
+	public static final String cardName = "cardName";
+	/** 银行卡号 */
+	public static final String cardNo = "cardNo";
+	/** 费率 */
+	public static final String rateChannel = "rateChannel";
+	/** 标准商户类别码 */
+	public static final String mcc = "mcc";
+	/** 收单机构号 */
+	public static final String orgPid = "orgPid";
+	/** 接口名称 */
+	public static final String interfaceName = "interfaceName";
+	/** 多费率主键 列WX_20 */
+	public static final String cacheKey = "cacheKey";
+	/** 网关返回码描述 */
+	public static final String msg = "msg";
+	/** 网关返回码 */
+	public static final String code = "code";
+	/** 银联商户编号 */
+	public static final String sub_merchant_id = "sub_merchant_id";
+	/** 支付宝商户编号 */
+	public static final String alipayMerchantId = "alipayMerchantId";
+	/** 商户名称 */
+	public static final String mchtName = "mchtName";
+	/** 商户简称 */
+	public static final String mchtShortName = "mchtShortName";
+	/** 经营类目 */
+	public static final String business = "business";
+	/** 商户备注 */
+	public static final String mchtRemark = "mchtRemark";
+	/** 直连 间连标识 */
+	public static final String connectMethod = "connectMethod";
+	/** 支付宝交易号 */
+	public static final String orderNumber = "orderNumber";
+	/** 交易时间 */
+	public static final String orderTime = "orderTime";
+	/** 交易金额 */
+	public static final String orderAmount = "orderAmount";
+	/** 商户名称 */
+	public static final String merName = "merName";
+	/** 交易类型 */
+	public static final String transType = "transType";
+	/** 支付类型 */
+	public static final String payType = "payType";
+	/** 币种 */
+	public static final String currencyType = "currencyType";
+	/** 支付接入类型 */
+	public static final String payAccessType = "payAccessType";
+	/** 订单标题 */
+	public static final String subject = "subject";
+	/** 商户门店编号 */
+	public static final String storeId = "storeId";
+	/** 终端编号 */
+	public static final String termId = "termId";
+	/** 优惠金额 */
+	public static final String discountableAmount = "discountableAmount";
+	/** 不参与优惠金额 */
+	public static final String undiscountableAmount = "undiscountableAmount";
+	/** 订单描述 */
+	public static final String body = "body";
+	/** 商户操作员编号 */
+	public static final String operatorId = "operatorId";
+	/** 允许最晚付款时间 */
+	public static final String timeoutExpress = "timeoutExpress";
+	/** 是否支持信用卡 */
+	public static final String isCredit = "isCredit";
+	/** 支付码授权 */
+	public static final String authCode = "authCode";
+	/** 内部订单流水号 */
+	public static final String txnSeqId = "txnSeqId";
+	/** 内部订单日期 */
+	public static final String txnDt = "txnDt";
+	/** 内部订单时间 */
+	public static final String txnTm = "txnTm";
+	/** 预下单生成的二维码串 */
+	public static final String qrCode = "qrCode";
+
+	/** 支付宝商户别名 */
+	public static final String alias_name = "alias_name";
+	/** 商户客服电话 */
+	public static final String service_phone = "service_phone";
+	/** 商户经营类目 */
+	public static final String category_id = "category_id";
+	/** 银行或机构合作的伙伴标识，填写该合作伙伴在支付宝的pid */
+	public static final String source = "source";
+	/** 商户编号，由机构定义 */
+	public static final String external_id = "external_id";
+	/** 间连商户等级 */
+	public static final String indirect_level = "indirect_level";
+	/** 收单机构号 */
+	public static final String org_pid = "org_pid";
+	/** 商户负责人信息 */
+	public static final String contact_info = "contact_info";
+	/** 身份证号 */
+	public static final String id_card_no = "id_card_no";
+	/** 联系人类型 */
+	public static final String type = "type";
+	/** 微信商户号 */
+	public static final String subWxMerId = "subWxMerId";
+	/** 预下单生成的二维码串 */
+	public static final String qr_code = "qr_code";
+	/** 支付场景 */
+	public static final String scene = "scene";
+	/** 商户门店编号 */
+	public static final String alipayStoreId = "alipayStoreId";
+	/** 商户订单号 */
+	public static final String outTradeNo = "outTradeNo";
+	/** 订单状态 */
+	public static final String txnSta = "txnSta";
+	/** 返回描述 */
+	public static final String resDesc = "resDesc";
+	/** 返回码 */
+	public static final String resCode = "resCode";
+	/** 银联交易号 */
+	public static final String alipayTradeNo = "alipayTradeNo";
+	/** 实收金额 */
+	public static final String receiptAmount = "receiptAmount";
+	/** 清算日期 */
+	public static final String settleDate = "settleDate";
+	/** 买家支付宝账号 */
+	public static final String buyerLogonId = "buyerLogonId";
+	/** 返回码 */
+	public static final String returnCode = "returnCode";
+	/** 返回信息 */
+	public static final String returnMsg = "returnMsg";
+	/** 支付宝商户编号 */
+	public static final String subAlipayMerId = "subAlipayMerId";
+	/** 返回信息 */
+	public static final String information = "information";
+	/** 交易状态 */
+	public static final String tradeStatus = "tradeStatus";
+	/** 城市编码 */
+	public static final String city_code = "city_code";
+	/** 区县编码 */
+	public static final String district_code = "district_code";
+	/** 省市编码 */
+	public static final String province_code = "province_code";
+	/** 商户地址信息 */
+	public static final String address_info = "address_info";
+	/** 商户客服电话 */
+	public static final String phone = "phone";
+	/** 手机号 */
+	public static final String mobile = "mobile";
+	/** 电子邮箱 */
+	public static final String email = "email";
+	/** 银行卡号 */
+	public static final String card_no = "card_no";
+	/** 银行卡持卡人姓名 */
+	public static final String card_name = "card_name";
+	/** 商户的支付二维码中信息 */
+	public static final String pay_code_info = "pay_code_info";
+	/** 商户的支付宝账号 */
+	public static final String logon_id = "logon_id";
+	/** 商户联系人业务标识枚举 */
+	public static final String tag = "tag";
+	/** 原内部交易流水号 */
+	public static final String initTxnSeqId = "initTxnSeqId";
+	/** 原内部交易时间 */
+	public static final String initTxnTime = "initTxnTime";
+	/** 交易类型 */
+	public static final String txnType = "txnType";
+	/** 原内部订单号 */
+	public static final String oglOrdId = "oglOrdId";
+	/** 原内部订单日期 */
+	public static final String oglOrdDate = "oglOrdDate";
+	/** 原内部订单状态 */
+	public static final String orderSta = "orderSta";
+	/** 原内部订单结果 */
+	public static final String orderDesc = "orderDesc";
+	/** 网关明细返回码描述 */
+	public static final String sub_msg = "sub_msg";
+	/** 网关明细返回码 */
+	public static final String sub_code = "sub_code";
+	/** 商户门店编号 */
+	public static final String store_id = "store_id";
+	/** 商户门店名称 */
+	public static final String store_name = "store_name";
+	/** 商户机具终端编号 */
+	public static final String terminal_id = "terminal_id";
+	/** 商户订单号 */
+	public static final String out_trade_no = "out_trade_no";
+	/** 银联交易号 */
+	public static final String trade_no = "trade_no";
+	/** 用户登录ID */
+	public static final String buyer_logon_id = "buyer_logon_id";
+	/** 买家在支付宝的ID */
+	public static final String buyer_user_id = "buyer_user_id";
+	/** 商户门店编号 */
+	public static final String aipay_store_id = "aipay_store_id";
+	/** 行业特殊信息 */
+	public static final String industry_sepc_detail = "industry_sepc_detail";
+	/** 支付金额信息 */
+	public static final String fund_bill_list = "fund_bill_list";
+	/** 本次交易支付所使用的单品券优惠的商品优惠信息 */
+	public static final String discount_goods_detail = "discount_goods_detail";
+	/** 积分支付的金额 */
+	public static final String point_amount = "point_amount";
+	/** 交易的订单金额 */
+	public static final String total_amount = "total_amount";
+	/** 实收金额 */
+	public static final String receipt_amount = "receipt_amount";
+	/** 实付金额 */
+	public static final String buyer_pay_amount = "buyer_pay_amount";
+	/** 可开具发票的金额 */
+	public static final String invoice_amount = "invoice_amount";
+	/** 本次交易打款给卖家的时间 */
+	public static final String send_pay_date = "send_pay_date";
+	/** 订单交易状态 */
+	public static final String trade_status = "trade_status";
+	/** 返回状态码 */
+	public static final String return_code = "return_code";
+	/** 返回状态信息 */
+	public static final String return_msg = "return_msg";
+	/** 业务结果 */
+	public static final String result_code = "result_code";
+	/** 成功 */
+	public static final String SUCCESS = "SUCCESS";
+	/** 是否需要重试 */
+	public static final String retry_flag = "retry_flag";
+	/** 子商户号 */
+	public static final String sub_mch_id = "sub_mch_id";
+	/** 错误信息描述 */
+	public static final String err_code_des = "err_code_des";
+	/** */
+	public static final String payChannel = "payChannel";
+	/** 交易付款时间 */
+	public static final String gmt_payment = "gmt_payment";
+	/** 交易使用的资金渠道*/
+	public static final String fund_channel = "fund_channel";
+	/** 银行卡信息*/
+	public static final String bankcard_info = "bankcard_info";
+	/** 响应返回码*/
+	public static final String respCode = "respCode";
+	/** 响应返回描述*/
+	public static final String respDesc = "respDesc";
+	/** 商户详细信息*/
+	public static final String mchinfo = "mchinfo";
+	/** 商户名称*/
+	public static final String merchant_name = "merchant_name";
+	/** 商户简称*/
+	public static final String merchant_shortname = "merchant_shortname";
+	/** 联系人*/
+	public static final String contact = "contact";
+	/** 联系电话*/
+	public static final String contact_phone = "contact_phone";
+	/** 联系邮箱*/
+	public static final String contact_email = "contact_email";
+	/** 总记录数*/
+	public static final String total = "total";
+	/** 原交易订单流水号*/
+	public static final String initOrderNumber = "initOrderNumber";
+	/** 原交易订单流水时间*/
+	public static final String initOrderTime = "initOrderTime";
+	/** 商户子订单号*/
+	public static final String subMchId = "subMchId";
+	/** 订单已支付*/
+	public static final String ORDERPAID = "ORDERPAID";
+	/** 错误代码*/
+	public static final String err_code = "err_code";
+}

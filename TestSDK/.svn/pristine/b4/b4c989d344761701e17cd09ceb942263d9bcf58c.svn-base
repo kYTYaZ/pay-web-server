@@ -1,0 +1,37 @@
+package com.trade.ali.trading;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.util.DateUtil;
+
+public class AliPreCreate {
+
+	public static Map<String, String> getData() {
+
+		System.out.println("开始组装支付宝主扫报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", "8001");
+		map.put("orderAmount", "000000000001");
+		map.put("channel", "6001");
+		map.put("transType", "01");
+		map.put("payAccessType", "03");
+		map.put("currencyType", "156");
+		map.put("merId", "100000000000002");
+		map.put("merName", "测试");
+		map.put("orderNumber", "1000" + DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("orderTime", DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("payType", "12");
+		map.put("subject", "测试商品");
+		map.put("body", "测试商品body");
+		map.put("termId", "1000001");
+		map.put("operatorId", "10001");
+		map.put("storeId", "杭州市江干区秋涛路");
+		map.put("alipayStoreId", "支付宝杭州市江干区秋涛路");
+		map.put("alipayMerchantId", "47383");
+
+		return map;
+	}
+
+}

@@ -1,0 +1,78 @@
+#if($sqlName=='saveQRCodeInfo')
+	INSERT INTO TBL_EWM_INFO (
+		EWM_DATA,
+		#if ($cardNo)CARD_NO,#end
+		#if ($customName)CUSTOM_NAME,#end
+		#if ($deviceNumber)DEVICE_NUMBER,#end
+		#if ($merId)MER_ID,#end
+		#if ($merName)MER_NAME,#end
+		#if ($merAcctNo)MER_ACCTNO,#end
+		#if ($tradeMoney)TRADE_MONEY,#end
+		#if ($channel)CHANNEL,#end
+		#if ($orderNumber)ORDER_NUMBER,#end
+		#if ($createTime)CREATE_TIME,#end
+		#if ($ewmType)EWM_TYPE,#end
+		#if ($status)STATUS,#end
+		#if ($validDay)VALID_DAY,#end
+		#if ($reserve)RESERVE,#end
+		#if ($validMinute)VALID_MINUTE#end
+	) VALUES(
+		'${ewmData}',
+		#if ($cardNo)'${cardNo}',#end
+		#if ($customName)'${customName}',#end
+		#if ($deviceNumber)'${deviceNumber}',#end
+		#if ($merId)'${merId}',#end
+		#if ($merName)'${merName}',#end
+		#if ($merAcctNo)'${merAcctNo}',#end
+		#if ($tradeMoney)'${tradeMoney}',#end
+		#if ($channel)'${channel}',#end
+		#if ($orderNumber)'${orderNumber}',#end
+		#if ($createTime)'${createTime}',#end
+		#if ($ewmType)'${ewmType}',#end
+		#if ($status)'${status}',#end
+		#if ($validDay)'${validDay}',#end
+		#if ($reserve)'${reserve}',#end
+		#if ($validMinute)'${validMinute}'#end
+	)
+#end
+
+#if($sqlName=='queryQRCodeInfo')
+	SELECT 
+		TB_EWM.EWM_DATA,
+		TB_EWM.CARD_NO,
+		TB_EWM.CUSTOM_NAME,
+		TB_EWM.DEVICE_NUMBER,
+		TB_EWM.MER_ID,
+		TB_EWM.MER_NAME,
+		TB_EWM.MER_ACCTNO,
+		TB_EWM.TRADE_MONEY,
+		TB_EWM.CHANNEL,
+		TB_EWM.ORDER_NUMBER,
+		TB_EWM.CREATE_TIME,
+		TB_EWM.EWM_TYPE,
+		TB_EWM.STATUS,
+		TB_EWM.VALID_DAY,
+		TB_EWM.VALID_MINUTE,
+		TB_EWM.RESERVE
+	   FROM  TBL_EWM_INFO TB_EWM
+	   WHERE 1=1 
+	   		AND TB_EWM.EWM_DATA='${ewmData}'
+	   #if ($merId)
+			AND TB_EWM.MER_ID ='${merId}'
+	   #end
+	   #if ($orderNumber)
+			AND  TB_EWM.ORDER_NUMBER ='${orderNumber}'
+	   #end
+#end
+
+#if($sqlName=='updateQRCodeStatus')
+	UPDATE TBL_EWM_INFO TB_EWM  SET
+		STATUS='${status}'
+	WHERE 1=1
+	#if($ewmData)
+		AND TB_EWM.EWM_DATA = '${ewmData}'
+	#end
+	#if($orderNumber)
+		AND TB_EWM.ORDER_NUMBER = '${orderNumber}'
+	#end	
+#end

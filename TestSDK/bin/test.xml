@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xml>
+	<return_code><![CDATA[SUCCESS]]></return_code>
+	<appid><![CDATA[wx2421b1c4370ec43b]]></appid>
+	<mch_id><![CDATA[1900009211]]></mch_id>
+	<sub_mch_id><![CDATA[247840419]]></sub_mch_id>
+	<device_info><![CDATA[POS]]></device_info>
+	<nonce_str><![CDATA[e9bdef481d984b93882eb5fb5e3e769f]]></nonce_str>
+	<result_code><![CDATA[SUCCESS]]></result_code>
+	<openid><![CDATA[oUpF8uKoAgylsoXdCEtgPKZBqKis]]></openid>
+	<trade_type><![CDATA[NATIVE]]></trade_type>
+	<bank_type><![CDATA[CITIC_CREDIT]]></bank_type>
+	<total_fee><![CDATA[1]]></total_fee>
+	<fee_type><![CDATA[CNY]]></fee_type>
+	<cash_fee><![CDATA[1]]></cash_fee>
+	<cash_fee_type><![CDATA[CNY]]></cash_fee_type>
+	<settlement_total_fee><![CDATA[1]]></settlement_total_fee>
+	<coupon_fee><![CDATA[0]]></coupon_fee>
+	<transaction_id><![CDATA[4200000165201810185859556266]]></transaction_id>
+	<out_trade_no><![CDATA[1006706386]]></out_trade_no>
+	<attach><![CDATA[20181018]]></attach>
+	<time_end><![CDATA[20181018181244]]></time_end>
+	<sign><![CDATA[j3Y9K2PVvBwg06IhuJAi479C8kZYBvZRCQOTYmvNpnwu/Ry2fC1BjrXhgbqhA+lRsntnJ927tPYe7p7ze8WiXLg63H3/aVjd9EuRQhA7HEEihBNT8aMJZxOcO2E3UnEKVrwl1B1puYQnQ8Y4nuBAFvapmpDMPlHnCpn1/OF+gFel4xmnQS1vera2vqGavIml06bF+SH6i8zBHvT3KDlJesV6o0wgFUb2YjQ8JzqjkyFkpZGniODVf6SgpBJxqhyL1gko5B2ML4jczecRZuC3N4UFpMdGcVnm1d/Elqk7KP93sgQp+Vnw+BlFtu2pchlH8v6h6UQ3CAB5fO648mhX8w==]]></sign>
+</xml>

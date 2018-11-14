@@ -1,0 +1,19 @@
+<xml>
+	<respCode>02</respCode>
+	<alipayTradeNo>642018101922001427225409646837</alipayTradeNo>
+	<alipayPayDate>20181019085612</alipayPayDate>
+	<buyerLogonId>836***@qq.com</buyerLogonId>
+	<merId>20181018192224192224</merId>
+	<respDesc>交易支付成功</respDesc>
+	<receiptAmount>000000000001</receiptAmount>
+	<orderTime>20181019085606</orderTime>
+	<currencyType>156</currencyType>
+	<txnSeqId>1006706426</txnSeqId>
+	<transType>01</transType>
+	<orderAmount>000000000001</orderAmount>
+	<payAccessType>03</payAccessType>
+	<orderNumber>100020181019085606</orderNumber>
+	<payType>15</payType>
+	<channel>6001</channel>
+	<txnTime>20181019085607</txnTime>
+</xml>

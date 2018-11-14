@@ -1,0 +1,1363 @@
+#if($sqlName=='queryOrder')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		REMARK,
+		SETTLE_METHOD,
+		ACCOUNTED_FLAG,
+		BANK_FEE_RATE
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	    #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	    #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($mobileOrderId)
+			AND MOBILE_ORDER_ID = '${mobileOrderId}'
+	    #end
+	    #if ($mobileOrTm)
+			AND MOBILE_OR_TM = '${mobileOrTm}'
+	    #end
+	    #if ($mobileOrDt)
+			AND MOBILE_OR_DT = '${mobileOrDt}'
+	    #end
+	    #if ($ewmData)
+			AND EWM_DATA = '${ewmData}'
+	    #end	
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end	
+	    #if ($outRequestNo)
+			AND OUT_REQUEST_NO = '${outRequestNo}'
+	    #end
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+#end
+
+#if($sqlName=='queryOrderMonth')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		REMARK,
+		SETTLE_METHOD,
+		ACCOUNTED_FLAG,
+		BANK_FEE_RATE
+	FROM EWM.TBL_ORDER_TXN_MONTH 
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	    #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	    #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($mobileOrderId)
+			AND MOBILE_ORDER_ID = '${mobileOrderId}'
+	    #end
+	    #if ($mobileOrTm)
+			AND MOBILE_OR_TM = '${mobileOrTm}'
+	    #end
+	    #if ($mobileOrDt)
+			AND MOBILE_OR_DT = '${mobileOrDt}'
+	    #end
+	    #if ($ewmData)
+			AND EWM_DATA = '${ewmData}'
+	    #end	
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end	
+	    #if ($outRequestNo)
+			AND OUT_REQUEST_NO = '${outRequestNo}'
+	    #end
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+#end
+
+#if($sqlName=='queryOrderNumber')
+	SELECT COUNT(1)
+	FROM EWM.TBL_ORDER_TXN
+	WHERE 1=1
+	#if ($txnDt)
+	    AND TXN_DT = '${txnDt}'
+	#end
+	#if ($channel)
+	    AND TXN_CHANNEL = '${channel}'
+	#end
+#end
+
+#if($sqlName=='queryOrderForUpdate')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		SETTLE_METHOD,
+		ACCOUNTED_FLAG,
+		BANK_FEE_RATE
+	FROM EWM.TBL_ORDER_TXN  
+	WHERE 1 = 1
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($mobileOrderId)
+			AND MOBILE_ORDER_ID = '${mobileOrderId}'
+	    #end
+	    #if ($mobileOrTm)
+			AND MOBILE_OR_TM = '${mobileOrTm}'
+	    #end
+	    #if ($mobileOrDt)
+			AND MOBILE_OR_DT = '${mobileOrDt}'
+	    #end	
+	    #if ($wxMerId)
+			AND WX_MER_ID = '${wxMerId}'
+	    #end	
+	    #if ($wxOrderNo)
+			AND WX_ORDER_NO = '${wxOrderNo}'
+	    #end	
+	    #if ($subWxMerId)
+			AND SUB_WX_MER_ID = '${subWxMerId}'
+	    #end
+	    #if ($codeUrl)
+			AND CODE_URL = '${codeUrl}'
+	    #end	
+	 FOR UPDATE
+#end
+#if($sqlName=='queryOrderByTxnSeqIdForUpdate')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE
+	FROM TBL_ORDER_TXN  
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+#end
+#if($sqlName=='queryOrderByTxnSeqId')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE
+	FROM TBL_ORDER_TXN  
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+	#if ($txnDt)
+		AND TXN_DT = '${txnDt}'
+	#end
+	#if ($txnTm)
+		AND TXN_TM = '${txnTm}'
+	#end
+#end
+
+#if($sqlName=='insertOrder')
+	INSERT INTO EWM.TBL_ORDER_TXN	
+	(
+		#if ($ewmData)EWM_DATA,#end
+		#if ($merOrderId)MER_ORDER_ID,#end
+		#if ($merOrDt)MER_OR_DT,#end
+		#if ($merOrTm)MER_OR_TM,#end
+		#if ($oglOrdId)OGL_ORD_ID,#end
+		#if ($oglOrdDate)OGL_ORD_DATE,#end
+		#if ($mobileOrderId)MOBILE_ORDER_ID,#end
+		#if ($mobileOrDt)MOBILE_OR_DT,#end
+		#if ($mobileOrTm)MOBILE_OR_TM,#end
+		#if ($txnType)TXN_TYPE,#end
+		#if ($txnChannel)TXN_CHANNEL,#end
+		#if ($payAccessType)PAY_ACCESS_TYPE,#end
+		#if ($payType)PAY_TYPE,#end
+		#if ($tradeMoney)TRADE_MONEY,#end
+		#if ($currencyCode)CURRENCY_CODE,#end
+		#if ($merId)MER_ID,#end
+		#if ($wxOrderNo)WX_ORDER_NO,#end
+		#if ($codeUrl)CODE_URL,#end
+		#if ($alipayPrepayId)ALIPAY_PREPAY_ID,#end
+		#if ($wxPrepayId)WX_PREPAY_ID,#end
+		#if ($randomStr)RANDOM_STR,#end
+		#if ($wxMerId)WX_MER_ID,#end
+		#if ($subWxMerId)SUB_WX_MER_ID,#end
+		#if ($txnSta)TXN_STA,#end
+		#if ($resDesc)RES_DESC,#end
+		#if ($txnSeqId)TXN_SEQ_ID,#end
+		#if ($txnDt)TXN_DT,#end
+		#if ($settleDate)SETTLE_DATE,#end	
+		#if ($subAlipayMerId)SUB_ALIPAY_MER_ID,#end
+		#if ($alipayMerId)ALIPAY_MER_ID,#end
+		#if ($discountableAmount)DISCOUNTABLE_AMOUNT,#end
+		#if ($undiscountableAmount)UNDISCOUNTABLE_AMOUNT,#end
+		#if ($alipayTradeNo)ALIPAY_TRADE_NO,#end
+		#if ($receiptAmount)RECEIPT_AMOUNT,#end
+		#if ($outRequestNo)OUT_REQUEST_NO,#end
+		#if ($refundAmount)REFUND_AMOUNT,#end
+		#if ($alipayRefundFee)ALIPAY_REFUND_FEE,#end
+		#if ($totalRefundFee)TOTAL_REFUND_FEE,#end
+		#if ($sendBackFee)SEND_BACK_FEE,#end
+		#if ($remark)REMARK,#end
+		#if ($bankFeeRate)BANK_FEE_RATE,#end
+		#if ($settleMethod)SETTLE_METHOD,#end
+		#if ($accountedFlag)ACCOUNTED_FLAG,#end
+		TXN_TM
+	)
+	VALUES(
+		#if ($ewmData)'${ewmData}',#end
+		#if ($merOrderId)'${merOrderId}',#end
+		#if ($merOrDt)'${merOrDt}',#end
+		#if ($merOrTm)'${merOrTm}',#end
+		#if ($oglOrdId)'${oglOrdId}',#end
+		#if ($oglOrdDate)'${oglOrdDate}',#end
+		#if ($mobileOrderId)'${mobileOrderId}',#end
+		#if ($mobileOrDt)'${mobileOrDt}',#end
+		#if ($mobileOrTm)'${mobileOrTm}',#end
+		#if ($txnType)'${txnType}',#end
+		#if ($txnChannel)'${txnChannel}',#end
+		#if ($payAccessType)'${payAccessType}',#end
+		#if ($payType)'${payType}',#end
+		#if ($tradeMoney)'${tradeMoney}',#end
+		#if ($currencyCode)'${currencyCode}',#end
+		#if ($merId)'${merId}',#end
+		#if ($wxOrderNo)'${wxOrderNo}',#end
+		#if ($codeUrl)'${codeUrl}',#end
+		#if ($alipayPrepayId)'${alipayPrepayId}',#end
+		#if ($wxPrepayId)'${wxPrepayId}',#end
+		#if ($randomStr)'${randomStr}',#end
+		#if ($wxMerId)'${wxMerId}',#end
+		#if ($subWxMerId)'${subWxMerId}',#end
+		#if ($txnSta)'${txnSta}',#end
+		#if ($resDesc)'${resDesc}',#end
+		#if ($txnSeqId)'${txnSeqId}',#end
+		#if ($txnDt)'${txnDt}',#end
+		#if ($settleDate)'${settleDate}',#end		
+		#if ($subAlipayMerId)'${subAlipayMerId}',#end
+		#if ($alipayMerId)'${alipayMerId}',#end
+		#if ($discountableAmount)'${discountableAmount}',#end
+		#if ($undiscountableAmount)'${undiscountableAmount}',#end
+		#if ($alipayTradeNo)'${alipayTradeNo}',#end
+		#if ($receiptAmount)'${receiptAmount}',#end
+		#if ($outRequestNo)'${outRequestNo}',#end
+		#if ($refundAmount)'${refundAmount}',#end
+		#if ($alipayRefundFee)'${alipayRefundFee}',#end
+		#if ($totalRefundFee)'${totalRefundFee}',#end
+		#if ($sendBackFee)'${sendBackFee}',#end
+		#if ($remark)'${remark}',#end
+		#if ($bankFeeRate)'${bankFeeRate}',#end
+		#if ($settleMethod)'${settleMethod}',#end
+		#if ($accountedFlag)'${accountedFlag}',#end
+		'${txnTm}'
+	)
+#end
+
+#if($sqlName=='updateOrder')
+	UPDATE  EWM.TBL_ORDER_TXN SET
+		#if ($txnSeqId)TXN_SEQ_ID='${txnSeqId}',#end
+		#if ($txnDt)TXN_DT='${txnDt}',#end
+		#if ($txnTm)TXN_TM='${txnTm}',#end
+		#if ($ewmData)EWM_DATA='${ewmData}',#end
+		#if ($merOrderId)MER_ORDER_ID='${merOrderId}',#end
+		#if ($merOrDt)MER_OR_DT='${merOrDt}',#end
+		#if ($merOrTm)MER_OR_TM='${merOrTm}',#end
+		#if ($oglOrdId)OGL_ORD_ID='${oglOrdId}',#end
+		#if ($oglOrdDate)OGL_ORD_DATE='${oglOrdDate}',#end
+		#if ($mobileOrderId)MOBILE_ORDER_ID='${mobileOrderId}',#end
+		#if ($mobileOrDt)MOBILE_OR_DT='${mobileOrDt}',#end
+		#if ($mobileOrTm)MOBILE_OR_TM='${mobileOrTm}',#end
+		#if ($txnType)TXN_TYPE='${txnType}',#end
+		#if ($txnChannel)TXN_CHANNEL='${txnChannel}',#end
+		#if ($payAccessType)PAY_ACCESS_TYPE='${payAccessType}',#end
+		#if ($payType)PAY_TYPE='${payType}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($currencyCode)CURRENCY_CODE='${currencyCode}',#end
+		#if ($merId)MER_ID='${merId}',#end
+		#if ($wxOrderNo)WX_ORDER_NO='${wxOrderNo}',#end
+		#if ($codeUrl)CODE_URL='${codeUrl}',#end
+		#if ($alipayPrepayId)ALIPAY_PREPAY_ID='${alipayPrepayId}',#end
+		#if ($wxPrepayId)WX_PREPAY_ID='${wxPrepayId}',#end
+		#if ($randomStr)RANDOM_STR='${randomStr}',#end
+		#if ($wxMerId)WX_MER_ID='${wxMerId}',#end
+		#if ($subWxMerId)SUB_WX_MER_ID='${subWxMerId}',#end
+		#if ($resDesc)RES_DESC='${resDesc}',#end
+		#if ($settleDate)SETTLE_DATE='${settleDate}',#end
+		#if ($subAlipayMerId)SUB_ALIPAY_MER_ID='${subAlipayMerId}',#end
+		#if ($alipayMerId)ALIPAY_MER_ID='${alipayMerId}',#end
+		#if ($discountable_amount)DISCOUNTABLE_AMOUNT='${discountable_amount}',#end
+		#if ($undiscountable_amount)UNDISCOUNTABLE_AMOUNT='${undiscountable_amount}',#end
+		#if ($alipayTradeNo)ALIPAY_TRADE_NO='${alipayTradeNo}',#end
+		#if ($receiptAmount)RECEIPT_AMOUNT='${receiptAmount}',#end
+		#if ($outRequestNo)OUT_REQUEST_NO='${outRequestNo}',#end
+		#if ($refundAmount)REFUND_AMOUNT='${refundAmount}',#end
+		#if ($alipayRefundFee)ALIPAY_REFUND_FEE='${alipayRefundFee}',#end
+		#if ($totalRefundFee)TOTAL_REFUND_FEE='${totalRefundFee}',#end
+		#if ($sendBackFee)SEND_BACK_FEE='${sendBackFee}',#end
+		#if ($payerid)PAYERID='${payerid}',#end
+		#if ($bankType)BANK_TYPE='${bankType}',#end
+		#if ($accountedFlag)ACCOUNTED_FLAG='${accountedFlag}',#end
+		#if ($txnSta)TXN_STA='${txnSta}'#end
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+            #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($mobileOrderId)
+			AND MOBILE_ORDER_ID = '${mobileOrderId}'
+	    #end
+	    #if ($mobileOrTm)
+			AND MOBILE_OR_TM = '${mobileOrTm}'
+	    #end
+	    #if ($mobileOrDt)
+			AND MOBILE_OR_DT = '${mobileOrDt}'
+	    #end	
+	    #if ($wxMerId)
+			AND WX_MER_ID = '${wxMerId}'
+	    #end	
+	    #if ($wxOrderNo)
+			AND WX_ORDER_NO = '${wxOrderNo}'
+	    #end	
+	    #if ($subWxMerId)
+			AND SUB_WX_MER_ID = '${subWxMerId}'
+	    #end
+	    #if ($outRequestNo)
+			AND OUT_REQUEST_NO = '${outRequestNo}'
+	    #end
+#end
+
+
+
+#if($sqlName=='updateOrderByTxnSeqId')
+	UPDATE  EWM.TBL_ORDER_TXN SET
+		#if ($txnSeqId)TXN_SEQ_ID='${txnSeqId}',#end
+		#if ($txnDt)TXN_DT='${txnDt}',#end
+		#if ($txnTm)TXN_TM='${txnTm}',#end
+		#if ($ewmData)EWM_DATA='${ewmData}',#end
+		#if ($merOrderId)MER_ORDER_ID='${merOrderId}',#end
+		#if ($merOrDt)MER_OR_DT='${merOrDt}',#end
+		#if ($merOrTm)MER_OR_TM='${merOrTm}',#end
+		#if ($oglOrdId)OGL_ORD_ID='${oglOrdId}',#end
+		#if ($oglOrdDate)OGL_ORD_DATE='${oglOrdDate}',#end
+		#if ($mobileOrderId)MOBILE_ORDER_ID='${mobileOrderId}',#end
+		#if ($mobileOrDt)MOBILE_OR_DT='${mobileOrDt}',#end
+		#if ($mobileOrTm)MOBILE_OR_TM='${mobileOrTm}',#end
+		#if ($txnType)TXN_TYPE='${txnType}',#end
+		#if ($txnChannel)TXN_CHANNEL='${txnChannel}',#end
+		#if ($payAccessType)PAY_ACCESS_TYPE='${payAccessType}',#end
+		#if ($payType)PAY_TYPE='${payType}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($currencyCode)CURRENCY_CODE='${currencyCode}',#end
+		#if ($merId)MER_ID='${merId}',#end
+		#if ($wxOrderNo)WX_ORDER_NO='${wxOrderNo}',#end
+		#if ($codeUrl)CODE_URL='${codeUrl}',#end
+		#if ($alipayPrepayId)ALIPAY_PREPAY_ID='${alipayPrepayId}',#end
+		#if ($wxPrepayId)WX_PREPAY_ID='${wxPrepayId}',#end
+		#if ($randomStr)RANDOM_STR='${randomStr}',#end
+		#if ($wxMerId)WX_MER_ID='${wxMerId}',#end
+		#if ($subWxMerId)SUB_WX_MER_ID='${subWxMerId}',#end
+		#if ($settleDate)SETTLE_DATE='${settleDate}',#end
+		#if ($resDes)RES_DESC='${resDes}',#end
+		#if ($subAlipayMerId)SUB_ALIPAY_MER_ID='${subAlipayMerId}',#end
+		#if ($alipayMerId)ALIPAY_MER_ID='${alipayMerId}',#end
+		#if ($discountable_amount)DISCOUNTABLE_AMOUNT='${discountable_amount}',#end
+		#if ($undiscountable_amount)UNDISCOUNTABLE_AMOUNT='${undiscountable_amount}',#end
+		#if ($alipayTradeNo)ALIPAY_TRADE_NO='${alipayTradeNo}',#end
+		#if ($receiptAmount)RECEIPT_AMOUNT='${receiptAmount}',#end
+		#if ($outRequestNo)OUT_REQUEST_NO='${outRequestNo}',#end
+		#if ($refundAmount)REFUND_AMOUNT='${refundAmount}',#end
+		#if ($alipayRefundFee)ALIPAY_REFUND_FEE='${alipayRefundFee}',#end
+		#if ($totalRefundFee)TOTAL_REFUND_FEE='${totalRefundFee}',#end
+		#if ($sendBackFee)SEND_BACK_FEE='${sendBackFee}',#end
+		#if ($payerid)PAYERID='${payerid}',#end
+		#if ($bankType)BANK_TYPE='${bankType}',#end
+		#if ($txnSta)TXN_STA='${txnSta}'#end
+	WHERE 1 = 1
+	AND TXN_SEQ_ID = '${txnSeqId}'
+	 #if ($txnDt)
+		AND TXN_DT = '${txnDt}'
+	 #end
+	 #if ($txnTm)
+		AND TXN_TM = '${txnTm}'
+	 #end
+#end
+
+
+#if($sqlName=='updateOrderState')
+	UPDATE  EWM.TBL_ORDER_TXN SET
+		#if ($mobileOrderId)MOBILE_ORDER_ID='${mobileOrderId}',#end
+		#if ($mobileOrDt)MOBILE_OR_DT='${mobileOrDt}',#end
+		#if ($mobileOrTm)MOBILE_OR_TM='${mobileOrTm}',#end
+		#if ($tradeMoney)TRADE_MONEY='${tradeMoney}',#end
+		#if ($resDesc)RES_DESC='${resDesc}',#end
+		#if ($settleDate)SETTLE_DATE='${settleDate}',#end
+		#if ($payerid)PAYERID='${payerid}',#end
+		#if ($bankType)BANK_TYPE='${bankType}',#end
+		#if ($totalRefundFee)TOTAL_REFUND_FEE='$totalRefundFee',#end
+		TXN_STA='$txnSta'
+	WHERE 1 = 1
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($wxMerId)
+			AND WX_MER_ID = '${wxMerId}'
+	    #end	
+	    #if ($wxOrderNo)
+			AND WX_ORDER_NO = '${wxOrderNo}'
+	    #end	
+	    #if ($subWxMerId)
+			AND SUB_WX_MER_ID = '${subWxMerId}'
+	    #end
+	    #if ($codeUrl)
+			AND CODE_URL = '${codeUrl}'
+	    #end
+	    #if ($initTotalRefundFee)
+			AND nvl(TOTAL_REFUND_FEE,'0')='$initTotalRefundFee'
+		#end
+#end
+
+#if($sqlName=='queryOrderTxnByMer')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	     #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	     #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+            #if ($txnDt)
+			AND TXN_DT = '${txnDt}'
+	    #end
+	     #if ($txnTm)
+			AND TXN_TM = '${txnTm}'
+	    #end
+	    #if ($transType)
+			AND TXN_TYPE = '${transType}'
+	    #end
+#end
+
+#if($sqlName=='queryMerEnableMoneyByDay')
+SELECT 
+       SUM(wx_pay_money) AS PAY_MONEY, 
+       SUM(wx_refund_money) AS REFUND_MONEY, 
+       SUM(wx_revoke_money) AS REVOKE_MONEY,
+       SUM(ali_pay_money) AS ALI_PAY_MONEY, 
+       SUM(ali_refund_money) AS ALI_REFUND_MONEY, 
+       SUM(ali_revoke_money) AS ALI_REVOKE_MONEY,
+       SUM(wx_pay_money) - SUM(wx_refund_money) - SUM(wx_revoke_money) as WX_ENABLE_MONEY,
+       SUM(ali_pay_money) - SUM(ali_refund_money) - SUM(ali_revoke_money) as ALI_ENABLE_MONEY
+FROM (
+	SELECT CASE 
+			WHEN t.txn_sta = '02'
+			AND t.txn_type = '01' 
+			AND t.PAY_ACCESS_TYPE = '02'
+			THEN t.trade_money
+			ELSE 0
+		END AS wx_pay_money
+		, CASE 
+			WHEN t.txn_sta = '02'
+			AND t.txn_type = '01' 
+			AND t.PAY_ACCESS_TYPE = '03'
+			THEN t.trade_money
+			ELSE 0
+		END AS ali_pay_money
+		,CASE 
+			WHEN t.txn_sta != '03'
+			AND t.txn_type = '34' 
+			AND t.PAY_ACCESS_TYPE = '02'
+			THEN t.trade_money
+			ELSE 0
+		END AS wx_refund_money
+		,CASE 
+			WHEN t.txn_sta != '03'
+			AND t.txn_type = '34' 
+			AND t.PAY_ACCESS_TYPE = '03'
+			THEN t.trade_money
+			ELSE 0
+		END AS ali_refund_money
+		, CASE 
+			WHEN t.txn_sta != '03'
+			AND t.txn_type = '31' 
+			AND t.PAY_ACCESS_TYPE = '02'
+			THEN t.trade_money
+			ELSE 0
+		END AS wx_revoke_money
+		, CASE 
+			WHEN t.txn_sta != '03'
+			AND t.txn_type = '31' 
+			AND t.PAY_ACCESS_TYPE = '03'
+			THEN t.trade_money
+			ELSE 0
+		END AS ali_revoke_money
+	FROM tbl_order_txn t
+	WHERE t.MER_ID = '${merId}'
+	  AND t.TXN_DT = '${txnDt}'
+)
+#end
+
+#if($sqlName=='updateWxOrder')
+	UPDATE  EWM.TBL_ORDER_TXN SET
+	#if ($payType)PAY_TYPE='$payType',#end
+	#if ($codeUrl)CODE_URL='$codeUrl',#end
+	#if ($wxPrepayId)WX_PREPAY_ID='$wxPrepayId',#end
+	#if ($randomStr)RANDOM_STR='$randomStr',#end
+	#if ($wxOrderNo)WX_ORDER_NO='$wxOrderNo',#end
+	#if ($wxMerId)WX_MER_ID='$wxMerId',#end
+	#if ($subWxMerId)SUB_WX_MER_ID='$subWxMerId',#end
+	#if ($resDesc)RES_DESC='$resDesc',#end
+	#if ($settleDate)SETTLE_DATE='$settleDate',#end
+	#if ($payerid)PAYERID='$payerid',#end
+	#if ($bankType)BANK_TYPE='$bankType',#end
+	#if ($totalRefundFee)TOTAL_REFUND_FEE='$totalRefundFee',#end
+	TXN_STA='$txnSta'
+    WHERE  1=1
+	#if ($txnSeqId)
+		AND TXN_SEQ_ID='$txnSeqId'
+	#end
+	#if ($txnDt)
+		AND TXN_DT='$txnDt'
+	#end
+	#if ($txnTm)
+		AND TXN_TM='$txnTm'
+	#end
+	#if ($initTotalRefundFee)
+		AND nvl(TOTAL_REFUND_FEE,'0')='$initTotalRefundFee'
+	#end
+#end
+
+#if($sqlName=='queryWxBillOrder')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		MER_ID,
+		TXN_STA,
+		SETTLE_DATE
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+		#if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE != '${payAccessType}'
+	    #end	
+#end   
+
+#if($sqlName=='updateRefundTotalFee')
+	UPDATE  EWM.TBL_ORDER_TXN SET
+	#if ($totalRefundFee)TOTAL_REFUND_FEE='$totalRefundFee'#end	
+    WHERE  1=1
+	#if ($txnSeqId)
+		AND TXN_SEQ_ID='$txnSeqId'
+	#end
+	#if ($txnDt)
+		AND TXN_DT='$txnDt'
+	#end
+	#if ($txnTm)
+		AND TXN_TM='$txnTm'
+	#end
+#end
+
+#set(
+	$queryThreadCodeStatementSql = "SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		ALIPAY_REFUND_AMT_BACK_FLAG
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+	    #if ($txnSeqId)
+			AND TXN_SEQ_ID = '${txnSeqId}'
+	    #end
+        #if ($startDate) 
+			AND TXN_DT >= '${startDate}'
+	    #end   
+	    #if ($endDate) 
+			AND  TXN_DT <= '${endDate}'
+	    #end   
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($merOrderId)
+			AND MER_ORDER_ID = '${merOrderId}'
+	    #end
+	    #if ($merOrDt)
+			AND MER_OR_DT = '${merOrDt}'
+	    #end
+	    #if ($merOrTm)
+			AND MER_OR_TM = '${merOrTm}'
+	    #end
+	    #if ($ewmData)
+			AND EWM_DATA = '${ewmData}'
+	    #end	
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+	    #if ($txnType)
+			AND TXN_TYPE = '${txnType}'
+	    #end
+	    #if ($txnSta)
+			AND TXN_STA = '${txnSta}'
+	    #end
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end
+	    
+	    ORDER BY TXN_DT || TXN_TM DESC"
+	)
+
+ #set(
+ 	$queryThreadCodeStatementCountSql = "SELECT  COUNT(*) AS TXN_COUNT,SUM(TRADE_MONEY) TOTAL_MONEY,
+ 		SUM(CASE 
+ 			WHEN PAY_ACCESS_TYPE != '01' AND CAST (${feeRate}*TRADE_MONEY AS DECIMAL(12,0))>=1 
+ 			THEN CAST (${feeRate}*TRADE_MONEY AS DECIMAL(12,0))
+ 			ELSE 0
+ 			END) AS TOTAL_FEE
+ 		
+		FROM EWM.TBL_ORDER_TXN 
+		WHERE 1 = 1
+		    #if ($txnSeqId)
+				AND TXN_SEQ_ID = '${txnSeqId}'
+		    #end
+	        #if ($startDate) 
+				AND TXN_DT >= '${startDate}'
+		    #end   
+		    #if ($endDate) 
+				AND  TXN_DT <= '${endDate}'
+		    #end   
+		    #if ($merId)
+				AND MER_ID = '${merId}'
+		    #end
+		    #if ($merOrderId)
+				AND MER_ORDER_ID = '${merOrderId}'
+		    #end
+		    #if ($merOrDt)
+				AND MER_OR_DT = '${merOrDt}'
+		    #end
+		    #if ($merOrTm)
+				AND MER_OR_TM = '${merOrTm}'
+		    #end
+		    #if ($ewmData)
+				AND EWM_DATA = '${ewmData}'
+		    #end	
+		    #if ($channel)
+		    	AND TXN_CHANNEL = '${channel}'
+		    #end
+		    #if ($txnType)
+				AND TXN_TYPE = '${txnType}'
+		    #end
+		    #if ($txnSta)
+				AND TXN_STA = '${txnSta}'
+		    #end
+		    #if ($payAccessType)
+				AND PAY_ACCESS_TYPE = '${payAccessType}'
+		    #end"
+ )
+	    
+#if($sqlName=='queryThreadCodeStatement')
+	SELECT T1.*, T.*
+	 FROM ($queryThreadCodeStatementCountSql) AS T1 , 
+	 ($queryThreadCodeStatementSql) AS T 
+#end
+
+#if($sqlName=='queryThreeCodeBillSummary')
+
+		SELECT  COUNT(*) AS TXN_COUNT,SUM(TRADE_MONEY) TOTAL_MONEY,
+ 		SUM(CASE 
+ 			WHEN PAY_ACCESS_TYPE NOT IN ('01','04') AND CAST (${feeRate}*TRADE_MONEY AS DECIMAL(12,0))>=1 
+ 			THEN CAST (${feeRate}*TRADE_MONEY AS DECIMAL(12,0))
+ 			ELSE 0
+ 			END) AS TOTAL_FEE
+ 		
+		FROM EWM.TBL_ORDER_TXN 
+		WHERE 1 = 1
+			#if ($ewmData)
+				AND EWM_DATA = '${ewmData}'
+		    #end	
+	        #if ($startDate) 
+				AND TXN_DT >= '${startDate}'
+		    #end   
+		    #if ($endDate) 
+				AND  TXN_DT <= '${endDate}'
+		    #end   
+		    #if ($merId)
+				AND MER_ID = '${merId}'
+		    #end
+		    #if ($channel)
+		    	AND TXN_CHANNEL = '${channel}'
+		    #end
+		    #if ($txnSta)
+				AND TXN_STA = '${txnSta}'
+		    #end
+		    #if ($payAccessType)
+				AND PAY_ACCESS_TYPE = '${payAccessType}'
+		    #end 
+#end
+
+#if($sqlName=='queryThreeCodeBillDetails')
+SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		ALIPAY_REFUND_AMT_BACK_FLAG,
+		REMARK,
+		SETTLE_METHOD,
+		BANK_FEE_RATE,
+		ACCOUNTED_FLAG
+	FROM (
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		ALIPAY_REFUND_AMT_BACK_FLAG,
+		REMARK,
+		SETTLE_METHOD,
+		BANK_FEE_RATE,
+		ACCOUNTED_FLAG
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+		#if ($ewmData)
+			AND EWM_DATA = '${ewmData}'
+	    #end	
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+	    #if ($txnSta)
+			AND TXN_STA = '${txnSta}'
+	    #end
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($startDate) 
+			AND TXN_DT >= '${startDate}'
+	    #end   
+	    #if ($endDate) 
+			AND  TXN_DT <= '${endDate}'
+	    #end
+	    
+    union
+    SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		ALIPAY_REFUND_AMT_BACK_FLAG,
+		REMARK,
+		SETTLE_METHOD,
+		BANK_FEE_RATE,
+		ACCOUNTED_FLAG
+	FROM EWM.TBL_ORDER_TXN_MONTH
+	WHERE 1 = 1
+		#if ($ewmData)
+			AND EWM_DATA = '${ewmData}'
+	    #end	
+	    #if ($channel)
+	    	AND TXN_CHANNEL = '${channel}'
+	    #end
+	    #if ($txnSta)
+			AND TXN_STA = '${txnSta}'
+	    #end
+	    #if ($payAccessType)
+			AND PAY_ACCESS_TYPE = '${payAccessType}'
+	    #end
+	    #if ($merId)
+			AND MER_ID = '${merId}'
+	    #end
+	    #if ($startDate) 
+			AND TXN_DT >= '${startDate}'
+	    #end   
+	    #if ($endDate) 
+			AND  TXN_DT <= '${endDate}'
+	    #end
+	    ) t
+	    ORDER BY t.TXN_DT || t.TXN_TM DESC
+    WITH UR
+#end
+
+ #if($sqlName=='queryUnknowSettleOrderNumber')
+ 	SELECT 
+ 	COUNT(1)
+ 	FROM  TBL_ORDER_TXN
+ 	WHERE  1=1
+ 	#if ($txnDt)
+ 		AND TXN_DT = '${txnDt}'
+ 	#end
+ 	#if ($channel)
+ 		AND TXN_CHANNEL='${channel}'
+ 	#end
+ 	#if	($wxAccess||$alipayAccess)
+ 		AND(#if ($wxAccess)
+ 			 	PAY_ACCESS_TYPE = '${wxAccess}'
+ 			#end
+ 			#if ($alipayAccess)
+ 				OR  PAY_ACCESS_TYPE = '${alipayAccess}'
+ 			#end )
+ 	#end
+ 	#if ($type)
+ 		AND TXN_TYPE='${txnType}'
+ 	#end
+ 	#if ($txnSta)
+ 		AND TXN_STA='${txnSta}'
+ 	#end
+ 	#if ($settleMethod)
+ 		AND SETTLE_METHOD='${settleMethod}'
+ 	#end
+ 	#if ($accountedFlag)
+ 		AND ACCOUNTED_FLAG = '${accountedFlag}'
+ 	#end
+ 	#if ($startSettleDate)
+ 		AND SETTLE_DATE >= '${startSettleDate}'
+ 	#end	
+ 	#if ($endSettleDate)
+ 		AND SETTLE_DATE <= '${endSettleDate}'
+ 	#end	
+ #end
+ 
+ #if($sqlName=='queryUnknowSettleOrders')
+	SELECT
+		TXN_SEQ_ID,
+		TXN_DT,
+		TXN_TM,
+		EWM_DATA,
+		MER_ORDER_ID,
+		MER_OR_DT,
+		MER_OR_TM,
+		OGL_ORD_ID,
+		OGL_ORD_DATE,
+		MOBILE_ORDER_ID,
+		MOBILE_OR_DT,
+		MOBILE_OR_TM,
+		TXN_TYPE,
+		TXN_CHANNEL,
+		PAY_ACCESS_TYPE,
+		PAY_TYPE,
+		TRADE_MONEY,
+		CURRENCY_CODE,
+		MER_ID,
+		WX_ORDER_NO,
+		CODE_URL,
+		ALIPAY_PREPAY_ID,
+		WX_PREPAY_ID,
+		RANDOM_STR,
+		WX_MER_ID,
+		SUB_WX_MER_ID,
+		TXN_STA,
+		RES_DESC,
+		SETTLE_DATE,
+		SUB_ALIPAY_MER_ID,
+		ALIPAY_MER_ID,
+		DISCOUNTABLE_AMOUNT,
+		UNDISCOUNTABLE_AMOUNT,
+		ALIPAY_TRADE_NO,
+		RECEIPT_AMOUNT,
+		OUT_REQUEST_NO,
+		REFUND_AMOUNT,
+		ALIPAY_REFUND_FEE,
+		TOTAL_REFUND_FEE,
+		SEND_BACK_FEE,
+		REMARK,
+		SETTLE_METHOD,
+		ACCOUNTED_FLAG,
+		BANK_FEE_RATE
+	FROM EWM.TBL_ORDER_TXN 
+	WHERE 1 = 1
+ 	#if ($channel)
+ 		AND TXN_CHANNEL='${channel}'
+ 	#end
+ 	#if	($wxAccess||$alipayAccess)
+ 		AND(#if ($wxAccess)
+ 			 	PAY_ACCESS_TYPE = '${wxAccess}'
+ 			#end
+ 			#if ($alipayAccess)
+ 				OR  PAY_ACCESS_TYPE = '${alipayAccess}'
+ 			#end )
+ 	#end
+ 	#if ($type)
+ 		AND TXN_TYPE='${txnType}'
+ 	#end
+ 	#if ($txnSta)
+ 		AND TXN_STA='${txnSta}'
+ 	#end
+ 	#if ($settleMethod)
+ 		AND SETTLE_METHOD='${settleMethod}'
+ 	#end
+ 	#if ($accountedFlag)
+ 		AND ACCOUNTED_FLAG = '${accountedFlag}'
+ 	#end
+ 	#if ($startSettleDate)
+ 		AND SETTLE_DATE >= '${startSettleDate}'
+ 	#end	
+ 	#if ($endSettleDate)
+ 		AND SETTLE_DATE <= '${endSettleDate}'
+ 	#end
+ 	#if ($txnTmStart||$txnTmEnd)
+ 		AND TXN_TM between '${txnTmStart}' and '${txnTmEnd}'
+ 	#end
+	#if ($txnDt)
+ 		AND TXN_DT = '${txnDt}'
+ 	#end
+ 	WITH UR
+#end

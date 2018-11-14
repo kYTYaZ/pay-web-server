@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<body>正在输入-订单编号100020181017105242</body>
+	<limit_pay />
+	<spbill_create_ip>127.0.0.1</spbill_create_ip>
+	<notify_url>https://tpay.test.95516.com/wx/v1</notify_url>
+	<appid>wx2421b1c4370ec43b</appid>
+	<fee_type>CNY</fee_type>
+	<time_start>20181017105243</time_start>
+	<nonce_str>e4d313add7f044eaa3cbd4e35effc4ad</nonce_str>
+	<out_trade_no>1006706343</out_trade_no>
+	<device_info>POS</device_info>
+	<channel_id>24006513</channel_id>
+	<sign>T/LlFv6fMHIKD+qCBHnpBWGr8b/9M59ncEQ5hKtTXdbY4Lbp9D67Sx1/pIak7LfLCgt/h4QwHYIE2Tx2TG2uzWgoGnqWVq2n/nk+ORg5ZRYwcWCL+aLBtOAvylL+FX058BKFTpp1Qy/WFN+3acZ4mM2S3/zBgk1v1j9a1YGiwIIF+fU/wFYjvq6Bj+LzFbRhkHcM7Uxe1Wdfp3JQu0huIcfbvLQ/ybSPVzKtigEWdHrbJLfZbgBu8gzlcBN3K10dn1+NynAs4c6nwjsU3Xm5hSB2guWbutDzjQeIRxJVP0/Or93QmaN73dTuLkMObkxS76NhkZKRClbjB2FwRyYj8g==
+	</sign>
+	<time_expire>20181017105743</time_expire>
+	<mch_id>1900009211</mch_id>
+	<goods_tag />
+	<total_fee>1</total_fee>
+	<attach>20181017</attach>
+	<sub_mch_id>247583402</sub_mch_id>
+	<auth_code>134942913714181269</auth_code>
+</xml>
+<xml>
+	<appid><![CDATA[wx2421b1c4370ec43b]]></appid>
+	<mch_id><![CDATA[1900009211]]></mch_id>
+	<sub_mch_id><![CDATA[247583402]]></sub_mch_id>
+	<return_code><![CDATA[SUCCESS]]></return_code>
+	<return_msg><![CDATA[成功]]></return_msg>
+	<result_code><![CDATA[SUCCESS]]></result_code>
+	<trade_state><![CDATA[USERPAYING]]></trade_state>
+	<nonce_str><![CDATA[c6b72f3a012f4da6a92f72ce656930c6]]></nonce_str>
+	<sign><![CDATA[iTveZeo2IaagVtaB1/5AO3OzhKkk+tVudD400xBQ9pwjhSrktBX8rteBghUWfLkfw/CSxvpGaFJp9pGAcpfFS75qMOek7CVUyl7We1LKhmrCI+RMc+wdAHNnpDzIyqRIIYxNtgdz7SloFXC90xoLM7Or4SXYXLjRD0IeQqoAxU5nCkmsDPXw8zVIzzlABIuDdBVYNmgN41n37XcTVKblEz8RVHzD5bQXuzTR+ATyxhlXv8s0VbH8OhQOURENIaVp5YLkQyts8rBJQLT8p41M8ZYNddGl0Oca6sXg9hgEE5m2unuPg2sBoxw9dQpmhTxHOc9t3ZublDvEM6TiDE63uA==]]></sign>
+</xml>

@@ -1,0 +1,230 @@
+package com.trade.wx.test;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.common.constants.SDKConstant;
+import com.common.dicts.Dict;
+import com.trade.wx.trading.WxClose;
+import com.trade.wx.trading.WxRevoke;
+import com.util.CommonUtil;
+import com.util.DateUtil;
+import com.util.MatrixToImageWriter;
+import com.util.PropertyUtil;
+import com.util.SocketUtil;
+import com.util.TransUtil;
+
+public class WxCreateMerTest {
+
+	@Test
+	public void refreshMoreConfig() {
+		System.out.println("刷新多费率配置");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", SDKConstant.TXN_CODE.MORE_FEE_CONFIG);
+
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+	}
+
+	public static void getDownLoad() {
+		System.out.println("开始组装微信下载对账单");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", SDKConstant.TXN_CODE.WX_BILL_DOWN);
+		map.put("protocolContent", "20180926");
+
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+	}
+
+	public static void getSingleDownLoad() {
+		System.out.println("开始组装微信下载对账单");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", SDKConstant.TXN_CODE.WX_BILL_SINGLE_DOWN);
+		map.put("billDate", "20181008");
+		map.put("rate", "60");
+
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+	}
+
+	public static void sumWxBill() {
+		System.out.println("开始组装微信下载对账单");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", SDKConstant.TXN_CODE.WX_BILL_SUM_DOWN);
+		map.put("billDate", "20180925");
+
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+	}
+
+	@Test
+	public void wxClose() {
+
+		Map<String, String> map = WxClose.getData();
+		map.put("initOrderNumber", "1006706518");
+		map.put("initOrderTime","20181022093008");
+		map.put("merId", "20181019194350194350");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		System.out.println(reqData);
+		SocketUtil.socketConnect(reqData);
+
+	}
+
+	@Test
+	public void wxCreateMer() {
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", SDKConstant.TXN_CODE.CODE_5001);
+		map.put("mchtName", "浙农信商户间联新增测试YYK");
+		map.put("mchtShortName", "浙农信商户YYK");
+		map.put("servicePhone", "15900001238");
+		map.put("business", "165");
+		map.put("contactName", "客户810");
+		map.put("contactPhone", "13524862405");
+		map.put("orgCode", "801000");
+		String merId = DateUtil.getDateStr("yyyyMMddHHmmssHHmmss");
+		map.put("merId", merId);
+		map.put("mchtRemark", merId);
+		map.put("rateChannel", "20");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+
+	}
+
+	@Test
+	public void wxQueryMer() {
+
+		System.out.println("开始组装微信商户查询报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", "5004");
+		map.put("merId", "20181019194350194350");
+		map.put("subMchId", "248419373");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+
+	}
+
+	@Test
+	public void wxMicroPay() {
+
+		System.out.println("开始组装微信被扫报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("orderAmount", "000000000001");
+		map.put("channel", "6001");
+		map.put("orderNumber", "1000" + DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("orderTime", DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("merId", "20181019194350194350");
+		map.put("payType", "15");
+		map.put("transType", "01");
+		map.put("merName", "1417");
+		map.put("isCredit", "1");
+		map.put("subWxMerId", "248419373");
+		map.put("deviceInfo", "POS");
+		map.put("currencyType", "156");
+		map.put("payAccessType", "02");
+		map.put("authCode", "134584042238742069");
+		map.put("txnCode", "1002");
+		map.put("remark", "aasdfsdf");
+		map.put("rateChannel", "20");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+
+	}
+
+	@Test
+	public void wxPreCreate() throws Exception {
+
+		System.out.println("开始组装微信主扫报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("txnCode", "1001");
+		map.put("orderAmount", "000000000001");
+		map.put("orderNumber", "1000" + DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("orderTime", DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("transType", "01");
+		map.put("merId", "20181019194350194350");
+		map.put("merName", "1107");
+		map.put("channel", "6001");
+		map.put("payAccessType", "02");
+		map.put("currencyType", "156");
+		map.put("payType", "12");
+		map.put("isCredit", "1");
+		map.put("subWxMerId", "248419373");
+		map.put("deviceInfo", "POS");
+		map.put("rateChannel", "20");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		String respDataAliPreCreate = SocketUtil.socketConnect(reqData);
+
+		Map<String, String> mapRespAliPreCreate = TransUtil.xmlToMap(respDataAliPreCreate.substring(6));
+
+		// 生成二维码
+		String codeUrl = mapRespAliPreCreate.get(Dict.codeUrl);
+		// 删除路径下所有文件
+		MatrixToImageWriter.deleteAll(new File(PropertyUtil.getProperty(Dict.ewmpath)));
+		MatrixToImageWriter.createEWM("new", codeUrl, PropertyUtil.getProperty(Dict.ewmpath));
+
+	}
+
+	@Test
+	public void wxQuery() {
+
+		System.out.println("开始组装微信订单查询报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		
+		map.put("txnCode", "3001");
+		map.put("orderNumber", "100020181017105242");
+		map.put("orderTime", "20181017105242");
+		map.put("transType", "35");
+		map.put("channel", "6001"); 
+		map.put("payAccessType", "02");
+		map.put("merId", "20181019194350194350");
+//		map.put("rateChannel", "20");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+
+	}
+
+	@Test
+	public void wxRevoke() {
+
+		System.out.println("开始组装微信撤销报文");
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("orderAmount", "000000000001");
+		map.put("channel", "6001");
+		map.put("orderNumber", "1000"+DateUtil.getDateStr("yyyyMMddHHmmss"));
+		map.put("orderTime",DateUtil.getDateStr("yyyyMMddHHmmss") + "");
+		map.put("merId", "20181019194350194350");
+		map.put("transType", "31");
+		map.put("currencyType", "156");
+		map.put("payAccessType", "02");
+		map.put("txnCode", "2001");
+		map.put("initOrderNumber", "100020181022090503");
+		map.put("initOrderTime", "20181022090503");
+//		map.put("subWxMerId", "247791185");
+		String data = TransUtil.mapToXml(map);
+		String reqData = CommonUtil.fillString(data) + data;
+		SocketUtil.socketConnect(reqData);
+
+	}
+}
